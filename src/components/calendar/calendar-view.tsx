@@ -38,15 +38,11 @@ export default function CalendarView() {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const { gridRows, boards, workspaces, activeWorkspaceId } = useAppStore();
+  const { boards, workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
 
   const events = useMemo<CalEvent[]>(() => {
     const result: CalEvent[] = [];
-    gridRows.forEach((row) => {
-      const d = parseDueDate(row.dueDate);
-      if (d) result.push({ id: row.id, title: row.name, date: d, priority: row.priority, assigneeId: row.assigneeId, type: "grid" });
-    });
     boards.filter((b) => b.workspaceId === activeWorkspaceId).forEach((board) => {
       board.columns.forEach((col) => {
         col.cards.forEach((card) => {
@@ -56,7 +52,7 @@ export default function CalendarView() {
       });
     });
     return result;
-  }, [gridRows, boards, activeWorkspaceId]);
+  }, [boards, activeWorkspaceId]);
 
   const eventsInMonth = events.filter((e) => e.date.getFullYear() === year && e.date.getMonth() === month);
   const upcoming = events

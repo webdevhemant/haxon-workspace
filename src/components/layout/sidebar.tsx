@@ -7,8 +7,8 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
   Home, Inbox, Calendar, Users, ChevronRight, ChevronDown, ChevronLeft,
-  Search, Plus, Bell, Folder, Sun, Moon, Settings, LogOut, MoreHorizontal,
-  ChevronUp, FileText, Kanban, Grid3X3,
+  Search, Plus, Bell, Sun, Moon, Settings, LogOut, MoreHorizontal,
+  ChevronUp, FileText, Kanban,
 } from "lucide-react";
 import { HaxonLogo } from "@/components/ui/haxon-logo";
 import { UserAvatar } from "@/components/ui/user-avatar";
@@ -72,6 +72,26 @@ function SItem({
   );
 }
 
+function SectionHeader({
+  label, onAdd, addTooltip,
+}: { label: string; onAdd?: () => void; addTooltip?: string }) {
+  return (
+    <div className="flex items-center px-2 mb-1 mt-2 group/header">
+      <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider flex-1">{label}</span>
+      {onAdd && (
+        <TooltipWrap label={addTooltip ?? `New ${label.toLowerCase()}`}>
+          <button
+            onClick={onAdd}
+            className="w-4 h-4 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 opacity-0 group-hover/header:opacity-100 transition-all"
+          >
+            <Plus className="w-3 h-3" />
+          </button>
+        </TooltipWrap>
+      )}
+    </div>
+  );
+}
+
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -126,7 +146,7 @@ export function Sidebar() {
           </Link>
           <div className="flex items-center gap-1">
             <TooltipWrap label="Notifications">
-              <button className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500">
+              <button onClick={() => router.push("/inbox")} className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500">
                 <Bell className="w-3.5 h-3.5" />
               </button>
             </TooltipWrap>
@@ -158,9 +178,7 @@ export function Sidebar() {
               {workspaces.map((w) => (
                 <DropdownMenu.Item key={w.id} onSelect={() => { setActiveWorkspace(w.id); toast.success(`Switched to ${w.name}`); }}
                   className="flex items-center gap-2.5 px-2 py-2 rounded-md cursor-pointer outline-none text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center text-sm" style={{ background: w.color }}>
-                    {w.emoji}
-                  </div>
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center text-sm" style={{ background: w.color }}>{w.emoji}</div>
                   {w.name}
                 </DropdownMenu.Item>
               ))}
@@ -186,7 +204,7 @@ export function Sidebar() {
 
         {/* Nav */}
         <div className="flex-1 overflow-y-auto px-1.5 pb-2 min-h-0">
-          <div className="mb-3">
+          <div className="mb-1">
             {[
               { icon: <Home className="w-3.5 h-3.5" />, label: "Dashboard", href: "/dashboard" },
               { icon: <Inbox className="w-3.5 h-3.5" />, label: "Inbox", badge: "3", href: "/inbox" },
@@ -201,8 +219,8 @@ export function Sidebar() {
 
           {/* Favorites */}
           {favDocs.length > 0 && (
-            <div className="mb-3">
-              <div className="px-2 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Favorites</div>
+            <div className="mb-1">
+              <SectionHeader label="Favorites" />
               {favDocs.map((d) => d && (
                 <SItem key={d.id} icon={<span className="text-xs">{d.emoji}</span>} label={d.title}
                   active={pathname.includes(d.id)}
@@ -214,10 +232,13 @@ export function Sidebar() {
 
           {/* Workspace tree */}
           <div>
-            <div className="px-2 mb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Workspace</div>
-
-            {/* Docs */}
-            <SItem icon={<Folder className="w-3.5 h-3.5" />} label="Docs"
+            {/* Docs section */}
+            <SectionHeader
+              label="Docs"
+              onAdd={() => openModal({ type: "createDoc", workspaceId: activeWorkspaceId })}
+              addTooltip="New doc"
+            />
+            <SItem icon={<FileText className="w-3.5 h-3.5" />} label="All docs"
               collapsible expanded={expandedFolders["w1-Docs"] ?? true}
               onClick={() => toggleFolder("w1-Docs")} />
             <AnimatePresence initial={false}>
@@ -229,12 +250,19 @@ export function Sidebar() {
                       onClick={() => router.push(`/workspace/${d.workspaceId}/doc/${d.id}`)}
                       menu={docMenu(d.id, d.title)} />
                   ))}
+                  <SItem icon={<Plus className="w-3 h-3" />} label="New doc" depth={1}
+                    onClick={() => openModal({ type: "createDoc", workspaceId: activeWorkspaceId })} />
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Boards */}
-            <SItem icon={<Kanban className="w-3.5 h-3.5" />} label="Boards"
+            {/* Boards section */}
+            <SectionHeader
+              label="Boards"
+              onAdd={() => openModal({ type: "createBoard", workspaceId: activeWorkspaceId })}
+              addTooltip="New board"
+            />
+            <SItem icon={<Kanban className="w-3.5 h-3.5" />} label="All boards"
               collapsible expanded={expandedFolders["w1-Boards"] ?? true}
               onClick={() => toggleFolder("w1-Boards")} />
             <AnimatePresence initial={false}>
@@ -245,30 +273,11 @@ export function Sidebar() {
                       depth={1} active={pathname.includes(b.id)}
                       onClick={() => router.push(`/workspace/${b.workspaceId}/board/${b.id}`)} />
                   ))}
+                  <SItem icon={<Plus className="w-3 h-3" />} label="New board" depth={1}
+                    onClick={() => openModal({ type: "createBoard", workspaceId: activeWorkspaceId })} />
                 </motion.div>
               )}
             </AnimatePresence>
-
-            {/* Grids */}
-            <SItem icon={<Grid3X3 className="w-3.5 h-3.5" />} label="Grids"
-              collapsible expanded={expandedFolders["w1-Grids"] ?? true}
-              onClick={() => toggleFolder("w1-Grids")} />
-            <AnimatePresence initial={false}>
-              {(expandedFolders["w1-Grids"] ?? true) && (
-                <motion.div key="grids-folder" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                  <SItem icon={<span className="text-xs">📊</span>} label="Sprint Tracker"
-                    depth={1} active={pathname.includes("grid")}
-                    onClick={() => router.push(`/workspace/${activeWorkspaceId}/grid/sprint`)} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div className="pt-2">
-            <button onClick={() => openModal({ type: "createWorkspace" })}
-              className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
-              <Plus className="w-3.5 h-3.5" /> New
-            </button>
           </div>
         </div>
 

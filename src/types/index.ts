@@ -51,6 +51,8 @@ export interface Column {
   cards: Card[];
 }
 
+export type ViewType = "board" | "list" | "grid" | "table" | "workload";
+
 export interface Board {
   id: string;
   workspaceId: string;
@@ -86,4 +88,6 @@ export type ModalConfig =
   | { type: "rename"; id: string; kind: string; current: string }
   | { type: "invite" }
   | { type: "createWorkspace" }
+  | { type: "createBoard"; workspaceId: string }
+  | { type: "createDoc"; workspaceId: string }
   | { type: "share"; name: string };
