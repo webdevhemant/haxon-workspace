@@ -1,0 +1,25 @@
+import type { ActivityItem, GridRow } from "@/types";
+
+export const ACTIVITY: ActivityItem[] = [
+  { id: "a1", userId: "u2", verb: "edited", target: "Engineering RFC — Sync Engine", in: "Northwind Studio", at: "8m ago", icon: "edit" },
+  { id: "a2", userId: "u4", verb: "moved a card to In Progress in", target: "Q3 Roadmap", in: "Northwind Studio", at: "22m ago", icon: "board" },
+  { id: "a3", userId: "u5", verb: "commented on", target: "Brand voice & tone", in: "Northwind Studio", at: "1h ago", icon: "doc" },
+  { id: "a4", userId: "u1", verb: "starred", target: "Q3 Product Strategy", in: "Northwind Studio", at: "2h ago", icon: "star" },
+  { id: "a5", userId: "u3", verb: "joined", target: "Northwind Studio", in: "", at: "3h ago", icon: "users" },
+  { id: "a6", userId: "u6", verb: "shipped", target: "v2.3.1 patch release", in: "Q3 Roadmap", at: "yesterday", icon: "rocket" },
+  { id: "a7", userId: "u2", verb: "created board", target: "Marketing", in: "Northwind Studio", at: "yesterday", icon: "board" },
+  { id: "a8", userId: "u5", verb: "shared", target: "Onboarding Playbook", in: "Northwind Studio", at: "2d ago", icon: "share" },
+];
+
+export const GRID_ROWS: GridRow[] = [
+  { id: "g1", name: "Refresh empty states across product", status: "In Progress", assigneeId: "u5", priority: "High", dueDate: "Aug 12", tags: ["design", "polish"], created: "Aug 2" },
+  { id: "g2", name: "Migrate auth to passkeys", status: "Backlog", assigneeId: "u2", priority: "High", dueDate: "Aug 22", tags: ["security"], created: "Aug 1" },
+  { id: "g3", name: "Public API v1 — docs site", status: "In Review", assigneeId: "u6", priority: "Medium", dueDate: "Aug 14", tags: ["docs", "api"], created: "Jul 28" },
+  { id: "g4", name: "Calendar view (week + month)", status: "In Progress", assigneeId: "u4", priority: "High", dueDate: "Aug 20", tags: ["views"], created: "Jul 25" },
+  { id: "g5", name: "Tighten cmd-K fuzzy ranking", status: "Done", assigneeId: "u3", priority: "Medium", dueDate: "Aug 3", tags: ["perf", "search"], created: "Jul 18" },
+  { id: "g6", name: "Annual plan upgrade nudge", status: "Backlog", assigneeId: "u1", priority: "Low", dueDate: "Aug 28", tags: ["growth"], created: "Jul 30" },
+  { id: "g7", name: "Recovery flow for accidental deletes", status: "In Review", assigneeId: "u4", priority: "Medium", dueDate: "Aug 10", tags: ["safety"], created: "Jul 22" },
+  { id: "g8", name: "Member onboarding checklist", status: "In Progress", assigneeId: "u5", priority: "Medium", dueDate: "Aug 16", tags: ["growth", "ux"], created: "Aug 3" },
+  { id: "g9", name: "Comment threads — markdown support", status: "Backlog", assigneeId: "u2", priority: "Low", dueDate: "Sep 1", tags: ["editor"], created: "Jul 12" },
+  { id: "g10", name: "Workspace export — markdown + zip", status: "Done", assigneeId: "u6", priority: "Medium", dueDate: "Jul 30", tags: ["data"], created: "Jul 6" },
+];

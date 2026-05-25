@@ -1,0 +1,29 @@
+import type { Doc } from "@/types";
+
+export const DOCS: Doc[] = [
+  {
+    id: "d1", workspaceId: "w1", title: "Q3 Product Strategy",
+    folder: "Strategy", emoji: "🎯", isFavorite: true,
+    lastEditedBy: "u1", lastEditedAt: "2 hours ago", type: "doc",
+    content: [
+      { type: "h1", text: "Q3 Product Strategy" },
+      { type: "callout", text: "This is our north-star plan for the next 90 days. Owners are accountable, dates are firm." },
+      { type: "h2", text: "Where we are" },
+      { type: "p", text: "Haxon shipped its v2 doc engine last quarter, doubling editor performance and unlocking real-time multiplayer. Adoption is up 38% MoM, and the workspace activation rate climbed from 41% → 58%." },
+      { type: "h2", text: "Three bets for Q3" },
+      { type: "list", items: ["Ship the AI assistant to GA — currently in private beta with 240 teams.", "Launch the new Grid view alongside Board view, with shared schema.", "Move from per-seat to usage-based pricing for AI features."] },
+      { type: "h2", text: "Risks" },
+      { type: "p", text: "Mistral and Anthropic both shipped competitive doc-AI integrations last week. Our differentiation has to be workspace-native context, not raw model quality." },
+      { type: "ai", text: "Based on the three bets above, the highest-leverage week-1 actions are: 1) lock the AI pricing model with Finance, 2) recruit 5 design partners for Grid view, 3) publish the competitive teardown to the team channel." },
+    ],
+  },
+  { id: "d2", workspaceId: "w1", title: "Engineering RFC — Sync Engine", folder: "Engineering", emoji: "⚙️", isFavorite: true, lastEditedBy: "u2", lastEditedAt: "yesterday", type: "doc" },
+  { id: "d3", workspaceId: "w1", title: "Onboarding Playbook", folder: "Strategy", emoji: "🚀", isFavorite: false, lastEditedBy: "u3", lastEditedAt: "3 days ago", type: "wiki" },
+  { id: "d4", workspaceId: "w1", title: "Brand voice & tone", folder: "Brand", emoji: "🎨", isFavorite: true, lastEditedBy: "u5", lastEditedAt: "5 hours ago", type: "wiki" },
+  { id: "d5", workspaceId: "w1", title: "Customer interview — Atlas Robotics", folder: "Research", emoji: "🎧", isFavorite: false, lastEditedBy: "u4", lastEditedAt: "Mon", type: "doc" },
+  { id: "d6", workspaceId: "w1", title: "Pricing experiment notes", folder: "Strategy", emoji: "💰", isFavorite: false, lastEditedBy: "u1", lastEditedAt: "Mon", type: "doc" },
+  { id: "d7", workspaceId: "w2", title: "Lumen — research wiki", folder: "Wiki", emoji: "📚", isFavorite: false, lastEditedBy: "u6", lastEditedAt: "Tue", type: "wiki" },
+  { id: "d8", workspaceId: "w2", title: "Photonics — board prep", folder: "Meetings", emoji: "💡", isFavorite: false, lastEditedBy: "u2", lastEditedAt: "Wed", type: "doc" },
+  { id: "d9", workspaceId: "w3", title: "Weekly review", folder: "Journal", emoji: "🧭", isFavorite: false, lastEditedBy: "u1", lastEditedAt: "Sun", type: "doc" },
+  { id: "d10", workspaceId: "w3", title: "Apartment hunting", folder: "Life", emoji: "🏡", isFavorite: false, lastEditedBy: "u1", lastEditedAt: "last week", type: "doc" },
+];
