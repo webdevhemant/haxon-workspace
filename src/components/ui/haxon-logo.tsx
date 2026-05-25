@@ -6,7 +6,7 @@ export function HaxonLogo({ size = 22 }: { size?: number }) {
       <svg width={size} height={size} viewBox="0 0 32 32">
         <defs>
           <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FB923C" />
+            <stop offset="0%" stopColor="#F97316" />
             <stop offset="100%" stopColor="#C2410C" />
           </linearGradient>
         </defs>

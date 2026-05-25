@@ -34,14 +34,32 @@ export interface Doc {
   content?: DocBlock[];
 }
 
+export interface CardSubtask {
+  id: string;
+  title: string;
+  done: boolean;
+}
+
+export interface CardComment {
+  id: string;
+  userId: string;
+  text: string;
+  at: string;
+}
+
 export interface Card {
   id: string;
   title: string;
   description?: string;
   assigneeId: string;
-  priority: "High" | "Medium" | "Low";
+  priority: "Urgent" | "High" | "Medium" | "Low" | "None";
+  startDate?: string;
   dueDate: string;
   tags?: string[];
+  labels?: string[];
+  followers?: string[];
+  subtasks?: CardSubtask[];
+  comments?: CardComment[];
 }
 
 export interface Column {

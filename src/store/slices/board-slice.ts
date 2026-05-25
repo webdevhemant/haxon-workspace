@@ -11,11 +11,17 @@ export interface BoardSlice {
   setBoardView: (boardId: string, view: ViewType) => void;
   addBoard: (workspaceId: string, name: string, emoji: string) => string;
   addColumn: (boardId: string, name: string) => void;
+  reorderColumns: (boardId: string, fromIndex: number, toIndex: number) => void;
   addCard: (boardId: string, colId: string, title: string) => void;
   updateCard: (boardId: string, colId: string, cardId: string, patch: object) => void;
   deleteCard: (boardId: string, colId: string, cardId: string) => void;
   moveCard: (boardId: string, fromColId: string, toColId: string, cardId: string, toIndex: number) => void;
   moveCardByStatus: (boardId: string, cardId: string, toColName: string) => void;
+  addSubtask: (boardId: string, colId: string, cardId: string, title: string) => void;
+  toggleSubtask: (boardId: string, colId: string, cardId: string, subtaskId: string) => void;
+  deleteSubtask: (boardId: string, colId: string, cardId: string, subtaskId: string) => void;
+  addComment: (boardId: string, colId: string, cardId: string, text: string) => void;
+  toggleFollower: (boardId: string, colId: string, cardId: string, userId: string) => void;
 }
 
 let cardCounter = 100;
@@ -54,6 +60,17 @@ export const createBoardSlice: StateCreator<AppState, [], [], BoardSlice> = (set
           ? b
           : { ...b, columns: [...b.columns, { id: `col${Date.now()}`, name, color: "#6B7280", cards: [] }] }
       ),
+    })),
+
+  reorderColumns: (boardId, fromIndex, toIndex) =>
+    set((s) => ({
+      boards: s.boards.map((b) => {
+        if (b.id !== boardId) return b;
+        const cols = [...b.columns];
+        const [removed] = cols.splice(fromIndex, 1);
+        cols.splice(toIndex, 0, removed);
+        return { ...b, columns: cols };
+      }),
     })),
 
   addCard: (boardId, colId, title) =>
@@ -163,4 +180,110 @@ export const createBoardSlice: StateCreator<AppState, [], [], BoardSlice> = (set
         ),
       };
     }),
+
+  addSubtask: (boardId, colId, cardId, title) =>
+    set((s) => ({
+      boards: s.boards.map((b) =>
+        b.id !== boardId ? b : {
+          ...b,
+          columns: b.columns.map((c) =>
+            c.id !== colId ? c : {
+              ...c,
+              cards: c.cards.map((k) =>
+                k.id !== cardId ? k : {
+                  ...k,
+                  subtasks: [...(k.subtasks ?? []), { id: `st${Date.now()}`, title, done: false }],
+                }
+              ),
+            }
+          ),
+        }
+      ),
+    })),
+
+  toggleSubtask: (boardId, colId, cardId, subtaskId) =>
+    set((s) => ({
+      boards: s.boards.map((b) =>
+        b.id !== boardId ? b : {
+          ...b,
+          columns: b.columns.map((c) =>
+            c.id !== colId ? c : {
+              ...c,
+              cards: c.cards.map((k) =>
+                k.id !== cardId ? k : {
+                  ...k,
+                  subtasks: (k.subtasks ?? []).map((st) =>
+                    st.id !== subtaskId ? st : { ...st, done: !st.done }
+                  ),
+                }
+              ),
+            }
+          ),
+        }
+      ),
+    })),
+
+  deleteSubtask: (boardId, colId, cardId, subtaskId) =>
+    set((s) => ({
+      boards: s.boards.map((b) =>
+        b.id !== boardId ? b : {
+          ...b,
+          columns: b.columns.map((c) =>
+            c.id !== colId ? c : {
+              ...c,
+              cards: c.cards.map((k) =>
+                k.id !== cardId ? k : {
+                  ...k,
+                  subtasks: (k.subtasks ?? []).filter((st) => st.id !== subtaskId),
+                }
+              ),
+            }
+          ),
+        }
+      ),
+    })),
+
+  addComment: (boardId, colId, cardId, text) =>
+    set((s) => ({
+      boards: s.boards.map((b) =>
+        b.id !== boardId ? b : {
+          ...b,
+          columns: b.columns.map((c) =>
+            c.id !== colId ? c : {
+              ...c,
+              cards: c.cards.map((k) =>
+                k.id !== cardId ? k : {
+                  ...k,
+                  comments: [...(k.comments ?? []), { id: `cm${Date.now()}`, userId: "u1", text, at: "just now" }],
+                }
+              ),
+            }
+          ),
+        }
+      ),
+    })),
+
+  toggleFollower: (boardId, colId, cardId, userId) =>
+    set((s) => ({
+      boards: s.boards.map((b) =>
+        b.id !== boardId ? b : {
+          ...b,
+          columns: b.columns.map((c) =>
+            c.id !== colId ? c : {
+              ...c,
+              cards: c.cards.map((k) => {
+                if (k.id !== cardId) return k;
+                const followers = k.followers ?? [];
+                return {
+                  ...k,
+                  followers: followers.includes(userId)
+                    ? followers.filter((f) => f !== userId)
+                    : [...followers, userId],
+                };
+              }),
+            }
+          ),
+        }
+      ),
+    })),
 });
