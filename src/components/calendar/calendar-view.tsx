@@ -29,7 +29,7 @@ interface CalEvent {
   id: string;
   title: string;
   date: Date;
-  priority: "High" | "Medium" | "Low";
+  priority: "Urgent" | "High" | "Medium" | "Low" | "None";
   assigneeId: string;
   type: "grid" | "card";
 }
@@ -84,9 +84,9 @@ export default function CalendarView() {
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Calendar grid */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-4">
           {/* Month nav */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <div className="flex items-center gap-3">
               <h2 className="text-xl font-bold tracking-tight">{MONTHS[month]} {year}</h2>
               <button onClick={() => { setMonth(today.getMonth()); setYear(today.getFullYear()); }}
@@ -120,7 +120,7 @@ export default function CalendarView() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: i * 0.005 }}
                   className={cn(
-                    "min-h-[110px] border-r border-b border-gray-100 dark:border-gray-800 p-2",
+                    "min-h-[88px] border-r border-b border-gray-100 dark:border-gray-800 p-2",
                     !isCurrentMonth && "bg-gray-50/50 dark:bg-gray-900/30",
                   )}
                 >
@@ -135,19 +135,20 @@ export default function CalendarView() {
                         {day}
                       </div>
                       <div className="space-y-0.5">
-                        {dayEvents.slice(0, 2).map((ev) => (
+                        {dayEvents.slice(0, 3).map((ev) => (
                           <div key={ev.id}
                             className={cn(
                               "px-1.5 py-0.5 rounded text-[10px] font-medium truncate",
-                              ev.priority === "High" ? "bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400"
-                                : ev.priority === "Medium" ? "bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400"
-                                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                              ev.priority === "Urgent" ? "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 font-semibold"
+                                : ev.priority === "High" ? "bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400"
+                                  : ev.priority === "Medium" ? "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400"
+                                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
                             )}>
                             {ev.title}
                           </div>
                         ))}
-                        {dayEvents.length > 2 && (
-                          <div className="text-[10px] text-gray-400 px-1.5">+{dayEvents.length - 2} more</div>
+                        {dayEvents.length > 3 && (
+                          <button className="text-[10px] text-gray-400 hover:text-orange-500 px-1.5 transition-colors">+{dayEvents.length - 3} more</button>
                         )}
                       </div>
                     </>
@@ -160,11 +161,11 @@ export default function CalendarView() {
 
         {/* Upcoming sidebar */}
         <div className="w-64 flex-shrink-0 border-l border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
-          <div className="px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
+          <div className="px-3 py-3 border-b border-gray-100 dark:border-gray-800">
             <div className="text-sm font-bold">Upcoming</div>
             <div className="text-xs text-gray-400 mt-0.5">Next due dates</div>
           </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
+          <div className="flex-1 overflow-y-auto p-3 space-y-1.5 max-h-[calc(100vh-200px)]">
             {upcoming.length === 0 ? (
               <div className="text-center py-8 text-xs text-gray-400">
                 <Clock className="w-6 h-6 mx-auto mb-2 opacity-40" />
@@ -181,7 +182,7 @@ export default function CalendarView() {
                   initial={{ opacity: 0, x: 8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="p-2.5 rounded-lg bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer"
+                  className="p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer"
                 >
                   <div className="text-xs font-medium text-gray-900 dark:text-white truncate mb-1.5">{ev.title}</div>
                   <div className="flex items-center justify-between">

@@ -49,9 +49,9 @@ export default function MembersSettings() {
       </SettingSection>
 
       <SettingSection title={`${members.length} members`} desc="Manage roles and access for everyone in your workspace.">
-        <div className="-mx-5">
+        <div className="-mx-4">
           {members.map((m, i) => (
-            <div key={m.id} className={`flex items-center gap-4 px-5 py-3 ${i > 0 ? "border-t border-gray-100 dark:border-gray-800" : ""}`}>
+            <div key={m.id} className={`flex items-center gap-4 px-4 py-3 ${i > 0 ? "border-t border-gray-100 dark:border-gray-800" : ""}`}>
               <UserAvatar user={m} size={36} />
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold flex items-center gap-2">

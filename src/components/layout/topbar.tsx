@@ -8,13 +8,13 @@ import { cn } from "@/lib/utils";
 export function Topbar({ left, right }: { left?: React.ReactNode; right?: React.ReactNode }) {
   const { sidebarCollapsed, toggleSidebar } = useAppStore();
   return (
-    <div className="h-12 flex-shrink-0 border-b border-gray-200 dark:border-gray-800 flex items-center px-3.5 gap-2 bg-white dark:bg-gray-950">
+    <div className="h-10 flex-shrink-0 border-b border-gray-100 dark:border-gray-800 flex items-center px-3.5 gap-2 bg-white/80 dark:bg-[#0F1117]/80 backdrop-blur-sm">
       {sidebarCollapsed && (
         <Tooltip.Provider delayDuration={300}>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
               <button onClick={toggleSidebar}
-                className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors mr-1">
+                className="w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 transition-colors mr-1">
                 <PanelLeft className="w-4 h-4" />
               </button>
             </Tooltip.Trigger>
@@ -44,7 +44,7 @@ export function Breadcrumb({ items }: { items: { label: string; href?: string }[
             className={cn(
               "px-1.5 py-0.5 rounded truncate transition-colors",
               i === items.length - 1
-                ? "font-medium text-gray-900 dark:text-white"
+                ? "font-medium text-gray-900 dark:text-gray-100"
                 : "text-gray-500 dark:text-gray-400",
               item.href && "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700",
             )}
@@ -65,7 +65,7 @@ export function IconBtn({
   const btn = (
     <button onClick={onClick}
       className={cn(
-        "w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors",
+        "w-7 h-7 flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors",
         active && "text-orange-500 bg-orange-50 dark:bg-orange-950",
         className,
       )}>

@@ -6,7 +6,7 @@ export default function BillingSettings() {
   return (
     <SettingsLayout title="Billing">
       <SettingSection title="Current plan">
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-2xl font-bold flex items-center gap-2">
               Pro
@@ -16,7 +16,7 @@ export default function BillingSettings() {
           </div>
           <button className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">Manage plan</button>
         </div>
-        <div className="grid grid-cols-3 gap-4 pt-5 border-t border-gray-100 dark:border-gray-800">
+        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
           {[
             { label: "Docs", used: 248, total: "Unlimited", pct: 0.32 },
             { label: "Members", used: 12, total: 50, pct: 0.24 },
@@ -36,14 +36,14 @@ export default function BillingSettings() {
       </SettingSection>
 
       <SettingSection title="Invoices">
-        <div className="-mx-5">
+        <div className="-mx-4">
           {[
             { date: "Aug 1, 2026", amount: "$144.00", invoice: "INV-2026-0008" },
             { date: "Jul 1, 2026", amount: "$144.00", invoice: "INV-2026-0007" },
             { date: "Jun 1, 2026", amount: "$132.00", invoice: "INV-2026-0006" },
             { date: "May 1, 2026", amount: "$108.00", invoice: "INV-2026-0005" },
           ].map((inv, i) => (
-            <div key={inv.invoice} className={`flex items-center px-5 py-3 text-sm ${i > 0 ? "border-t border-gray-100 dark:border-gray-800" : ""}`}>
+            <div key={inv.invoice} className={`flex items-center px-4 py-3 text-sm ${i > 0 ? "border-t border-gray-100 dark:border-gray-800" : ""}`}>
               <div className="w-32 text-gray-600 dark:text-gray-400">{inv.date}</div>
               <div className="w-24 font-medium">{inv.amount}</div>
               <div className="flex-1">
