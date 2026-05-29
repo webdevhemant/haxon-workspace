@@ -2,6 +2,7 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ChatChannel, ChatMessage, ChatReaction } from "@/types";
 import { CHANNELS, MESSAGES, THREAD_REPLIES } from "@/data/dummy-chat";
+import { USERS } from "@/data/dummy-users";
 import { CURRENT_USER_ID } from "./constants";
 
 interface UseChatReturn {
@@ -16,6 +17,10 @@ interface UseChatReturn {
   reply: (parentId: string, text: string) => void;
   react: (channelId: string, messageId: string, emoji: string) => void;
   markRead: (channelId: string) => void;
+  startDmWith: (userId: string) => string;
+  pinChannel: (channelId: string) => void;
+  muteChannel: (channelId: string) => void;
+  removeChannel: (channelId: string) => void;
 }
 
 export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
@@ -115,6 +120,52 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
 
   const openThread = useCallback((id: string | null) => setThreadParentId(id), []);
 
+  const startDmWith = useCallback((userId: string): string => {
+    const existing = channels.find(
+      (c) => c.kind === "dm" && c.memberIds.includes(userId) && c.memberIds.includes(CURRENT_USER_ID),
+    );
+    if (existing) {
+      _setActive(existing.id);
+      setThreadParentId(null);
+      setChannels((prev) => prev.map((c) => (c.id === existing.id ? { ...c, unread: 0 } : c)));
+      return existing.id;
+    }
+    const user = USERS.find((u) => u.id === userId);
+    if (!user) return "";
+    const id = `dm-${userId}-${Date.now()}`;
+    const newChannel: ChatChannel = {
+      id,
+      kind: "dm",
+      name: user.name,
+      memberIds: [CURRENT_USER_ID, userId],
+      unread: 0,
+      lastActivityAt: "now",
+    };
+    setChannels((prev) => [...prev, newChannel]);
+    setMessagesByChannel((prev) => ({ ...prev, [id]: [] }));
+    _setActive(id);
+    setThreadParentId(null);
+    return id;
+  }, [channels]);
+
+  const pinChannel = useCallback((channelId: string) => {
+    setChannels((prev) => prev.map((c) => (c.id === channelId ? { ...c, isPinned: !c.isPinned } : c)));
+  }, []);
+
+  const muteChannel = useCallback((channelId: string) => {
+    setChannels((prev) => prev.map((c) => (c.id === channelId ? { ...c, isMuted: !c.isMuted } : c)));
+  }, []);
+
+  const removeChannel = useCallback((channelId: string) => {
+    setChannels((prev) => prev.filter((c) => c.id !== channelId));
+    setMessagesByChannel((prev) => {
+      const next = { ...prev };
+      delete next[channelId];
+      return next;
+    });
+    _setActive(null);
+  }, []);
+
   return useMemo(
     () => ({
       channels,
@@ -128,6 +179,10 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
       reply,
       react,
       markRead,
+      startDmWith,
+      pinChannel,
+      muteChannel,
+      removeChannel,
     }),
     [
       channels,
@@ -141,6 +196,10 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
       reply,
       react,
       markRead,
+      startDmWith,
+      pinChannel,
+      muteChannel,
+      removeChannel,
     ],
   );
 }

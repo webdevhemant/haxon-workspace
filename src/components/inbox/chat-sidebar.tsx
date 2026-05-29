@@ -1,20 +1,21 @@
 "use client";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
-import { Search, Plus, Edit3, ChevronDown } from "lucide-react";
+import { Search, Plus, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
 import { ChatSidebarItem } from "./chat-sidebar-item";
-import { SIDEBAR_TABS, type ChatSidebarTab } from "./constants";
+import { ChatNewConversation } from "./chat-new-conversation";
+import { CURRENT_USER_ID, SIDEBAR_TABS, type ChatSidebarTab } from "./constants";
 
 interface Props {
   channels: ChatChannel[];
   activeId: string | null;
   onSelect: (id: string) => void;
-  onNewMessage?: () => void;
+  onStartDmWith: (userId: string) => void;
 }
 
-export function ChatSidebar({ channels, activeId, onSelect, onNewMessage }: Props) {
+export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith }: Props) {
   const [tab, setTab] = useState<ChatSidebarTab>("all");
   const [query, setQuery] = useState("");
   const [openSection, setOpenSection] = useState<Record<string, boolean>>({
@@ -52,13 +53,13 @@ export function ChatSidebar({ channels, activeId, onSelect, onNewMessage }: Prop
               </span>
             )}
           </div>
-          <button
-            title="New message"
-            onClick={() => (onNewMessage ? onNewMessage() : toast.info("Compose coming soon"))}
-            className="w-6 h-6 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-          </button>
+          <ChatNewConversation
+            existingDmUserIds={channels
+              .filter((c) => c.kind === "dm")
+              .flatMap((c) => c.memberIds)
+              .filter((id) => id !== CURRENT_USER_ID)}
+            onStart={onStartDmWith}
+          />
         </div>
 
 

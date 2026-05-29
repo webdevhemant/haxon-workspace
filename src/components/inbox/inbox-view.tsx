@@ -10,6 +10,7 @@ import { ChatComposer } from "./chat-composer";
 import { ChatThreadPanel } from "./chat-thread-panel";
 import { ChatInfoPanel } from "./chat-info-panel";
 import { ChatEmptyState } from "./chat-empty-state";
+import { ChatCallModal, type CallMode } from "./chat-call-modal";
 import { useChat } from "./use-chat";
 
 export default function InboxView() {
@@ -27,9 +28,15 @@ export default function InboxView() {
     send,
     reply,
     react,
+    markRead,
+    startDmWith,
+    pinChannel,
+    muteChannel,
+    removeChannel,
   } = useChat();
 
   const [infoOpen, setInfoOpen] = useState(false);
+  const [callMode, setCallMode] = useState<CallMode | null>(null);
 
   const activeChannel = channels.find((c) => c.id === activeChannelId) ?? null;
   const activeMessages = activeChannel ? messagesByChannel[activeChannel.id] ?? [] : [];
@@ -48,6 +55,7 @@ export default function InboxView() {
           channels={channels}
           activeId={activeChannelId}
           onSelect={setActiveChannelId}
+          onStartDmWith={startDmWith}
         />
 
         <main className="flex-1 flex flex-col min-w-0 bg-white dark:bg-gray-950">
@@ -59,6 +67,12 @@ export default function InboxView() {
                 onToggleInfo={() => setInfoOpen((v) => !v)}
                 onSearch={() => toast.info("Channel search coming soon")}
                 onPinned={() => { setInfoOpen(true); }}
+                onStartCall={() => setCallMode("audio")}
+                onStartHuddle={() => setCallMode("huddle")}
+                onMute={() => muteChannel(activeChannel.id)}
+                onPinChannel={() => pinChannel(activeChannel.id)}
+                onMarkRead={() => markRead(activeChannel.id)}
+                onLeave={() => removeChannel(activeChannel.id)}
               />
               <ChatThread
                 channel={activeChannel}
@@ -101,6 +115,12 @@ export default function InboxView() {
           />
         )}
       </div>
+
+      <ChatCallModal
+        channel={activeChannel}
+        mode={callMode}
+        onClose={() => setCallMode(null)}
+      />
     </div>
   );
 }

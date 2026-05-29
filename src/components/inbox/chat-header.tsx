@@ -16,9 +16,18 @@ interface Props {
   infoOpen: boolean;
   onSearch: () => void;
   onPinned: () => void;
+  onStartCall: () => void;
+  onStartHuddle: () => void;
+  onMute: () => void;
+  onPinChannel: () => void;
+  onMarkRead: () => void;
+  onLeave: () => void;
 }
 
-export function ChatHeader({ channel, onToggleInfo, infoOpen, onSearch, onPinned }: Props) {
+export function ChatHeader({
+  channel, onToggleInfo, infoOpen, onSearch, onPinned,
+  onStartCall, onStartHuddle, onMute, onPinChannel, onMarkRead, onLeave,
+}: Props) {
   const isDM = channel.kind === "dm";
   const otherId = channel.memberIds.find((id) => id !== CURRENT_USER_ID);
   const other = otherId ? USERS.find((u) => u.id === otherId) : undefined;
@@ -64,10 +73,10 @@ export function ChatHeader({ channel, onToggleInfo, infoOpen, onSearch, onPinned
             <AvatarGroup users={members.slice(0, 4)} size={22} max={4} />
           </div>
         )}
-        <HeaderBtn title="Start call" onClick={() => toast.info(`Calling ${channel.name}…`)}>
+        <HeaderBtn title="Start call" onClick={onStartCall}>
           <Phone className="w-3.5 h-3.5" />
         </HeaderBtn>
-        <HeaderBtn title="Start huddle" onClick={() => toast.success("Huddle starting…")}>
+        <HeaderBtn title="Start huddle" onClick={onStartHuddle}>
           <Video className="w-3.5 h-3.5" />
         </HeaderBtn>
         <HeaderBtn title="Search in channel" onClick={onSearch}>
@@ -78,7 +87,7 @@ export function ChatHeader({ channel, onToggleInfo, infoOpen, onSearch, onPinned
         </HeaderBtn>
         <HeaderBtn
           title={channel.isMuted ? "Unmute" : "Mute"}
-          onClick={() => toast(channel.isMuted ? "Notifications on" : "Notifications muted")}
+          onClick={() => { onMute(); toast(channel.isMuted ? "Notifications on" : "Notifications muted"); }}
         >
           {channel.isMuted ? <BellOff className="w-3.5 h-3.5" /> : <Bell className="w-3.5 h-3.5" />}
         </HeaderBtn>
@@ -89,7 +98,12 @@ export function ChatHeader({ channel, onToggleInfo, infoOpen, onSearch, onPinned
         >
           <Users className="w-3.5 h-3.5" />
         </HeaderBtn>
-        <ChannelMoreMenu channel={channel} />
+        <ChannelMoreMenu
+          channel={channel}
+          onPinChannel={onPinChannel}
+          onMarkRead={onMarkRead}
+          onLeave={onLeave}
+        />
       </div>
     </div>
   );
@@ -114,7 +128,21 @@ function HeaderBtn({
   );
 }
 
-function ChannelMoreMenu({ channel }: { channel: ChatChannel }) {
+function ChannelMoreMenu({
+  channel, onPinChannel, onMarkRead, onLeave,
+}: {
+  channel: ChatChannel;
+  onPinChannel: () => void;
+  onMarkRead: () => void;
+  onLeave: () => void;
+}) {
+  const copyLink = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      const url = `${window.location.origin}/inbox?channel=${channel.id}`;
+      navigator.clipboard.writeText(url).catch(() => undefined);
+    }
+    toast.success("Link copied to clipboard");
+  };
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -131,12 +159,19 @@ function ChannelMoreMenu({ channel }: { channel: ChatChannel }) {
           sideOffset={6}
           className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-52 z-50"
         >
-          <Item label="Copy link" onSelect={() => toast.success("Link copied to clipboard")} />
-          <Item label={channel.isPinned ? "Unpin from sidebar" : "Pin to sidebar"} onSelect={() => toast(`${channel.name} ${channel.isPinned ? "unpinned" : "pinned"}`)} />
-          <Item label="Mark all as read" onSelect={() => toast.success("Marked as read")} />
+          <Item label="Copy link" onSelect={copyLink} />
+          <Item
+            label={channel.isPinned ? "Unpin from sidebar" : "Pin to sidebar"}
+            onSelect={() => { onPinChannel(); toast(`${channel.name} ${channel.isPinned ? "unpinned" : "pinned"}`); }}
+          />
+          <Item label="Mark all as read" onSelect={() => { onMarkRead(); toast.success("Marked as read"); }} />
           <Item label="Channel settings" onSelect={() => toast.info("Settings coming soon")} />
           <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
-          <Item label={channel.kind === "channel" ? "Leave channel" : "Close conversation"} onSelect={() => toast(`Left ${channel.name}`)} danger />
+          <Item
+            label={channel.kind === "channel" ? "Leave channel" : "Close conversation"}
+            onSelect={() => { onLeave(); toast(`Left ${channel.name}`); }}
+            danger
+          />
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
