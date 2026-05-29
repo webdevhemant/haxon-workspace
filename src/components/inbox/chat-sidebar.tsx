@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { Search, Plus, Edit3, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
@@ -10,9 +11,10 @@ interface Props {
   channels: ChatChannel[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  onNewMessage?: () => void;
 }
 
-export function ChatSidebar({ channels, activeId, onSelect }: Props) {
+export function ChatSidebar({ channels, activeId, onSelect, onNewMessage }: Props) {
   const [tab, setTab] = useState<ChatSidebarTab>("all");
   const [query, setQuery] = useState("");
   const [openSection, setOpenSection] = useState<Record<string, boolean>>({
@@ -52,6 +54,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
           </div>
           <button
             title="New message"
+            onClick={() => (onNewMessage ? onNewMessage() : toast.info("Compose coming soon"))}
             className="w-6 h-6 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             <Edit3 className="w-3.5 h-3.5" />
@@ -95,7 +98,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
           count={channelGroup.length}
           open={openSection.channels}
           onToggle={() => setOpenSection((s) => ({ ...s, channels: !s.channels }))}
-          onAdd={() => undefined}
+          onAdd={() => toast.info("New shortly")}
         >
           {channelGroup.map((c) => (
             <ChatSidebarItem
@@ -112,7 +115,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
           count={dmGroup.length}
           open={openSection.dms}
           onToggle={() => setOpenSection((s) => ({ ...s, dms: !s.dms }))}
-          onAdd={() => undefined}
+          onAdd={() => toast.info("New shortly")}
         >
           {dmGroup.map((c) => (
             <ChatSidebarItem

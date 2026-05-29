@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
+import { toast } from "sonner";
 import { format, parseISO, differenceInMinutes } from "date-fns";
 import {
   X, Clock, MapPin, Video, Repeat, Calendar as CalendarIcon, ExternalLink, Check, MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { UserHoverCard } from "@/components/ui/user-hover-card";
 import { USERS } from "@/data/dummy-users";
 import type { CalendarEvent, CalendarEventAttendee } from "@/types";
 import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL } from "./event-style";
@@ -98,13 +100,23 @@ export function EventDetailModal({ event, open, onClose }: Props) {
               )}
               {event.videoLink && (
                 <Row icon={<Video className="w-3.5 h-3.5" />}>
-                  <a
-                    href={event.videoLink}
-                    onClick={(e) => e.preventDefault()}
+                  <button
+                    onClick={() => toast.success("Joining call…")}
                     className="text-blue-600 dark:text-blue-400 hover:underline truncate"
                   >
                     {event.videoLink.replace(/^https?:\/\//, "")}
-                  </a>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (typeof navigator !== "undefined" && navigator.clipboard) {
+                        navigator.clipboard.writeText(event.videoLink!).catch(() => undefined);
+                      }
+                      toast.success("Link copied");
+                    }}
+                    className="ml-2 text-[10.5px] uppercase tracking-wider text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  >
+                    Copy
+                  </button>
                 </Row>
               )}
             </div>
@@ -144,14 +156,18 @@ export function EventDetailModal({ event, open, onClose }: Props) {
                   if (!u) return null;
                   return (
                     <div key={a.userId} className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900">
-                      <UserAvatar user={u} size={24} />
+                      <UserHoverCard user={u} side="right">
+                        <UserAvatar user={u} size={24} />
+                      </UserHoverCard>
                       <div className="flex-1 min-w-0">
-                        <div className="text-[12.5px] font-medium text-gray-900 dark:text-white truncate">
-                          {u.name}
-                          {u.id === event.ownerId && (
-                            <span className="ml-1.5 text-[10px] font-medium text-gray-400">Organizer</span>
-                          )}
-                        </div>
+                        <UserHoverCard user={u} side="right">
+                          <div className="text-[12.5px] font-medium text-gray-900 dark:text-white truncate cursor-pointer hover:underline">
+                            {u.name}
+                            {u.id === event.ownerId && (
+                              <span className="ml-1.5 text-[10px] font-medium text-gray-400">Organizer</span>
+                            )}
+                          </div>
+                        </UserHoverCard>
                       </div>
                       <RsvpChip rsvp={a.rsvp} />
                     </div>
@@ -164,16 +180,17 @@ export function EventDetailModal({ event, open, onClose }: Props) {
               <Section title="Linked">
                 <div className="space-y-1">
                   {event.attachments.map((att, i) => (
-                    <div
+                    <button
                       key={i}
-                      className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer"
+                      onClick={() => toast.info(`Opening ${att.title}…`)}
+                      className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900 cursor-pointer text-left"
                     >
                       <span>{att.emoji ?? "📄"}</span>
                       <span className="flex-1 text-[12.5px] font-medium text-gray-800 dark:text-gray-200 truncate">
                         {att.title}
                       </span>
                       <ExternalLink className="w-3 h-3 text-gray-300 dark:text-gray-600" />
-                    </div>
+                    </button>
                   ))}
                 </div>
               </Section>

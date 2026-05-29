@@ -1,6 +1,7 @@
 "use client";
 import { MessageSquare } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { UserHoverCard } from "@/components/ui/user-hover-card";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types";
@@ -40,7 +41,9 @@ export function ChatMessageRow({
     >
       <div className="w-9 flex-shrink-0 flex justify-center pt-0.5">
         {showHeader ? (
-          <UserAvatar user={author} size={32} />
+          <UserHoverCard user={author}>
+            <UserAvatar user={author} size={32} />
+          </UserHoverCard>
         ) : (
           <span className="text-[10px] text-gray-300 dark:text-gray-700 opacity-0 group-hover:opacity-100 tabular-nums select-none mt-1">
             {message.at}
@@ -51,9 +54,11 @@ export function ChatMessageRow({
       <div className="flex-1 min-w-0">
         {showHeader && (
           <div className="flex items-baseline gap-2 mb-0.5">
-            <span className="text-[13px] font-semibold text-gray-900 dark:text-white">
-              {author.name}
-            </span>
+            <UserHoverCard user={author}>
+              <span className="text-[13px] font-semibold text-gray-900 dark:text-white cursor-pointer hover:underline">
+                {author.name}
+              </span>
+            </UserHoverCard>
             <span className="text-[10.5px] text-gray-400 dark:text-gray-500 tabular-nums">
               {message.at}
             </span>
@@ -93,6 +98,11 @@ export function ChatMessageRow({
       <ChatMessageToolbar
         onReact={(e) => onReact?.(message.id, e)}
         onOpenThread={() => onOpenThread?.(message)}
+        onCopy={() => {
+          if (typeof navigator !== "undefined" && navigator.clipboard) {
+            navigator.clipboard.writeText(message.text).catch(() => undefined);
+          }
+        }}
       />
     </div>
   );

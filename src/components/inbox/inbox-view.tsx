@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
 import { ChatSidebar } from "./chat-sidebar";
@@ -56,6 +57,8 @@ export default function InboxView() {
                 channel={activeChannel}
                 infoOpen={infoOpen}
                 onToggleInfo={() => setInfoOpen((v) => !v)}
+                onSearch={() => toast.info("Channel search coming soon")}
+                onPinned={() => { setInfoOpen(true); }}
               />
               <ChatThread
                 channel={activeChannel}
