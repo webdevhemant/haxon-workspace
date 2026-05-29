@@ -100,6 +100,50 @@ export interface ActivityItem {
   icon: string;
 }
 
+export type ChatChannelKind = "channel" | "dm";
+
+export interface ChatChannel {
+  id: string;
+  kind: ChatChannelKind;
+  name: string;
+  topic?: string;
+  emoji?: string;
+  memberIds: string[];
+  unread: number;
+  isPinned?: boolean;
+  isMuted?: boolean;
+  isPrivate?: boolean;
+  lastActivityAt: string;
+}
+
+export interface ChatAttachment {
+  kind: "doc" | "board" | "link" | "image";
+  title: string;
+  subtitle?: string;
+  href?: string;
+  emoji?: string;
+}
+
+export interface ChatReaction {
+  emoji: string;
+  userIds: string[];
+}
+
+export interface ChatMessage {
+  id: string;
+  channelId: string;
+  userId: string;
+  text: string;
+  at: string;
+  edited?: boolean;
+  attachments?: ChatAttachment[];
+  reactions?: ChatReaction[];
+  replyToId?: string;
+  threadCount?: number;
+  pinned?: boolean;
+  system?: boolean;
+}
+
 export type ModalConfig =
   | { type: "delete"; id?: string; kind: string; name: string }
   | { type: "duplicate"; id?: string; kind: string; name: string }
