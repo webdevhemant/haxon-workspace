@@ -100,6 +100,31 @@ export interface ActivityItem {
   icon: string;
 }
 
+export type CalendarEventType = "meeting" | "deadline" | "social" | "focus" | "ooo";
+
+export interface CalendarEventAttendee {
+  userId: string;
+  rsvp: "yes" | "no" | "maybe" | "pending";
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  type: CalendarEventType;
+  startISO: string;
+  endISO: string;
+  allDay?: boolean;
+  location?: string;
+  videoLink?: string;
+  ownerId: string;
+  attendees: CalendarEventAttendee[];
+  description?: string;
+  agenda?: string[];
+  attachments?: { kind: "doc" | "board" | "link"; title: string; emoji?: string }[];
+  priority?: "Urgent" | "High" | "Medium" | "Low" | "None";
+  recurring?: string;
+}
+
 export interface TeamMemberProfile {
   userId: string;
   title: string;

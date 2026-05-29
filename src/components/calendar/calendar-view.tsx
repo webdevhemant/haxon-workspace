@@ -1,75 +1,50 @@
 "use client";
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Plus, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsRight, Clock, Plus } from "lucide-react";
+import { parseISO } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
 import { Topbar, Breadcrumb, IconBtn } from "@/components/layout/topbar";
-import { PriorityBadge } from "@/components/ui/priority-badge";
-import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
-import { USERS } from "@/data/dummy-users";
-import { cn } from "@/lib/utils";
-import type { GridRow } from "@/types";
+import { EVENTS } from "@/data/dummy-events";
+import type { CalendarEvent } from "@/types";
+import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL } from "./event-style";
+import { MonthGrid } from "./month-grid";
+import { UpcomingList } from "./upcoming-list";
+import { EventDetailModal } from "./event-detail-modal";
 
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTH_ABBR: Record<string, number> = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
 
-function parseDueDate(str: string): Date | null {
-  if (!str || str === "—") return null;
-  const parts = str.trim().split(" ");
-  if (parts.length === 2) {
-    const m = MONTH_ABBR[parts[0]];
-    const d = parseInt(parts[1]);
-    if (m !== undefined && !isNaN(d)) return new Date(2026, m, d);
-  }
-  return null;
-}
-
-interface CalEvent {
-  id: string;
-  title: string;
-  date: Date;
-  priority: "Urgent" | "High" | "Medium" | "Low" | "None";
-  assigneeId: string;
-  type: "grid" | "card";
-}
+const DEFAULT_DATE = new Date(2026, 4, 28);
 
 export default function CalendarView() {
-  const today = new Date();
+  const today = DEFAULT_DATE;
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const { boards, workspaces, activeWorkspaceId } = useAppStore();
+  const [selected, setSelected] = useState<CalendarEvent | null>(null);
+  const [upcomingOpen, setUpcomingOpen] = useState(true);
+  const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
 
-  const events = useMemo<CalEvent[]>(() => {
-    const result: CalEvent[] = [];
-    boards.filter((b) => b.workspaceId === activeWorkspaceId).forEach((board) => {
-      board.columns.forEach((col) => {
-        col.cards.forEach((card) => {
-          const d = parseDueDate(card.dueDate);
-          if (d) result.push({ id: card.id, title: card.title, date: d, priority: card.priority, assigneeId: card.assigneeId, type: "card" });
-        });
-      });
-    });
+  const upcoming = useMemo(() => {
+    return [...EVENTS]
+      .filter((e) => parseISO(e.startISO).getTime() >= today.getTime())
+      .sort((a, b) => parseISO(a.startISO).getTime() - parseISO(b.startISO).getTime())
+      .slice(0, 8);
+  }, [today]);
+
+  const typeCounts = useMemo(() => {
+    const result: Record<string, number> = {};
+    for (const e of EVENTS) {
+      result[e.type] = (result[e.type] ?? 0) + 1;
+    }
     return result;
-  }, [boards, activeWorkspaceId]);
+  }, []);
 
-  const eventsInMonth = events.filter((e) => e.date.getFullYear() === year && e.date.getMonth() === month);
-  const upcoming = events
-    .filter((e) => e.date >= today)
-    .sort((a, b) => a.date.getTime() - b.date.getTime())
-    .slice(0, 10);
-
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
-
-  const prevMonth = () => { if (month === 0) { setMonth(11); setYear(y => y - 1); } else setMonth(m => m - 1); };
-  const nextMonth = () => { if (month === 11) { setMonth(0); setYear(y => y + 1); } else setMonth(m => m + 1); };
-
-  const eventsOnDay = (day: number) => eventsInMonth.filter((e) => e.date.getDate() === day);
-
-  const isToday = (day: number) => today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+  const prevMonth = () => { if (month === 0) { setMonth(11); setYear((y) => y - 1); } else setMonth((m) => m - 1); };
+  const nextMonth = () => { if (month === 11) { setMonth(0); setYear((y) => y + 1); } else setMonth((m) => m + 1); };
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -83,16 +58,33 @@ export default function CalendarView() {
       />
 
       <div className="flex flex-1 min-h-0 overflow-hidden">
-        {/* Calendar grid */}
         <div className="flex-1 overflow-y-auto p-4">
-          {/* Month nav */}
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <div className="flex items-center gap-3">
               <h2 className="text-xl font-bold tracking-tight">{MONTHS[month]} {year}</h2>
-              <button onClick={() => { setMonth(today.getMonth()); setYear(today.getFullYear()); }}
-                className="px-2.5 py-1 text-xs font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors">
+              <button
+                onClick={() => { setMonth(today.getMonth()); setYear(today.getFullYear()); }}
+                className="px-2.5 py-1 text-xs font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors"
+              >
                 Today
               </button>
+              <div className="hidden md:flex items-center gap-2 ml-2">
+                {(Object.keys(EVENT_TYPE_LABEL) as (keyof typeof EVENT_TYPE_LABEL)[]).map((t) => {
+                  const c = EVENT_TYPE_COLOR[t];
+                  return (
+                    <span
+                      key={t}
+                      className="inline-flex items-center gap-1 text-[10.5px] text-gray-500 dark:text-gray-400"
+                    >
+                      <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: c.dot }} />
+                      {EVENT_TYPE_LABEL[t]}
+                      <span className="text-gray-300 dark:text-gray-600 tabular-nums">
+                        {typeCounts[t] ?? 0}
+                      </span>
+                    </span>
+                  );
+                })}
+              </div>
             </div>
             <div className="flex items-center gap-1">
               <IconBtn icon={<ChevronLeft className="w-4 h-4" />} tooltip="Previous month" onClick={prevMonth} />
@@ -100,109 +92,70 @@ export default function CalendarView() {
             </div>
           </div>
 
-          {/* Day headers */}
-          <div className="grid grid-cols-7 mb-1">
-            {DAYS.map((d) => (
-              <div key={d} className="py-2 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider">{d}</div>
-            ))}
-          </div>
-
-          {/* Calendar cells */}
-          <div className="grid grid-cols-7 border-l border-t border-gray-100 dark:border-gray-800">
-            {Array.from({ length: totalCells }).map((_, i) => {
-              const day = i - firstDay + 1;
-              const isCurrentMonth = day >= 1 && day <= daysInMonth;
-              const dayEvents = isCurrentMonth ? eventsOnDay(day) : [];
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: i * 0.005 }}
-                  className={cn(
-                    "min-h-[88px] border-r border-b border-gray-100 dark:border-gray-800 p-2",
-                    !isCurrentMonth && "bg-gray-50/50 dark:bg-gray-900/30",
-                  )}
-                >
-                  {isCurrentMonth && (
-                    <>
-                      <div className={cn(
-                        "w-7 h-7 flex items-center justify-center text-sm font-medium rounded-full mb-1.5 transition-colors",
-                        isToday(day)
-                          ? "bg-orange-500 text-white font-bold"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer",
-                      )}>
-                        {day}
-                      </div>
-                      <div className="space-y-0.5">
-                        {dayEvents.slice(0, 3).map((ev) => (
-                          <div key={ev.id}
-                            className={cn(
-                              "px-1.5 py-0.5 rounded text-[10px] font-medium truncate",
-                              ev.priority === "Urgent" ? "bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 font-semibold"
-                                : ev.priority === "High" ? "bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400"
-                                  : ev.priority === "Medium" ? "bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-400"
-                                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-                            )}>
-                            {ev.title}
-                          </div>
-                        ))}
-                        {dayEvents.length > 3 && (
-                          <button className="text-[10px] text-gray-400 hover:text-orange-500 px-1.5 transition-colors">+{dayEvents.length - 3} more</button>
-                        )}
-                      </div>
-                    </>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+          <MonthGrid
+            year={year}
+            month={month}
+            today={today}
+            events={EVENTS}
+            onEventClick={(ev) => setSelected(ev)}
+            onDayClick={() => undefined}
+          />
         </div>
 
-        {/* Upcoming sidebar */}
-        <div className="w-64 flex-shrink-0 border-l border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
-          <div className="px-3 py-3 border-b border-gray-100 dark:border-gray-800">
-            <div className="text-sm font-bold">Upcoming</div>
-            <div className="text-xs text-gray-400 mt-0.5">Next due dates</div>
-          </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-1.5 max-h-[calc(100vh-200px)]">
-            {upcoming.length === 0 ? (
-              <div className="text-center py-8 text-xs text-gray-400">
-                <Clock className="w-6 h-6 mx-auto mb-2 opacity-40" />
-                No upcoming items
-              </div>
-            ) : upcoming.map((ev, i) => {
-              const assignee = USERS.find((u) => u.id === ev.assigneeId);
-              const diffMs = ev.date.getTime() - today.getTime();
-              const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-              const label = diffDays === 0 ? "Today" : diffDays === 1 ? "Tomorrow" : `${diffDays}d`;
-              return (
-                <motion.div
-                  key={ev.id}
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="p-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer"
-                >
-                  <div className="text-xs font-medium text-gray-900 dark:text-white truncate mb-1.5">{ev.title}</div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
-                      {assignee && <UserAvatar user={assignee} size={16} />}
-                      <PriorityBadge priority={ev.priority} />
-                    </div>
-                    <span className={cn(
-                      "text-[10px] font-semibold px-1.5 py-0.5 rounded-full",
-                      diffDays <= 1 ? "bg-red-50 dark:bg-red-950 text-red-500" : diffDays <= 3 ? "bg-orange-50 dark:bg-orange-950 text-orange-500" : "bg-gray-50 dark:bg-gray-800 text-gray-400",
-                    )}>
-                      {label}
-                    </span>
+        <AnimatePresence initial={false} mode="popLayout">
+          {upcomingOpen ? (
+            <motion.aside
+              key="open"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 288, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+              className="flex-shrink-0 border-l border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden"
+            >
+              <div className="w-72 flex flex-col h-full">
+                <div className="px-3 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center">
+                  <div className="flex-1">
+                    <div className="text-sm font-bold">Upcoming</div>
+                    <div className="text-xs text-gray-400 mt-0.5">Next on your calendar</div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+                  <button
+                    onClick={() => setUpcomingOpen(false)}
+                    title="Collapse"
+                    className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <ChevronsRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-3">
+                  <UpcomingList events={upcoming} today={today} onSelect={setSelected} />
+                </div>
+              </div>
+            </motion.aside>
+          ) : (
+            <motion.button
+              key="collapsed"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 36, opacity: 1 }}
+              exit={{ width: 0, opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              onClick={() => setUpcomingOpen(true)}
+              title="Show upcoming"
+              className="flex-shrink-0 border-l border-gray-200 dark:border-gray-800 flex flex-col items-center justify-start py-3 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-colors"
+            >
+              <Clock className="w-4 h-4" />
+              <span className="mt-2 text-[10px] font-semibold uppercase tracking-widest [writing-mode:vertical-rl] rotate-180">
+                Upcoming
+              </span>
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
+
+      <EventDetailModal
+        event={selected}
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+      />
     </div>
   );
 }
