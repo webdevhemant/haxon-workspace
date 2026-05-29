@@ -9,13 +9,9 @@ import { EVENTS } from "@/data/dummy-events";
 import type { CalendarEvent } from "@/types";
 import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL } from "./event-style";
 import { MonthGrid } from "./month-grid";
+import { MonthJumpPopover } from "./month-jump-popover";
 import { UpcomingList } from "./upcoming-list";
 import { EventDetailModal } from "./event-detail-modal";
-
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 const DEFAULT_DATE = new Date(2026, 4, 28);
 
@@ -61,7 +57,13 @@ export default function CalendarView() {
         <div className="flex-1 overflow-y-auto p-4">
           <div className="flex items-center justify-between mb-4 flex-shrink-0">
             <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold tracking-tight">{MONTHS[month]} {year}</h2>
+              <MonthJumpPopover
+                month={month}
+                year={year}
+                todayMonth={today.getMonth()}
+                todayYear={today.getFullYear()}
+                onJump={(y, m) => { setYear(y); setMonth(m); }}
+              />
               <button
                 onClick={() => { setMonth(today.getMonth()); setYear(today.getFullYear()); }}
                 className="px-2.5 py-1 text-xs font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors"

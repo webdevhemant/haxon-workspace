@@ -41,9 +41,7 @@ export function ChatMessageRow({
     >
       <div className="w-9 flex-shrink-0 flex justify-center pt-0.5">
         {showHeader ? (
-          <UserHoverCard user={author}>
-            <UserAvatar user={author} size={32} />
-          </UserHoverCard>
+          <UserAvatar user={author} size={32} />
         ) : (
           <span className="text-[10px] text-gray-300 dark:text-gray-700 opacity-0 group-hover:opacity-100 tabular-nums select-none mt-1">
             {message.at}

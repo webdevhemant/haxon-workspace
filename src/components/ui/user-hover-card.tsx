@@ -3,7 +3,6 @@ import { useState, useRef, type ReactNode } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { toast } from "sonner";
 import { MessageSquare, MapPin, Clock, UserCircle } from "lucide-react";
-import { UserAvatar } from "./user-avatar";
 import { PresenceDot } from "./presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import { profileFor } from "@/data/dummy-team";
@@ -43,7 +42,7 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
           onMouseLeave={hide}
           onFocus={show}
           onBlur={hide}
-          className="inline-flex"
+          style={{ display: "inline-flex" }}
         >
           {children}
         </span>
@@ -66,7 +65,12 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
               <div className="flex items-end gap-2">
                 <div className="relative">
                   <div className="rounded-full ring-4 ring-white dark:ring-gray-950">
-                    <UserAvatar user={user} size={48} />
+                    <div
+                      className="inline-flex items-center justify-center rounded-full font-semibold text-white select-none"
+                      style={{ width: 48, height: 48, background: user.color, fontSize: 48 * 0.38 }}
+                    >
+                      {user.initials}
+                    </div>
                   </div>
                   <PresenceDot
                     presence={presence}

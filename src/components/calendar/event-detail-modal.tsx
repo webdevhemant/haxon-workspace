@@ -156,11 +156,9 @@ export function EventDetailModal({ event, open, onClose }: Props) {
                   if (!u) return null;
                   return (
                     <div key={a.userId} className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900">
-                      <UserHoverCard user={u} side="right">
-                        <UserAvatar user={u} size={24} />
-                      </UserHoverCard>
+                      <UserAvatar user={u} size={24} />
                       <div className="flex-1 min-w-0">
-                        <UserHoverCard user={u} side="right">
+                        <UserHoverCard user={u}>
                           <div className="text-[12.5px] font-medium text-gray-900 dark:text-white truncate cursor-pointer hover:underline">
                             {u.name}
                             {u.id === event.ownerId && (

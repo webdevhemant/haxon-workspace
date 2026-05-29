@@ -1,16 +1,22 @@
 "use client";
 import { cn } from "@/lib/utils";
 import type { User } from "@/types";
+import { UserHoverCard } from "./user-hover-card";
+
+type AvatarUser =
+  | Pick<User, "initials" | "color" | "name">
+  | Pick<User, "id" | "initials" | "color" | "name" | "email" | "role">;
 
 interface Props {
-  user?: Pick<User, "initials" | "color" | "name"> | null;
+  user?: AvatarUser | null;
   size?: number;
   className?: string;
+  hoverCard?: boolean;
 }
 
-export function UserAvatar({ user, size = 32, className }: Props) {
+export function UserAvatar({ user, size = 32, className, hoverCard = true }: Props) {
   if (!user) return null;
-  return (
+  const avatar = (
     <div
       className={cn("inline-flex items-center justify-center rounded-full font-semibold text-white flex-shrink-0 select-none", className)}
       style={{ width: size, height: size, background: user.color, fontSize: size * 0.38 }}
@@ -19,6 +25,15 @@ export function UserAvatar({ user, size = 32, className }: Props) {
       {user.initials}
     </div>
   );
+  if (hoverCard && isFullUser(user)) {
+    return <UserHoverCard user={user}>{avatar}</UserHoverCard>;
+  }
+  return avatar;
+}
+
+function isFullUser(u: Props["user"]): u is User {
+  if (!u) return false;
+  return Boolean((u as User).id) && Boolean((u as User).email) && Boolean((u as User).role);
 }
 
 export function AvatarGroup({ users, size = 28, max = 4 }: { users: Pick<User, "initials" | "color" | "name">[]; size?: number; max?: number }) {
