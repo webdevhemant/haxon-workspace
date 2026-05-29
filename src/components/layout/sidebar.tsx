@@ -216,6 +216,20 @@ export function Sidebar() {
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
+        {/* Workspace stats */}
+        <div className="px-3 py-1.5 flex items-center gap-3">
+          {[
+            { val: "48", label: "Docs" },
+            { val: "6", label: "Boards" },
+            { val: "12", label: "Members" },
+          ].map(s => (
+            <div key={s.label} className="flex items-center gap-1 text-[10px]">
+              <span className="font-semibold text-gray-700 dark:text-gray-300">{s.val}</span>
+              <span className="text-gray-400">{s.label}</span>
+            </div>
+          ))}
+        </div>
+
         {/* Search */}
         <div className="px-2 pb-1.5">
           <button
@@ -234,7 +248,7 @@ export function Sidebar() {
               { icon: <Home className="w-3.5 h-3.5" />, label: "Dashboard", href: "/dashboard" },
               { icon: <Inbox className="w-3.5 h-3.5" />, label: "Inbox", badge: "3", href: "/inbox" },
               { icon: <Calendar className="w-3.5 h-3.5" />, label: "Calendar", href: "/calendar" },
-              { icon: <Users className="w-3.5 h-3.5" />, label: "Team", href: "/settings/members" },
+              { icon: <Users className="w-3.5 h-3.5" />, label: "Team", href: "/team" },
             ].map((item) => (
               <SItem key={item.label} icon={item.icon} label={item.label} badge={item.badge}
                 active={pathname === item.href}
@@ -312,6 +326,10 @@ export function Sidebar() {
         {/* Bottom */}
         <div className="px-1 py-1 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg px-2 py-1.5">
+            <div className="flex items-center gap-1 text-[10px] text-gray-400 mr-auto">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+              3 online
+            </div>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button className="flex items-center gap-2 flex-1 min-w-0 px-1.5 py-1 rounded-lg hover:bg-gray-200/60 dark:hover:bg-gray-700/60 transition-colors text-left">

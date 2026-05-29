@@ -5,7 +5,8 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
 import type { ChatChannel, ChatMessage } from "@/types";
-import { PresenceDot, presenceFor, PRESENCE_LABEL } from "./chat-presence";
+import { PresenceDot } from "@/components/ui/presence-dot";
+import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 
 interface Props {
   channel: ChatChannel;

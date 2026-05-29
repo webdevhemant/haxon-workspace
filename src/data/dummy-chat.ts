@@ -107,7 +107,7 @@ export const CHANNELS: ChatChannel[] = [
 ];
 
 export const MESSAGES: ChatMessage[] = [
-  // ── #product ────────────────────────────────────────────────────────────────
+
   {
     id: "m-p1",
     channelId: "c-product",
@@ -164,7 +164,7 @@ export const MESSAGES: ChatMessage[] = [
     threadCount: 5,
   },
 
-  // ── #general ────────────────────────────────────────────────────────────────
+
   {
     id: "m-g1",
     channelId: "c-general",
@@ -203,7 +203,7 @@ export const MESSAGES: ChatMessage[] = [
     threadCount: 2,
   },
 
-  // ── #engineering ────────────────────────────────────────────────────────────
+
   {
     id: "m-e1",
     channelId: "c-engineering",
@@ -227,7 +227,7 @@ export const MESSAGES: ChatMessage[] = [
     at: "8:47 AM",
   },
 
-  // ── #design ─────────────────────────────────────────────────────────────────
+
   {
     id: "m-d1",
     channelId: "c-design",
@@ -247,7 +247,7 @@ export const MESSAGES: ChatMessage[] = [
     at: "Yesterday",
   },
 
-  // ── DM with Diego ───────────────────────────────────────────────────────────
+
   {
     id: "m-dm2-1",
     channelId: "dm-u2",
@@ -280,7 +280,7 @@ export const MESSAGES: ChatMessage[] = [
     at: "9:58 AM",
   },
 
-  // ── DM with Priya ───────────────────────────────────────────────────────────
+
   {
     id: "m-dm3-1",
     channelId: "dm-u3",
@@ -296,7 +296,7 @@ export const MESSAGES: ChatMessage[] = [
     at: "Yesterday",
   },
 
-  // ── DM with Jordan ──────────────────────────────────────────────────────────
+
   {
     id: "m-dm4-1",
     channelId: "dm-u4",
@@ -308,7 +308,7 @@ export const MESSAGES: ChatMessage[] = [
     ],
   },
 
-  // ── DM with Sana ────────────────────────────────────────────────────────────
+
   {
     id: "m-dm5-1",
     channelId: "dm-u5",
@@ -320,7 +320,7 @@ export const MESSAGES: ChatMessage[] = [
     ],
   },
 
-  // ── DM with Theo ────────────────────────────────────────────────────────────
+
   {
     id: "m-dm6-1",
     channelId: "dm-u6",

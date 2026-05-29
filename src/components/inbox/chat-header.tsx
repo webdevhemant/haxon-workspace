@@ -4,7 +4,8 @@ import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
-import { PresenceDot, presenceFor, PRESENCE_LABEL } from "./chat-presence";
+import { PresenceDot } from "@/components/ui/presence-dot";
+import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import { CURRENT_USER_ID } from "./constants";
 
 interface Props {
@@ -23,7 +24,7 @@ export function ChatHeader({ channel, onToggleInfo, infoOpen }: Props) {
 
   return (
     <div className="flex items-center gap-3 px-4 h-12 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950 flex-shrink-0">
-      {/* Title */}
+
       <div className="flex items-center gap-2 min-w-0 flex-1">
         {isDM && other ? (
           <div className="relative">
@@ -54,7 +55,7 @@ export function ChatHeader({ channel, onToggleInfo, infoOpen }: Props) {
         </div>
       </div>
 
-      {/* Actions */}
+
       <div className="flex items-center gap-0.5 flex-shrink-0">
         {!isDM && (
           <div className="hidden sm:flex items-center mr-1.5">

@@ -100,6 +100,23 @@ export interface ActivityItem {
   icon: string;
 }
 
+export interface TeamMemberProfile {
+  userId: string;
+  title: string;
+  team: string;
+  location: string;
+  timezone: string;
+  workingHours: string;
+  bio: string;
+  skills: string[];
+  startedAt: string;
+  projects: { name: string; emoji: string; href?: string }[];
+  links?: { label: string; href: string }[];
+  pronouns?: string;
+  manager?: string;
+  recentActivity?: { at: string; verb: string; target: string }[];
+}
+
 export type ChatChannelKind = "channel" | "dm";
 
 export interface ChatChannel {

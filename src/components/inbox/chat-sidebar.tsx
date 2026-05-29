@@ -37,7 +37,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
 
   return (
     <aside className="w-[272px] flex-shrink-0 flex flex-col border-r border-gray-100 dark:border-gray-800 bg-[#FAFAFA] dark:bg-[#0F1117]">
-      {/* Header */}
+
       <div className="px-3 pt-3 pb-2">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
           </button>
         </div>
 
-        {/* Search */}
+
         <div className="flex items-center gap-1.5 h-7 px-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md text-xs mb-2">
           <Search className="w-3 h-3 text-gray-400 flex-shrink-0" />
           <input
@@ -69,7 +69,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
           />
         </div>
 
-        {/* Pill tabs */}
+
         <div className="flex items-center gap-1">
           {SIDEBAR_TABS.map((t) => (
             <button
@@ -88,7 +88,7 @@ export function ChatSidebar({ channels, activeId, onSelect }: Props) {
         </div>
       </div>
 
-      {/* Lists */}
+
       <div className="flex-1 overflow-y-auto px-2 pb-3">
         <SidebarSection
           title="Channels"

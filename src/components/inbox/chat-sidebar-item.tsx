@@ -4,7 +4,8 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
-import { PresenceDot, presenceFor } from "./chat-presence";
+import { PresenceDot } from "@/components/ui/presence-dot";
+import { presenceFor } from "@/data/dummy-presence";
 import { CURRENT_USER_ID } from "./constants";
 
 interface Props {
@@ -29,7 +30,7 @@ export function ChatSidebarItem({ channel, active, onSelect }: Props) {
           : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800",
       )}
     >
-      {/* Leading icon / avatar */}
+
       <span className="flex-shrink-0 relative">
         {isDM && other ? (
           <>
