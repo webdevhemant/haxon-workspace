@@ -16,6 +16,7 @@ export default function VerifyForm() {
 
   return (
     <AuthShell
+      variant="verify-email"
       title="You're all set!"
       subtitle="Your workspace is ready. Let's get you started."
       footer={

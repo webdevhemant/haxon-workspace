@@ -40,6 +40,7 @@ export default function LoginForm() {
 
   return (
     <AuthShell
+      variant="login"
       title="Welcome back"
       subtitle="Sign in to your Haxon workspace."
       footer={

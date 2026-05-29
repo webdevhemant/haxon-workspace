@@ -40,6 +40,7 @@ export default function SignupForm() {
 
   return (
     <AuthShell
+      variant="signup"
       title="Create your workspace"
       subtitle="Free forever for up to 3 people. No credit card required."
       footer={
