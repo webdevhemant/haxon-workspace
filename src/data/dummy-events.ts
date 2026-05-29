@@ -34,9 +34,7 @@ export const EVENTS: CalendarEvent[] = [
       "AI streaming preview — Maya",
       "Q&A",
     ],
-    attachments: [
-      { kind: "doc", title: "Q3 Product Strategy", emoji: "📘" },
-    ],
+    attachments: [{ kind: "doc", title: "Q3 Product Strategy", emoji: "📘" }],
     recurring: "Bi-weekly",
   },
   {
@@ -53,8 +51,14 @@ export const EVENTS: CalendarEvent[] = [
       { userId: "u5", rsvp: "yes" },
       { userId: "u3", rsvp: "maybe" },
     ],
-    description: "Weekly sync between product and design. Review last week's ships, walk through next sprint's priorities.",
-    agenda: ["Last week recap", "Editor empty states review", "Pricing matrix UX", "Open questions"],
+    description:
+      "Weekly sync between product and design. Review last week's ships, walk through next sprint's priorities.",
+    agenda: [
+      "Last week recap",
+      "Editor empty states review",
+      "Pricing matrix UX",
+      "Open questions",
+    ],
     recurring: "Weekly",
   },
   {
@@ -88,7 +92,8 @@ export const EVENTS: CalendarEvent[] = [
       { userId: "u4", rsvp: "yes" },
       { userId: "u6", rsvp: "yes" },
     ],
-    description: "Final pass on the Sync Engine v2 RFC. Focus on rollback strategy and load-test methodology.",
+    description:
+      "Final pass on the Sync Engine v2 RFC. Focus on rollback strategy and load-test methodology.",
     agenda: ["Vector clock recap", "Rollback strategy", "Load testing plan", "Open issues"],
     attachments: [{ kind: "doc", title: "Engineering RFC — Sync Engine v2", emoji: "📐" }],
   },
@@ -104,7 +109,8 @@ export const EVENTS: CalendarEvent[] = [
       { userId: "u1", rsvp: "yes" },
       { userId: "u5", rsvp: "yes" },
     ],
-    description: "Workshop: re-align voice & tone with the enterprise positioning shift. Bring examples.",
+    description:
+      "Workshop: re-align voice & tone with the enterprise positioning shift. Bring examples.",
     agenda: ["Voice principles refresh", "Enterprise tone exercises", "Doc rewrite sprint"],
   },
   {
@@ -154,7 +160,8 @@ export const EVENTS: CalendarEvent[] = [
       { userId: "u1", rsvp: "yes" },
       { userId: "u2", rsvp: "yes" },
     ],
-    description: "Discovery call with Lena's team at Atlas. Focus: permissions and audit log requirements.",
+    description:
+      "Discovery call with Lena's team at Atlas. Focus: permissions and audit log requirements.",
     agenda: ["Their workflow today", "Permissions deep-dive", "Roadmap preview", "Next steps"],
   },
   {

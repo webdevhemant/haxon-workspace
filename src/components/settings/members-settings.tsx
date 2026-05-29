@@ -7,6 +7,7 @@ import { SettingsLayout, SettingSection } from "./settings-layout";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { asRole, capabilityCount, ROLE_COLOR, ROLE_DESCRIPTIONS, ROLES, type WorkspaceRole } from "@/lib/rbac";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 interface PendingInvite {
@@ -37,11 +38,19 @@ const AUDIT_LOG: AuditEntry[] = [
 
 export default function MembersSettings() {
   const { members, openModal } = useAppStore();
+  const canInvite = useCan("members.invite");
+  const canChangeRole = useCan("members.roleChange");
+  const canRemove = useCan("members.remove");
+  const currentRole = useCurrentRole();
   const [emails, setEmails] = useState("");
   const [role, setRole] = useState<WorkspaceRole>("Member");
   const [invites, setInvites] = useState<PendingInvite[]>(SEED_INVITES);
 
   const sendInvites = () => {
+    if (!canInvite) {
+      toast.error(`Your role (${currentRole}) can't invite members`);
+      return;
+    }
     const list = emails
       .split(/[,;\n]/)
       .map((e) => e.trim())
@@ -67,24 +76,31 @@ export default function MembersSettings() {
     <SettingsLayout title="Members">
       <SettingSection
         title="Invite teammates"
-        desc="Comma- or newline-separated emails. Pick the default role for this batch."
+        desc={canInvite
+          ? "Comma- or newline-separated emails. Pick the default role for this batch."
+          : `Your role (${currentRole}) can't invite — ask an Admin or Owner.`}
       >
         <div className="flex flex-col gap-2 mb-2">
           <textarea
             value={emails}
             onChange={(e) => setEmails(e.target.value)}
-            placeholder={"colleague@company.com, kavya@company.com\nlogan@partners.io"}
+            disabled={!canInvite}
+            placeholder={canInvite
+              ? "colleague@company.com, kavya@company.com\nlogan@partners.io"
+              : "Locked by role"}
             rows={3}
-            className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-colors resize-y min-h-[68px]"
+            className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-colors resize-y min-h-[68px] disabled:bg-gray-50 dark:disabled:bg-gray-900/40 disabled:text-gray-400 disabled:cursor-not-allowed"
           />
           <div className="flex items-center gap-2">
-            <RoleDropdown value={role} onChange={setRole} />
+            <RoleDropdown value={role} onChange={setRole} disabled={!canInvite} />
             <span className="text-[11px] text-gray-400 mr-auto">
               {capabilityCount(role)} capabilities · <Link href="/settings/roles" className="text-orange-500 hover:underline">see matrix</Link>
             </span>
             <button
               onClick={sendInvites}
-              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors"
+              disabled={!canInvite}
+              title={canInvite ? "Send invites" : `Your role (${currentRole}) can't invite members`}
+              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
             >
               Send invites
             </button>
@@ -169,32 +185,47 @@ export default function MembersSettings() {
               {m.id !== "u1" && (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger asChild>
-                    <button className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors">
+                    <button className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors cursor-pointer">
                       <MoreHorizontal className="w-4 h-4" />
                     </button>
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
                     <DropdownMenu.Content
-                      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-1 w-48 z-50"
+                      className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-1 w-52 z-50"
                       sideOffset={4}
                       align="end"
                     >
                       <DropdownMenu.Item
-                        onSelect={() => toast.info("Change role flow coming soon")}
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        disabled={!canChangeRole}
+                        onSelect={() =>
+                          canChangeRole
+                            ? toast.info("Change role flow coming soon")
+                            : toast.error(`Your role (${currentRole}) can't change roles`)
+                        }
+                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
                       >
                         Change role
                       </DropdownMenu.Item>
                       <DropdownMenu.Item
-                        onSelect={() => toast.success(`Resent invite to ${m.email}`)}
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        disabled={!canInvite}
+                        onSelect={() =>
+                          canInvite
+                            ? toast.success(`Resent invite to ${m.email}`)
+                            : toast.error(`Your role (${currentRole}) can't send invites`)
+                        }
+                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
                       >
                         Resend invite link
                       </DropdownMenu.Item>
                       <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
                       <DropdownMenu.Item
-                        onSelect={() => openModal({ type: "delete", kind: "member", name: m.name })}
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                        disabled={!canRemove}
+                        onSelect={() =>
+                          canRemove
+                            ? openModal({ type: "delete", kind: "member", name: m.name })
+                            : toast.error(`Your role (${currentRole}) can't remove members`)
+                        }
+                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-red-500 hover:bg-red-50 dark:hover:bg-red-950 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
                       >
                         Remove from workspace
                       </DropdownMenu.Item>
@@ -246,12 +277,15 @@ function RoleChip({ role }: { role: WorkspaceRole }) {
 }
 
 function RoleDropdown({
-  value, onChange,
-}: { value: WorkspaceRole; onChange: (r: WorkspaceRole) => void }) {
+  value, onChange, disabled,
+}: { value: WorkspaceRole; onChange: (r: WorkspaceRole) => void; disabled?: boolean }) {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
-        <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+      <DropdownMenu.Trigger asChild disabled={disabled}>
+        <button
+          disabled={disabled}
+          className="flex items-center gap-2 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <RoleChip role={value} />
           <MoreHorizontal className="w-3.5 h-3.5 text-gray-400" />
         </button>

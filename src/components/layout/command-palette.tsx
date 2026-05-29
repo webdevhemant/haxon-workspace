@@ -57,7 +57,7 @@ export function CommandPalette() {
               <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Search className="w-4 h-4 text-gray-400 flex-shrink-0" />
                 <Command.Input
-                  placeholder="Search docs, boards, pages…"
+                  placeholder="Search anything — docs, boards, people…"
                   className="flex-1 text-sm outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400"
                 />
                 <kbd className="text-[10px] text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded font-mono">ESC</kbd>
@@ -128,8 +128,8 @@ export function CommandPalette() {
 
                 <Command.Group heading="Quick actions" className="[&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-gray-400 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5">
                   {[
-                    { icon: <FileText className="w-3.5 h-3.5" />, label: "New doc", color: "#3B82F6", href: `/workspace/${activeWorkspaceId}/doc/d1` },
-                    { icon: <Kanban className="w-3.5 h-3.5" />, label: "New board", color: "#F97316", href: `/workspace/${activeWorkspaceId}/board/b1` },
+                    { icon: <FileText className="w-3.5 h-3.5" />, label: "New doc", color: "#3B82F6", href: `/workspace/${activeWorkspaceId}/doc/d1`, shortcut: "⌘N" },
+                    { icon: <Kanban className="w-3.5 h-3.5" />, label: "New board", color: "#F97316", href: `/workspace/${activeWorkspaceId}/board/b1`, shortcut: "⌘B" },
                     { icon: <Grid3X3 className="w-3.5 h-3.5" />, label: "New grid", color: "#10B981", href: `/workspace/${activeWorkspaceId}/grid/sprint` },
                   ].map((action) => (
                     <Command.Item
@@ -142,6 +142,9 @@ export function CommandPalette() {
                         {action.icon}
                       </span>
                       {action.label}
+                      {"shortcut" in action && action.shortcut && (
+                        <kbd className="text-[10px] text-gray-400 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded font-mono ml-auto">{action.shortcut}</kbd>
+                      )}
                     </Command.Item>
                   ))}
                 </Command.Group>

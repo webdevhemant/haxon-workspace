@@ -15,6 +15,7 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { cn } from "@/lib/utils";
 import { asRole, capabilityCount, ROLE_COLOR } from "@/lib/rbac";
+import { useCan } from "@/lib/use-can";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 

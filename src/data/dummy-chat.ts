@@ -107,7 +107,6 @@ export const CHANNELS: ChatChannel[] = [
 ];
 
 export const MESSAGES: ChatMessage[] = [
-
   {
     id: "m-p1",
     channelId: "c-product",
@@ -142,7 +141,7 @@ export const MESSAGES: ChatMessage[] = [
     id: "m-p4",
     channelId: "c-product",
     userId: "u4",
-    text: "Moved \"Streaming improvements — SSE refactor\" to In Progress. Sprint ends Friday — flag me if it slips.",
+    text: 'Moved "Streaming improvements — SSE refactor" to In Progress. Sprint ends Friday — flag me if it slips.',
     at: "10:08 AM",
     attachments: [
       { kind: "board", title: "Q3 Roadmap", subtitle: "Engineering · In Progress", emoji: "🗂" },
@@ -164,7 +163,6 @@ export const MESSAGES: ChatMessage[] = [
     threadCount: 5,
   },
 
-
   {
     id: "m-g1",
     channelId: "c-general",
@@ -180,7 +178,7 @@ export const MESSAGES: ChatMessage[] = [
     id: "m-g2",
     channelId: "c-general",
     userId: "u5",
-    text: "Brand voice doc is up for review — left detailed notes on \"Casual vs. Professional\".",
+    text: 'Brand voice doc is up for review — left detailed notes on "Casual vs. Professional".',
     at: "9:14 AM",
     attachments: [
       { kind: "doc", title: "Brand voice & tone", subtitle: "3 new comments", emoji: "✍️" },
@@ -203,7 +201,6 @@ export const MESSAGES: ChatMessage[] = [
     threadCount: 2,
   },
 
-
   {
     id: "m-e1",
     channelId: "c-engineering",
@@ -211,7 +208,12 @@ export const MESSAGES: ChatMessage[] = [
     text: "Sync engine RFC v2 is out. Big change: vector clocks for conflict resolution. Reviews open till Thursday.",
     at: "Yesterday",
     attachments: [
-      { kind: "doc", title: "Engineering RFC — Sync Engine v2", subtitle: "Open for review", emoji: "📐" },
+      {
+        kind: "doc",
+        title: "Engineering RFC — Sync Engine v2",
+        subtitle: "Open for review",
+        emoji: "📐",
+      },
     ],
     reactions: [
       { emoji: "🧠", userIds: ["u4"] },
@@ -226,7 +228,6 @@ export const MESSAGES: ChatMessage[] = [
     text: "Reconnect bug fixed — 1.4s avg recovery now, was 8s+. Rolling out at 11.",
     at: "8:47 AM",
   },
-
 
   {
     id: "m-d1",
@@ -246,7 +247,6 @@ export const MESSAGES: ChatMessage[] = [
     text: "Frame 4 — the floating constellations one. Feels on-brand without being twee.",
     at: "Yesterday",
   },
-
 
   {
     id: "m-dm2-1",
@@ -280,7 +280,6 @@ export const MESSAGES: ChatMessage[] = [
     at: "9:58 AM",
   },
 
-
   {
     id: "m-dm3-1",
     channelId: "dm-u3",
@@ -296,7 +295,6 @@ export const MESSAGES: ChatMessage[] = [
     at: "Yesterday",
   },
 
-
   {
     id: "m-dm4-1",
     channelId: "dm-u4",
@@ -304,10 +302,14 @@ export const MESSAGES: ChatMessage[] = [
     text: "Assigned you AI streaming improvements. P1 this sprint. Spec linked in the card.",
     at: "8:12 AM",
     attachments: [
-      { kind: "board", title: "AI assistant — streaming improvements", subtitle: "Q3 Roadmap · In Progress", emoji: "🤖" },
+      {
+        kind: "board",
+        title: "AI assistant — streaming improvements",
+        subtitle: "Q3 Roadmap · In Progress",
+        emoji: "🤖",
+      },
     ],
   },
-
 
   {
     id: "m-dm5-1",
@@ -319,7 +321,6 @@ export const MESSAGES: ChatMessage[] = [
       { kind: "doc", title: "Onboarding Playbook", subtitle: "Edited yesterday", emoji: "🚀" },
     ],
   },
-
 
   {
     id: "m-dm6-1",

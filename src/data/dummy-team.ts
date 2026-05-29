@@ -44,9 +44,7 @@ export const TEAM_PROFILES: TeamMemberProfile[] = [
       { name: "Q3 Product Strategy", emoji: "📘" },
       { name: "Q3 Pricing Matrix", emoji: "💰" },
     ],
-    links: [
-      { label: "LinkedIn", href: "https://linkedin.com/in/diego" },
-    ],
+    links: [{ label: "LinkedIn", href: "https://linkedin.com/in/diego" }],
     recentActivity: [
       { at: "9:42 AM", verb: "shared", target: "Q3 Product Strategy" },
       { at: "Yesterday", verb: "assigned", target: "Streaming improvements" },
@@ -140,9 +138,7 @@ export const TEAM_PROFILES: TeamMemberProfile[] = [
   },
 ];
 
-export const TEAM_HOLIDAYS_THIS_WEEK = [
-  { userId: "u5", date: "Thu", reason: "Public holiday" },
-];
+export const TEAM_HOLIDAYS_THIS_WEEK = [{ userId: "u5", date: "Thu", reason: "Public holiday" }];
 
 export const OPEN_ROLES = [
   { title: "Senior Frontend Engineer", team: "Engineering", location: "Remote · EU/US" },

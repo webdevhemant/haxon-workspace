@@ -233,7 +233,7 @@ export function CardDetailSidebar({
 
         <div className="flex items-start gap-3 py-2">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0 pt-0.5">Watchers</span>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {USERS.map((u) => {
               const isFollowing = followers.includes(u.id);
               return (
@@ -241,14 +241,15 @@ export function CardDetailSidebar({
                   key={u.id}
                   onClick={() => onToggleFollower(u.id)}
                   title={`${u.name}${isFollowing ? " (watching)" : ""}`}
+                  style={{ width: 24, height: 24 }}
                   className={cn(
-                    "rounded-full transition-all duration-150",
+                    "inline-flex items-center justify-center rounded-full transition-all duration-150 cursor-pointer flex-shrink-0",
                     isFollowing
-                      ? "ring-2 ring-orange-500 ring-offset-1 ring-offset-white dark:ring-offset-gray-950"
-                      : "opacity-40 hover:opacity-70",
+                      ? "ring-2 ring-orange-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950"
+                      : "opacity-40 hover:opacity-100",
                   )}
                 >
-                  <UserAvatar user={u} size={20} />
+                  <UserAvatar user={u} size={20} hoverCard={false} />
                 </button>
               );
             })}

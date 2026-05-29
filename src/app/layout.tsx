@@ -5,7 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Haxon Workspace — Your team's second brain",
-  description: "Docs, boards, grids, and an AI that actually understands your work — unified into one blazing-fast workspace.",
+  description:
+    "Docs, boards, grids, and an AI that actually understands your work — unified into one blazing-fast workspace.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

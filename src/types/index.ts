@@ -34,6 +34,21 @@ export interface Doc {
   content?: DocBlock[];
 }
 
+export interface DocCommentReply {
+  id: string;
+  userId: string;
+  text: string;
+  at: string;
+}
+
+export interface DocComment {
+  id: string;
+  userId: string;
+  text: string;
+  at: string;
+  replies: DocCommentReply[];
+}
+
 export interface CardSubtask {
   id: string;
   title: string;
