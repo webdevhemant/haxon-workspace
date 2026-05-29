@@ -326,10 +326,6 @@ export function Sidebar() {
         {/* Bottom */}
         <div className="px-1 py-1 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-2 bg-gray-100/50 dark:bg-gray-800/50 rounded-lg px-2 py-1.5">
-            <div className="flex items-center gap-1 text-[10px] text-gray-400 mr-auto">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-              3 online
-            </div>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
                 <button className="flex items-center gap-2 flex-1 min-w-0 px-1.5 py-1 rounded-lg hover:bg-gray-200/60 dark:hover:bg-gray-700/60 transition-colors text-left">
