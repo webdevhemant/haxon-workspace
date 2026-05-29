@@ -3,14 +3,14 @@ import { use, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd";
 import {
-  Plus, MoreHorizontal, Search, Filter, X, Calendar, ChevronDown,
+  Plus, Search, Filter, X, Calendar, ChevronDown,
   Kanban, List, Grid3X3, Table2, BarChart3, ChevronRight,
-  CheckSquare, Square, Trash2, MessageSquare, Tag, Users, Send,
-  Eye, Clock, AlertCircle,
+  CheckSquare, Square,MessageSquare, Send,
 } from "lucide-react";
 import { Topbar, Breadcrumb, IconBtn } from "@/components/layout/topbar";
 import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { PriorityBadge } from "@/components/ui/priority-badge";
+import { DatePicker } from "@/components/ui/date-picker";
 import { useAppStore } from "@/store/app-store";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
@@ -400,42 +400,22 @@ function CardDetailModal({
                   </DropdownMenu.Root>
                 </div>
 
-                {/* Start date */}
                 <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
                   <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Start date</span>
-                  <div className="relative flex-1">
-                    {!card.startDate && (
-                      <span className="absolute inset-0 flex items-center text-xs text-gray-400 pointer-events-none select-none">
-                        Not set
-                      </span>
-                    )}
-                    <input
-                      type="date"
-                      defaultValue={card.startDate ?? ""}
-                      onChange={(e) => updateCard(boardId, colId, card.id, { startDate: e.target.value || undefined })}
-                      className="w-full text-xs text-gray-700 dark:text-gray-300 bg-transparent outline-none cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
-                      style={{ colorScheme: "light dark" }}
-                    />
-                  </div>
+                  <DatePicker
+                    value={card.startDate}
+                    onChange={(iso) => updateCard(boardId, colId, card.id, { startDate: iso })}
+                    placeholder="Not set"
+                  />
                 </div>
 
-                {/* Due date */}
                 <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
                   <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Due date</span>
-                  <div className="relative flex-1">
-                    {(!card.dueDate || card.dueDate === "—") && (
-                      <span className="absolute inset-0 flex items-center text-xs text-gray-400 pointer-events-none select-none">
-                        Not set
-                      </span>
-                    )}
-                    <input
-                      type="date"
-                      defaultValue={card.dueDate !== "—" ? (card.dueDate ?? "") : ""}
-                      onChange={(e) => updateCard(boardId, colId, card.id, { dueDate: e.target.value || "—" })}
-                      className="w-full text-xs text-gray-700 dark:text-gray-300 bg-transparent outline-none cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
-                      style={{ colorScheme: "light dark" }}
-                    />
-                  </div>
+                  <DatePicker
+                    value={card.dueDate !== "—" ? card.dueDate : undefined}
+                    onChange={(iso) => updateCard(boardId, colId, card.id, { dueDate: iso ?? "—" })}
+                    placeholder="Not set"
+                  />
                 </div>
 
                 {/* Labels */}
@@ -513,9 +493,12 @@ function CardDetailModal({
 
 // ─── Board (Kanban) view ─────────────────────────────────────────────────────
 
-function KanbanCard({ card, colId, boardId, index }: { card: Card; colId: string; boardId: string; index: number }) {
+function KanbanCard({ card, colId, boardId, index, colColor }: { card: Card; colId: string; boardId: string; index: number; colColor: string }) {
   const [open, setOpen] = useState(false);
   const assignee = USERS.find((u) => u.id === card.assigneeId);
+  const subtasks = card.subtasks ?? [];
+  const doneSubtasks = subtasks.filter((s) => s.done).length;
+  const subtaskPct = subtasks.length > 0 ? (doneSubtasks / subtasks.length) * 100 : 0;
 
   return (
     <>
@@ -532,12 +515,30 @@ function KanbanCard({ card, colId, boardId, index }: { card: Card; colId: string
               snapshot.isDragging && "shadow-xl rotate-1 scale-105 opacity-90",
             )}
           >
-            <div className="font-medium text-sm leading-snug mb-2">{card.title}</div>
+            <div className="font-medium text-sm leading-snug mb-1">{card.title}</div>
+            {card.description && card.description.trim().length > 0 && (
+              <div className="text-[11px] text-gray-400 leading-relaxed line-clamp-2 mb-2">
+                {card.description.trim().slice(0, 65)}{card.description.trim().length > 65 ? "…" : ""}
+              </div>
+            )}
             {card.tags && card.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {card.tags.map((t) => (
                   <span key={t} className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[10px] rounded font-medium">{t}</span>
                 ))}
+              </div>
+            )}
+            {subtasks.length > 0 && (
+              <div className="mb-2">
+                <div className="flex items-center justify-between mb-0.5">
+                  <span className="text-[10px] text-gray-400">{doneSubtasks}/{subtasks.length} subtasks</span>
+                </div>
+                <div className="h-0.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{ width: `${subtaskPct}%`, background: colColor }}
+                  />
+                </div>
               </div>
             )}
             <div className="flex items-center justify-between gap-2">
@@ -569,15 +570,34 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
     setNewTitle(""); setAdding(false);
   };
 
+  // Progress: cards where all subtasks are done (or 0 subtasks and col is "Done")
+  const total = col.cards.length;
+  const doneCards = col.cards.filter((card) => {
+    const subtasks = card.subtasks ?? [];
+    if (subtasks.length === 0) return col.name === "Done";
+    return subtasks.every((s) => s.done);
+  }).length;
+  const progressPct = total > 0 ? (doneCards / total) * 100 : 0;
+
   return (
     <div className="flex-none w-[272px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col max-h-full">
-      <div {...dragHandleProps} className="px-3.5 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2 cursor-grab active:cursor-grabbing select-none">
-        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: col.color }} />
-        <span className="font-semibold text-sm flex-1">{col.name}</span>
-        <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{col.cards.length}</span>
-        <button onClick={() => setAdding(true)} className="w-5 h-5 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 transition-colors">
-          <Plus className="w-3.5 h-3.5" />
-        </button>
+      <div {...dragHandleProps} className="px-3.5 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 cursor-grab active:cursor-grabbing select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: col.color }} />
+          <span className="font-semibold text-sm flex-1">{col.name}</span>
+          <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{col.cards.length}</span>
+          <button onClick={() => setAdding(true)} className="w-5 h-5 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 transition-colors">
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        {total > 0 && (
+          <div className="mt-2 h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${progressPct}%`, background: col.color }}
+            />
+          </div>
+        )}
       </div>
       <Droppable droppableId={col.id}>
         {(provided, snapshot) => (
@@ -586,7 +606,7 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
             {...provided.droppableProps}
             className={cn("flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 min-h-[60px] transition-colors", snapshot.isDraggingOver && "bg-orange-50 dark:bg-orange-950/20")}
           >
-            {col.cards.map((card, i) => <KanbanCard key={card.id} card={card} colId={col.id} boardId={boardId} index={i} />)}
+            {col.cards.map((card, i) => <KanbanCard key={card.id} card={card} colId={col.id} boardId={boardId} index={i} colColor={col.color} />)}
             {provided.placeholder}
             <AnimatePresence>
               {adding && (
@@ -678,43 +698,69 @@ function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNewColNam
 
 // ─── List view ───────────────────────────────────────────────────────────────
 
+type ListFlatCard = Card & { colId: string; colName: string; colColor: string };
+
 function BoardListView({ board }: { board: import("@/types").Board }) {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openCard, setOpenCard] = useState<{ card: Card; colId: string } | null>(null);
 
-  const toggle = (id: string) => setExpanded((e) => ({ ...e, [id]: !e[id] }));
+  const toggleGroup = (key: string) => setCollapsed((c) => ({ ...c, [key]: !c[key] }));
+
+  // Flatten all cards with column info
+  const allCards: ListFlatCard[] = board.columns.flatMap((col) =>
+    col.cards.map((card) => ({ ...card, colId: col.id, colName: col.name, colColor: col.color }))
+  );
+
+  // Group by priority in order
+  const groups = PRIORITY_OPTIONS.map((priority) => ({
+    priority,
+    config: PRIORITY_CONFIG[priority],
+    cards: allCards.filter((c) => (c.priority ?? "None") === priority),
+  })).filter((g) => g.cards.length > 0);
 
   return (
     <div className="flex-1 overflow-y-auto p-4">
       <div className="w-full space-y-3">
-        {board.columns.map((col) => {
-          const isOpen = expanded[col.id] !== false;
+        {groups.map(({ priority, config, cards }) => {
+          const isOpen = collapsed[priority] !== true;
           return (
-            <div key={col.id} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
+            <div
+              key={priority}
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden"
+              style={{ borderLeft: `3px solid ${config.color}` }}
+            >
               <button
-                onClick={() => toggle(col.id)}
+                onClick={() => toggleGroup(priority)}
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
-                <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: col.color }} />
-                <span className="font-semibold text-sm flex-1 text-left">{col.name}</span>
-                <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{col.cards.length}</span>
-                <ChevronRight className={cn("w-4 h-4 text-gray-400 transition-transform", isOpen && "rotate-90")} />
+                <span className="font-semibold text-sm flex-1 text-left" style={{ color: config.color }}>{config.label}</span>
+                <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{cards.length}</span>
+                {isOpen
+                  ? <ChevronDown className="w-4 h-4 text-gray-400" />
+                  : <ChevronRight className="w-4 h-4 text-gray-400" />
+                }
               </button>
               <AnimatePresence initial={false}>
                 {isOpen && (
                   <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} transition={{ duration: 0.18 }} className="overflow-hidden">
                     <div className="border-t border-gray-100 dark:border-gray-800">
-                      {col.cards.map((card, i) => {
+                      {cards.map((card, i) => {
                         const assignee = USERS.find((u) => u.id === card.assigneeId);
                         return (
                           <motion.div
                             key={card.id}
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.03 }}
-                            onClick={() => setOpenCard({ card, colId: col.id })}
+                            onClick={() => setOpenCard({ card, colId: card.colId })}
                             className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer border-b border-gray-50 dark:border-gray-800 last:border-0 transition-colors"
                           >
                             <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600 flex-shrink-0" onClick={(e) => e.stopPropagation()} />
                             <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{card.title}</span>
+                            <span
+                              className="text-[10px] font-medium px-1.5 py-0.5 rounded-md hidden sm:inline-block flex-shrink-0"
+                              style={{ background: card.colColor + "20", color: card.colColor }}
+                            >
+                              {card.colName}
+                            </span>
                             {card.tags && card.tags.length > 0 && (
                               <div className="hidden md:flex gap-1 flex-shrink-0">
                                 {card.tags.slice(0, 2).map((t) => (
@@ -732,9 +778,6 @@ function BoardListView({ board }: { board: import("@/types").Board }) {
                           </motion.div>
                         );
                       })}
-                      {col.cards.length === 0 && (
-                        <div className="px-4 py-4 text-xs text-gray-400 italic">No cards in this column</div>
-                      )}
                     </div>
                   </motion.div>
                 )}
@@ -742,6 +785,9 @@ function BoardListView({ board }: { board: import("@/types").Board }) {
             </div>
           );
         })}
+        {groups.length === 0 && (
+          <div className="text-center py-12 text-gray-400 text-sm">No cards found</div>
+        )}
       </div>
       {openCard && (
         <CardDetailModal
