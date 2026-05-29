@@ -14,8 +14,25 @@ import { HaxonLogo } from "@/components/ui/haxon-logo";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { cn } from "@/lib/utils";
+import { asRole, capabilityCount, ROLE_COLOR } from "@/lib/rbac";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+
+function RoleChip({ role }: { role: string }) {
+  const r = asRole(role);
+  const color = ROLE_COLOR[r];
+  const count = capabilityCount(r);
+  return (
+    <span
+      className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full"
+      style={{ background: color + "22", color }}
+      title={`${count} capabilities`}
+    >
+      <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+      {r}
+    </span>
+  );
+}
 
 function TooltipWrap({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -183,7 +200,6 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Workspace switcher */}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
             <button className="mx-2 px-2.5 py-1.5 flex items-center gap-2.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-sm transition-all text-left">
@@ -193,21 +209,28 @@ export function Sidebar() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-semibold truncate text-gray-900 dark:text-white">{ws?.name}</div>
-                <div className="text-[11px] text-gray-500">{ws?.role}</div>
+                <div className="text-[11px] flex items-center gap-1">
+                  <RoleChip role={ws?.role ?? "Member"} />
+                </div>
               </div>
               <ChevronDown className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
             </button>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-64 z-50" sideOffset={4} align="start">
+            <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-72 z-50" sideOffset={4} align="start">
               {workspaces.map((w) => (
                 <DropdownMenu.Item key={w.id} onSelect={() => { setActiveWorkspace(w.id); toast.success(`Switched to ${w.name}`); }}
                   className="flex items-center gap-2.5 px-2 py-2 rounded-md cursor-pointer outline-none text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
                   <div className="w-6 h-6 rounded-md flex items-center justify-center text-sm" style={{ background: w.color }}>{w.emoji}</div>
-                  {w.name}
+                  <span className="flex-1 truncate">{w.name}</span>
+                  <RoleChip role={w.role} />
                 </DropdownMenu.Item>
               ))}
               <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
+              <DropdownMenu.Item onSelect={() => router.push("/settings/roles")}
+                className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+                See role capabilities →
+              </DropdownMenu.Item>
               <DropdownMenu.Item onSelect={() => openModal({ type: "createWorkspace" })}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
                 <Plus className="w-3.5 h-3.5" /> Create workspace
