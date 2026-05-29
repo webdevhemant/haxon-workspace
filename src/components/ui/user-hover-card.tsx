@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { MessageSquare, MapPin, Clock, UserCircle } from "lucide-react";
 import { PresenceDot } from "./presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
-import { profileFor } from "@/data/dummy-team";
+import { useAppStore } from "@/store/app-store";
 import { CURRENT_USER } from "@/data/dummy-users";
 import type { User } from "@/types";
 
@@ -20,6 +20,8 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
   const [open, setOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const profiles = useAppStore((s) => s.profiles);
+
   if (!user || user.id === CURRENT_USER.id) return <>{children}</>;
 
   const show = () => {
@@ -31,7 +33,7 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
     timer.current = setTimeout(() => setOpen(false), 120);
   };
 
-  const profile = profileFor(user.id);
+  const profile = profiles.find((p) => p.userId === user.id);
   const presence = presenceFor(user.id);
 
   return (
@@ -124,7 +126,7 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
                   <MessageSquare className="w-3 h-3" /> Message
                 </button>
                 <button
-                  onClick={() => (typeof window !== "undefined" ? (window.location.href = "/team") : undefined)}
+                  onClick={() => (typeof window !== "undefined" ? (window.location.href = `/team/${user.id}`) : undefined)}
                   className="inline-flex items-center justify-center gap-1 h-7 px-2 rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-[11.5px] font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
                 >
                   <UserCircle className="w-3 h-3" /> Profile

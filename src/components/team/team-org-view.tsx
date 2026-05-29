@@ -1,6 +1,6 @@
 "use client";
-import { TEAM_PROFILES } from "@/data/dummy-team";
 import { USERS } from "@/data/dummy-users";
+import { useAppStore } from "@/store/app-store";
 import type { TeamMemberProfile, User } from "@/types";
 import { TeamMemberCard } from "./team-member-card";
 
@@ -11,7 +11,8 @@ interface Props {
 }
 
 export function TeamOrgView({ filteredUserIds, onOpen, onMessage }: Props) {
-  const groups = TEAM_PROFILES.reduce<Record<string, TeamMemberProfile[]>>((acc, p) => {
+  const profiles = useAppStore((s) => s.profiles);
+  const groups = profiles.reduce<Record<string, TeamMemberProfile[]>>((acc, p) => {
     if (!filteredUserIds.has(p.userId)) return acc;
     if (!acc[p.team]) acc[p.team] = [];
     acc[p.team].push(p);

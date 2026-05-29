@@ -6,13 +6,15 @@ import type { WorkspaceSlice } from "./slices/workspace-slice";
 import type { DocSlice } from "./slices/doc-slice";
 import type { BoardSlice } from "./slices/board-slice";
 import type { UISlice } from "./slices/ui-slice";
+import type { ProfileSlice } from "./slices/profile-slice";
 import { createAuthSlice } from "./slices/auth-slice";
 import { createWorkspaceSlice } from "./slices/workspace-slice";
 import { createDocSlice } from "./slices/doc-slice";
 import { createBoardSlice } from "./slices/board-slice";
 import { createUISlice } from "./slices/ui-slice";
+import { createProfileSlice } from "./slices/profile-slice";
 
-export type AppState = AuthSlice & WorkspaceSlice & DocSlice & BoardSlice & UISlice;
+export type AppState = AuthSlice & WorkspaceSlice & DocSlice & BoardSlice & UISlice & ProfileSlice;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -22,6 +24,7 @@ export const useAppStore = create<AppState>()(
       ...createDocSlice(...a),
       ...createBoardSlice(...a),
       ...createUISlice(...a),
+      ...createProfileSlice(...a),
     }),
     {
       name: "haxon-store",
@@ -31,6 +34,7 @@ export const useAppStore = create<AppState>()(
         activeWorkspaceId: s.activeWorkspaceId,
         favorites: s.favorites,
         boardViews: s.boardViews,
+        profiles: s.profiles,
       }),
     }
   )

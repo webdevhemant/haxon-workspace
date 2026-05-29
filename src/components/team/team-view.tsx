@@ -1,33 +1,35 @@
 "use client";
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
 import { USERS } from "@/data/dummy-users";
-import { profileFor } from "@/data/dummy-team";
 import { presenceFor } from "@/data/dummy-presence";
 import type { User } from "@/types";
+
+
 import { TeamHeader } from "./team-header";
 import { TeamToolbar } from "./team-toolbar";
 import { TeamMemberCard } from "./team-member-card";
 import { TeamMemberRow, TeamMemberRowHeader } from "./team-member-row";
 import { TeamOrgView } from "./team-org-view";
 import { TeamOpenRoles } from "./team-open-roles";
-import { TeamDetailDrawer } from "./team-detail-drawer";
 import type { TeamRoleFilter, TeamPresenceFilter, TeamSort, TeamView } from "./constants";
 
 const JOIN_ORDER: Record<string, number> = { u1: 0, u2: 1, u3: 2, u4: 3, u5: 4, u6: 5 };
 
 export default function TeamView() {
-  const { workspaces, activeWorkspaceId } = useAppStore();
+  const router = useRouter();
+  const { workspaces, activeWorkspaceId, profiles } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const profileFor = (id: string) => profiles.find((p) => p.userId === id);
 
   const [view, setView] = useState<TeamView>("grid");
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<TeamRoleFilter>("all");
   const [presence, setPresence] = useState<TeamPresenceFilter>("all");
   const [sort, setSort] = useState<TeamSort>("name");
-  const [openUser, setOpenUser] = useState<User | null>(null);
 
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -102,7 +104,7 @@ export default function TeamView() {
                 key={u.id}
                 user={u}
                 profile={profileFor(u.id)}
-                onOpen={() => setOpenUser(u)}
+                onOpen={() => router.push(`/team/${u.id}`)}
                 onMessage={() => onMessage(u)}
               />
             ))}
@@ -123,7 +125,7 @@ export default function TeamView() {
                   key={u.id}
                   user={u}
                   profile={profileFor(u.id)}
-                  onOpen={() => setOpenUser(u)}
+                  onOpen={() => router.push(`/team/${u.id}`)}
                   onMessage={() => onMessage(u)}
                 />
               ))}
@@ -139,21 +141,13 @@ export default function TeamView() {
         {view === "org" && (
           <TeamOrgView
             filteredUserIds={filteredIds}
-            onOpen={(u) => setOpenUser(u)}
+            onOpen={(u) => router.push(`/team/${u.id}`)}
             onMessage={onMessage}
           />
         )}
 
         <TeamOpenRoles />
       </div>
-
-      <TeamDetailDrawer
-        user={openUser}
-        profile={openUser ? profileFor(openUser.id) : undefined}
-        open={Boolean(openUser)}
-        onClose={() => setOpenUser(null)}
-        onMessage={() => openUser && onMessage(openUser)}
-      />
     </div>
   );
 }
