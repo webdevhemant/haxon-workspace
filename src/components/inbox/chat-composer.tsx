@@ -1,16 +1,20 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Paperclip, AtSign, Smile, Send, Hash } from "lucide-react";
+import { Paperclip, AtSign, Smile, Send, Hash, Lock } from "lucide-react";
 import { ComposerIcon } from "./composer-icon";
 import { ChatEmojiPopover } from "./chat-emoji-popover";
 import { ChatAttachPopover } from "./chat-attach-popover";
 import { ChatMentionPopover, getMentionItems, type MentionTrigger } from "./chat-mention-popover";
+import { ChatSchedulePopover, type ScheduleChoice } from "./chat-schedule-popover";
 
 interface Props {
   placeholder: string;
   onSend: (text: string) => void;
+  onSchedule?: (text: string, choice: ScheduleChoice) => void;
   autoFocus?: boolean;
   small?: boolean;
+  canMessage?: boolean;
+  role?: string;
 }
 
 interface MentionState {
@@ -19,7 +23,20 @@ interface MentionState {
   query: string;
 }
 
-export function ChatComposer({ placeholder, onSend, autoFocus, small }: Props) {
+export function ChatComposer({ placeholder, onSend, onSchedule, autoFocus, small, canMessage = true, role }: Props) {
+  if (!canMessage) {
+    return (
+      <div className={small ? "px-3 pb-3" : "px-4 pb-4"}>
+        <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-[12.5px] text-gray-500 dark:text-gray-400">
+          <Lock className="w-3.5 h-3.5 flex-shrink-0" />
+          <span>
+            You can't post in this channel — your role{role ? ` (${role})` : ""} is read-only.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   const [value, setValue] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [attachOpen, setAttachOpen] = useState(false);
@@ -195,6 +212,18 @@ export function ChatComposer({ placeholder, onSend, autoFocus, small }: Props) {
           <span className="hidden md:inline text-[10px] text-gray-400 dark:text-gray-500 mr-2 select-none">
             <kbd className="font-sans">Enter</kbd> to send · <kbd className="font-sans">Shift+Enter</kbd> new line
           </span>
+          {onSchedule && (
+            <ChatSchedulePopover
+              disabled={!value.trim()}
+              onPick={(choice) => {
+                const trimmed = value.trim();
+                if (!trimmed) return;
+                onSchedule(trimmed, choice);
+                setValue("");
+                setMention(null);
+              }}
+            />
+          )}
           <button
             onClick={submit}
             disabled={!value.trim()}

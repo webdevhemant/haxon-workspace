@@ -94,6 +94,7 @@ export function ChatMessageRow({
       </div>
 
       <ChatMessageToolbar
+        messageId={message.id}
         onReact={(e) => onReact?.(message.id, e)}
         onOpenThread={() => onOpenThread?.(message)}
         onCopy={() => {

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import type { Board, Card, Column } from "@/types";
 import { CardDetailModal } from "../card-detail-modal";
 
-function KanbanCard({ card, colId, boardId, index, colColor }: { card: Card; colId: string; boardId: string; index: number; colColor: string }) {
+function KanbanCard({ card, colId, boardId, index, colColor, canMove }: { card: Card; colId: string; boardId: string; index: number; colColor: string; canMove: boolean }) {
   const [open, setOpen] = useState(false);
   const assignee = USERS.find((u) => u.id === card.assigneeId);
   const subtasks = card.subtasks ?? [];
@@ -20,12 +20,12 @@ function KanbanCard({ card, colId, boardId, index, colColor }: { card: Card; col
 
   return (
     <>
-      <Draggable draggableId={card.id} index={index}>
+      <Draggable draggableId={card.id} index={index} isDragDisabled={!canMove}>
         {(provided, snapshot) => (
           <div
             ref={provided.innerRef}
             {...provided.draggableProps}
-            {...provided.dragHandleProps}
+            {...(canMove ? provided.dragHandleProps : {})}
             onClick={() => setOpen(true)}
             className={cn(
               "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-pointer select-none",
@@ -78,7 +78,7 @@ function KanbanCard({ card, colId, boardId, index, colColor }: { card: Card; col
   );
 }
 
-function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId: string; dragHandleProps?: object }) {
+function KanbanColumn({ col, boardId, dragHandleProps, canEdit, canMove }: { col: Column; boardId: string; dragHandleProps?: object; canEdit: boolean; canMove: boolean }) {
   const { addCard } = useAppStore();
   const [adding, setAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -98,14 +98,16 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
 
   return (
     <div className="flex-none w-[272px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col max-h-full">
-      <div {...dragHandleProps} className="px-3.5 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 cursor-grab active:cursor-grabbing select-none">
+      <div {...(canMove ? dragHandleProps : {})} className={cn("px-3.5 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 select-none", canMove && "cursor-grab active:cursor-grabbing")}>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: col.color }} />
           <span className="font-semibold text-sm flex-1">{col.name}</span>
           <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{col.cards.length}</span>
-          <button onClick={() => setAdding(true)} className="w-5 h-5 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 transition-colors">
-            <Plus className="w-3.5 h-3.5" />
-          </button>
+          {canEdit && (
+            <button onClick={() => setAdding(true)} className="w-5 h-5 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 transition-colors">
+              <Plus className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
         {total > 0 && (
           <div className="mt-2 h-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -123,7 +125,7 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
             {...provided.droppableProps}
             className={cn("flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 min-h-[60px] transition-colors", snapshot.isDraggingOver && "bg-orange-50 dark:bg-orange-950/20")}
           >
-            {col.cards.map((card, i) => <KanbanCard key={card.id} card={card} colId={col.id} boardId={boardId} index={i} colColor={col.color} />)}
+            {col.cards.map((card, i) => <KanbanCard key={card.id} card={card} colId={col.id} boardId={boardId} index={i} colColor={col.color} canMove={canMove} />)}
             {provided.placeholder}
             <AnimatePresence>
               {adding && (
@@ -139,7 +141,7 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
                 </motion.div>
               )}
             </AnimatePresence>
-            {!adding && (
+            {!adding && canEdit && (
               <button onClick={() => setAdding(true)}
                 className="flex items-center gap-1.5 px-2 py-2 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
                 <Plus className="w-3 h-3" /> Add card
@@ -152,13 +154,15 @@ function KanbanColumn({ col, boardId, dragHandleProps }: { col: Column; boardId:
   );
 }
 
-export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNewColName, setAddingCol }: {
+export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNewColName, setAddingCol, canEdit, canMove }: {
   board: Board;
   onDragEnd: (r: DropResult) => void;
   addingCol: boolean;
   newColName: string;
   setNewColName: (v: string) => void;
   setAddingCol: (v: boolean) => void;
+  canEdit: boolean;
+  canMove: boolean;
 }) {
   const { addColumn } = useAppStore();
   return (
@@ -167,7 +171,7 @@ export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNe
         {(colProvided) => (
           <div ref={colProvided.innerRef} {...colProvided.droppableProps} className="flex gap-2.5 p-3 h-full min-h-0">
             {board.columns.map((col, index) => (
-              <Draggable key={col.id} draggableId={col.id} index={index}>
+              <Draggable key={col.id} draggableId={col.id} index={index} isDragDisabled={!canMove}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -175,7 +179,7 @@ export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNe
                     className={cn("flex-none self-start max-h-full flex flex-col", snapshot.isDragging && "rotate-1 opacity-90 shadow-2xl")}
                     style={{ ...provided.draggableProps.style, height: snapshot.isDragging ? undefined : "100%" }}
                   >
-                    <KanbanColumn col={col} boardId={board.id} dragHandleProps={provided.dragHandleProps ?? undefined} />
+                    <KanbanColumn col={col} boardId={board.id} dragHandleProps={provided.dragHandleProps ?? undefined} canEdit={canEdit} canMove={canMove} />
                   </div>
                 )}
               </Draggable>

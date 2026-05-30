@@ -1,6 +1,6 @@
 "use client";
 import { use, useState } from "react";
-import { Plus, Search, Filter, ChevronDown } from "lucide-react";
+import { Plus, Search, Filter, ChevronDown, Lock } from "lucide-react";
 import type { DropResult } from "@hello-pangea/dnd";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
@@ -8,6 +8,7 @@ import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import type { ViewType } from "@/types";
 import { VIEWS } from "./constants";
 import { BoardKanbanView } from "./views/kanban-view";
@@ -21,6 +22,9 @@ export default function BoardView({ params }: { params: Promise<{ workspaceId: s
   const { boards, workspaces, moveCard, reorderColumns, boardViews, setBoardView } = useAppStore();
   const board = boards.find((b) => b.id === boardId) ?? boards[0];
   const ws = workspaces.find((w) => w.id === (board?.workspaceId ?? workspaceId));
+  const role = useCurrentRole();
+  const canEditBoard = useCan("board.edit");
+  const canMoveCards = useCan("board.move");
   const [query, setQuery] = useState("");
   const [filterAssignee, setFilterAssignee] = useState<string | null>(null);
   const [addingCol, setAddingCol] = useState(false);
@@ -75,6 +79,9 @@ export default function BoardView({ params }: { params: Promise<{ workspaceId: s
         activeView={activeView}
         onChangeView={(v) => setBoardView(board.id, v)}
         onAddColumn={() => setAddingCol(true)}
+        canEdit={canEditBoard}
+        canMove={canMoveCards}
+        role={role}
       />
 
       <div className="flex-1 overflow-x-auto overflow-y-hidden">
@@ -86,6 +93,8 @@ export default function BoardView({ params }: { params: Promise<{ workspaceId: s
             newColName={newColName}
             setNewColName={setNewColName}
             setAddingCol={setAddingCol}
+            canEdit={canEditBoard}
+            canMove={canMoveCards}
           />
         )}
         {activeView === "list" && <BoardListView board={filteredBoard} />}
@@ -98,14 +107,18 @@ export default function BoardView({ params }: { params: Promise<{ workspaceId: s
 }
 
 function BoardHeader({
-  board, totalCards, activeView, onChangeView, onAddColumn,
+  board, totalCards, activeView, onChangeView, onAddColumn, canEdit, canMove, role,
 }: {
   board: import("@/types").Board;
   totalCards: number;
   activeView: ViewType;
   onChangeView: (v: ViewType) => void;
   onAddColumn: () => void;
+  canEdit: boolean;
+  canMove: boolean;
+  role: string;
 }) {
+  const readOnly = !canEdit && !canMove;
   return (
     <div className="px-4 py-2 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
       <span className="text-3xl">{board.emoji}</span>
@@ -113,6 +126,14 @@ function BoardHeader({
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         <div className="text-xs text-gray-400">{totalCards} cards · {board.columns.length} columns</div>
       </div>
+      {readOnly && (
+        <span
+          title={`Your role (${role}) is read-only on boards`}
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-500"
+        >
+          <Lock className="w-3 h-3" /> Read-only
+        </span>
+      )}
       <div className="flex-1" />
       <div className="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
         {VIEWS.map((v) => (
@@ -132,9 +153,10 @@ function BoardHeader({
       </div>
       <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
       <AvatarGroup users={USERS.slice(0, 5)} size={28} />
-      {activeView === "board" && (
+      {activeView === "board" && canEdit && (
         <button
           onClick={onAddColumn}
+          title={`New column`}
           className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors"
         >
           <Plus className="w-3.5 h-3.5" /> Column

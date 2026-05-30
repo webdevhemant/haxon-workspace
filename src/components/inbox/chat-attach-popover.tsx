@@ -33,7 +33,18 @@ export function ChatAttachPopover({ onPick, onClose }: Props) {
       return;
     }
     if (key === "ai") {
-      toast.info("AI compose coming soon");
+      const prompt = typeof window !== "undefined"
+        ? window.prompt("Describe what you want to say. Haxon AI will draft it.")
+        : null;
+      if (prompt && prompt.trim()) {
+        const drafts: Record<string, string> = {
+          short: "Quick update — pushing this through, will share more after the review.",
+          long: "Here's where things stand: the core path landed yesterday, and remaining work is the polish pass plus tests.",
+        };
+        const key = prompt.length < 20 ? "short" : "long";
+        onPick(drafts[key] + " ");
+        toast.success("Drafted by AI — edit before sending");
+      }
       onClose();
       return;
     }

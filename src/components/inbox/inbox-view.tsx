@@ -11,11 +11,17 @@ import { ChatThreadPanel } from "./chat-thread-panel";
 import { ChatInfoPanel } from "./chat-info-panel";
 import { ChatEmptyState } from "./chat-empty-state";
 import { ChatCallModal, type CallMode } from "./chat-call-modal";
+import { ChatSavedList } from "./chat-saved-list";
+import { ChatScheduledStrip } from "./chat-scheduled-strip";
 import { useChat } from "./use-chat";
+import type { ChatSidebarTab } from "./constants";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 
 export default function InboxView() {
-  const { workspaces, activeWorkspaceId } = useAppStore();
+  const { workspaces, activeWorkspaceId, savedMessageIds, scheduleMessage } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canMessage = useCan("channel.message");
+  const role = useCurrentRole();
 
   const {
     channels,
@@ -37,12 +43,15 @@ export default function InboxView() {
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [callMode, setCallMode] = useState<CallMode | null>(null);
+  const [tab, setTab] = useState<ChatSidebarTab>("all");
 
   const activeChannel = channels.find((c) => c.id === activeChannelId) ?? null;
   const activeMessages = activeChannel ? messagesByChannel[activeChannel.id] ?? [] : [];
   const threadParent = threadParentId
     ? Object.values(messagesByChannel).flat().find((m) => m.id === threadParentId)
     : null;
+
+  const showSavedView = tab === "saved";
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -54,18 +63,27 @@ export default function InboxView() {
         <ChatSidebar
           channels={channels}
           activeId={activeChannelId}
-          onSelect={setActiveChannelId}
+          onSelect={(id) => { setTab("all"); setActiveChannelId(id); }}
           onStartDmWith={startDmWith}
+          tab={tab}
+          onTabChange={setTab}
+          savedCount={savedMessageIds.length}
         />
 
         <main className="flex-1 flex flex-col min-w-0 bg-white dark:bg-gray-950">
-          {activeChannel ? (
+          {showSavedView ? (
+            <ChatSavedList
+              channels={channels}
+              messagesByChannel={messagesByChannel}
+              onJumpToChannel={(id) => { setTab("all"); setActiveChannelId(id); }}
+            />
+          ) : activeChannel ? (
             <>
               <ChatHeader
                 channel={activeChannel}
+                messages={activeMessages}
                 infoOpen={infoOpen}
                 onToggleInfo={() => setInfoOpen((v) => !v)}
-                onSearch={() => toast.info("Channel search coming soon")}
                 onPinned={() => { setInfoOpen(true); }}
                 onStartCall={() => setCallMode("audio")}
                 onStartHuddle={() => setCallMode("huddle")}
@@ -83,6 +101,7 @@ export default function InboxView() {
                 onReact={(id, e) => react(activeChannel.id, id, e)}
                 activeMessageId={threadParentId}
               />
+              <ChatScheduledStrip channelId={activeChannel.id} />
               <ChatComposer
                 placeholder={
                   activeChannel.kind === "dm"
@@ -90,6 +109,17 @@ export default function InboxView() {
                     : `Message #${activeChannel.name}`
                 }
                 onSend={(text) => send(activeChannel.id, text)}
+                onSchedule={(text, choice) => {
+                  scheduleMessage({
+                    channelId: activeChannel.id,
+                    text,
+                    sendAtISO: choice.iso,
+                    sendAtLabel: choice.label,
+                  });
+                  toast.success(`Scheduled · ${choice.label}`);
+                }}
+                canMessage={canMessage}
+                role={role}
               />
             </>
           ) : (
@@ -97,7 +127,7 @@ export default function InboxView() {
           )}
         </main>
 
-        {threadParent && activeChannel && (
+        {threadParent && activeChannel && !showSavedView && (
           <ChatThreadPanel
             parent={threadParent}
             replies={repliesByParent[threadParent.id] ?? []}
@@ -107,7 +137,7 @@ export default function InboxView() {
           />
         )}
 
-        {infoOpen && activeChannel && !threadParent && (
+        {infoOpen && activeChannel && !threadParent && !showSavedView && (
           <ChatInfoPanel
             channel={activeChannel}
             messages={activeMessages}

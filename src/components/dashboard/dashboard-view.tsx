@@ -13,6 +13,8 @@ import { RecentDocs } from "./recent-docs";
 import { StatsSection } from "./stats-section";
 import { BoardHealth, type BoardHealthItem } from "./board-health";
 import { ActivityPanel } from "./activity-panel";
+import { FocusTimer } from "./focus-timer";
+import { Goals } from "./goals";
 
 type DashboardFilter = "all" | "mine" | "recent";
 

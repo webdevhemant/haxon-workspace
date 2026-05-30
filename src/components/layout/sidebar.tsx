@@ -7,15 +7,15 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
   Home, Inbox, Calendar, Users, ChevronRight, ChevronDown, ChevronLeft,
-  Search, Plus, Bell, Sun, Moon, Settings, LogOut, MoreHorizontal,
-  ChevronUp, FileText, Kanban,
+  Search, Plus, Sun, Moon, Settings, LogOut, MoreHorizontal,
+  ChevronUp, FileText, Kanban, Zap, Plug, Target, FolderOpen,
 } from "lucide-react";
 import { HaxonLogo } from "@/components/ui/haxon-logo";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { cn } from "@/lib/utils";
 import { asRole, capabilityCount, ROLE_COLOR } from "@/lib/rbac";
-import { useCan } from "@/lib/use-can";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
@@ -56,6 +56,8 @@ interface MenuItem {
   label: string;
   onClick: () => void;
   danger?: boolean;
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
 function SItem({
@@ -109,9 +111,12 @@ function SItem({
                 {menuItems.map((item) => (
                   <DropdownMenu.Item
                     key={item.label}
+                    disabled={item.disabled}
                     onSelect={item.onClick}
+                    title={item.disabled ? item.disabledReason : undefined}
                     className={cn(
                       "flex items-center px-2 py-1.5 text-sm rounded cursor-pointer outline-none",
+                      "data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed",
                       item.danger
                         ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
@@ -159,20 +164,50 @@ export function Sidebar() {
     setActiveWorkspace, toggleSidebar, toggleFolder, logout, openModal, openCommand,
   } = useAppStore();
 
+  const role = useCurrentRole();
+  const canCreateDoc = useCan("doc.create");
+  const canEditDoc = useCan("doc.edit");
+  const canDeleteDoc = useCan("doc.delete");
+  const canCreateBoard = useCan("board.create");
+  const canEditBoard = useCan("board.edit");
+  const canDeleteBoard = useCan("board.delete");
+
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const favDocs = favorites.map((id) => docs.find((d) => d.id === id)).filter(Boolean);
   const wsDocs = docs.filter((d) => d.workspaceId === activeWorkspaceId).slice(0, 8);
   const wsBoards = boards.filter((b) => b.workspaceId === activeWorkspaceId);
 
   const docMenuItems = (id: string, title: string): MenuItem[] => [
-    { label: "Rename", onClick: () => openModal({ type: "rename", id, kind: "doc", current: title }) },
+    {
+      label: "Rename",
+      onClick: () => openModal({ type: "rename", id, kind: "doc", current: title }),
+      disabled: !canEditDoc,
+      disabledReason: `Your role (${role}) can't edit docs`,
+    },
     { label: "Duplicate", onClick: () => openModal({ type: "duplicate", id, kind: "doc", name: title }) },
-    { label: "Delete", onClick: () => openModal({ type: "delete", id, kind: "doc", name: title }), danger: true },
+    {
+      label: "Delete",
+      onClick: () => openModal({ type: "delete", id, kind: "doc", name: title }),
+      danger: true,
+      disabled: !canDeleteDoc,
+      disabledReason: `Your role (${role}) can't delete docs`,
+    },
   ];
 
   const boardMenuItems = (id: string, name: string): MenuItem[] => [
-    { label: "Rename", onClick: () => openModal({ type: "rename", id, kind: "board", current: name }) },
-    { label: "Delete", onClick: () => openModal({ type: "delete", id, kind: "board", name }), danger: true },
+    {
+      label: "Rename",
+      onClick: () => openModal({ type: "rename", id, kind: "board", current: name }),
+      disabled: !canEditBoard,
+      disabledReason: `Your role (${role}) can't edit boards`,
+    },
+    {
+      label: "Delete",
+      onClick: () => openModal({ type: "delete", id, kind: "board", name }),
+      danger: true,
+      disabled: !canDeleteBoard,
+      disabledReason: `Your role (${role}) can't delete boards`,
+    },
   ];
 
   return (
@@ -188,11 +223,6 @@ export function Sidebar() {
             <HaxonLogo size={20} />
           </Link>
           <div className="flex items-center gap-1">
-            <TooltipWrap label="Notifications">
-              <button onClick={() => router.push("/inbox")} className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500">
-                <Bell className="w-3.5 h-3.5" />
-              </button>
-            </TooltipWrap>
             <TooltipWrap label="Collapse sidebar">
               <button onClick={toggleSidebar} className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500">
                 <ChevronLeft className="w-3.5 h-3.5" />
@@ -272,6 +302,10 @@ export function Sidebar() {
               { icon: <Home className="w-3.5 h-3.5" />, label: "Dashboard", href: "/dashboard" },
               { icon: <Inbox className="w-3.5 h-3.5" />, label: "Inbox", badge: "3", href: "/inbox" },
               { icon: <Calendar className="w-3.5 h-3.5" />, label: "Calendar", href: "/calendar" },
+              { icon: <Target className="w-3.5 h-3.5" />, label: "Goals", href: "/goals" },
+              { icon: <Zap className="w-3.5 h-3.5" />, label: "Automations", href: "/automations" },
+              { icon: <Plug className="w-3.5 h-3.5" />, label: "Integrations", href: "/integrations" },
+              { icon: <FolderOpen className="w-3.5 h-3.5" />, label: "Files", href: "/files" },
               { icon: <Users className="w-3.5 h-3.5" />, label: "Team", href: "/team" },
             ].map((item) => (
               <SItem key={item.label} icon={item.icon} label={item.label} badge={item.badge}
@@ -297,10 +331,9 @@ export function Sidebar() {
 
           {/* Workspace tree */}
           <div>
-            {/* Docs section */}
             <SectionHeader
               label="Docs"
-              onAdd={() => openModal({ type: "createDoc", workspaceId: activeWorkspaceId })}
+              onAdd={canCreateDoc ? () => openModal({ type: "createDoc", workspaceId: activeWorkspaceId }) : undefined}
               addTooltip="New doc"
             />
             <SItem icon={<FileText className="w-3.5 h-3.5" />} label="All docs"
@@ -315,16 +348,17 @@ export function Sidebar() {
                       onClick={() => router.push(`/workspace/${d.workspaceId}/doc/${d.id}`)}
                       menuItems={docMenuItems(d.id, d.title)} />
                   ))}
-                  <SItem icon={<Plus className="w-3 h-3" />} label="New doc" depth={1}
-                    onClick={() => openModal({ type: "createDoc", workspaceId: activeWorkspaceId })} />
+                  {canCreateDoc && (
+                    <SItem icon={<Plus className="w-3 h-3" />} label="New doc" depth={1}
+                      onClick={() => openModal({ type: "createDoc", workspaceId: activeWorkspaceId })} />
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Boards section */}
             <SectionHeader
               label="Boards"
-              onAdd={() => openModal({ type: "createBoard", workspaceId: activeWorkspaceId })}
+              onAdd={canCreateBoard ? () => openModal({ type: "createBoard", workspaceId: activeWorkspaceId }) : undefined}
               addTooltip="New board"
             />
             <SItem icon={<Kanban className="w-3.5 h-3.5" />} label="All boards"
@@ -339,8 +373,10 @@ export function Sidebar() {
                       onClick={() => router.push(`/workspace/${b.workspaceId}/board/${b.id}`)}
                       menuItems={boardMenuItems(b.id, b.name)} />
                   ))}
-                  <SItem icon={<Plus className="w-3 h-3" />} label="New board" depth={1}
-                    onClick={() => openModal({ type: "createBoard", workspaceId: activeWorkspaceId })} />
+                  {canCreateBoard && (
+                    <SItem icon={<Plus className="w-3 h-3" />} label="New board" depth={1}
+                      onClick={() => openModal({ type: "createBoard", workspaceId: activeWorkspaceId })} />
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

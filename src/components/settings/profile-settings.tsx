@@ -7,6 +7,11 @@ import { SettingsLayout, SettingSection } from "./settings-layout";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
 import { CURRENT_USER } from "@/data/dummy-users";
+import { ChangePasswordDialog } from "./security/change-password-dialog";
+import { Enable2faDialog } from "./security/enable-2fa-dialog";
+import { ManageSessionsDialog } from "./security/manage-sessions-dialog";
+
+type SecurityFlow = "password" | "twofa" | "sessions" | null;
 
 export default function ProfileSettings() {
   const { user, profiles, updateProfile, addProfileSkill, removeProfileSkill, addProfileLink, removeProfileLink } = useAppStore();
@@ -24,6 +29,7 @@ export default function ProfileSettings() {
   const [skillInput, setSkillInput] = useState("");
   const [linkLabel, setLinkLabel] = useState("");
   const [linkHref, setLinkHref] = useState("");
+  const [securityFlow, setSecurityFlow] = useState<SecurityFlow>(null);
 
   useEffect(() => {
     setTitle(myProfile?.title ?? "");
@@ -202,9 +208,9 @@ export default function ProfileSettings() {
 
       <SettingSection title="Security" desc="Manage your password and two-factor authentication.">
         {[
-          { label: "Password", desc: "Last changed 3 months ago", cta: "Change" },
-          { label: "Two-factor authentication", desc: "Add an extra layer of security", cta: "Enable" },
-          { label: "Active sessions", desc: "2 active devices — see what's signed in", cta: "Manage" },
+          { label: "Password", desc: "Last changed 3 months ago", cta: "Change", flow: "password" as const },
+          { label: "Two-factor authentication", desc: "Add an extra layer of security", cta: "Enable", flow: "twofa" as const },
+          { label: "Active sessions", desc: "2 active devices — see what's signed in", cta: "Manage", flow: "sessions" as const },
         ].map((item, i) => (
           <div key={item.label}>
             {i > 0 && <div className="h-px bg-gray-100 dark:bg-gray-800 my-3" />}
@@ -214,7 +220,7 @@ export default function ProfileSettings() {
                 <div className="text-xs text-gray-400">{item.desc}</div>
               </div>
               <button
-                onClick={() => toast.info(`${item.cta} flow coming soon`)}
+                onClick={() => setSecurityFlow(item.flow)}
                 className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm shadow-orange-500/20"
               >
                 {item.cta}
@@ -223,6 +229,19 @@ export default function ProfileSettings() {
           </div>
         ))}
       </SettingSection>
+
+      <ChangePasswordDialog
+        open={securityFlow === "password"}
+        onOpenChange={(v) => setSecurityFlow(v ? "password" : null)}
+      />
+      <Enable2faDialog
+        open={securityFlow === "twofa"}
+        onOpenChange={(v) => setSecurityFlow(v ? "twofa" : null)}
+      />
+      <ManageSessionsDialog
+        open={securityFlow === "sessions"}
+        onOpenChange={(v) => setSecurityFlow(v ? "sessions" : null)}
+      />
     </SettingsLayout>
   );
 }

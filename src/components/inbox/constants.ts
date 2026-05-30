@@ -25,6 +25,7 @@ export const SIDEBAR_TABS = [
   { key: "unread", label: "Unread" },
   { key: "threads", label: "Threads" },
   { key: "drafts", label: "Drafts" },
+  { key: "saved", label: "Saved" },
 ] as const;
 
 export type ChatSidebarTab = (typeof SIDEBAR_TABS)[number]["key"];

@@ -8,9 +8,13 @@ import type { CardComment } from "@/types";
 export function CardDetailComments({
   comments,
   onAdd,
+  canComment,
+  role,
 }: {
   comments: CardComment[];
   onAdd: (text: string) => void;
+  canComment: boolean;
+  role: string;
 }) {
   const [commentInput, setCommentInput] = useState("");
 
@@ -59,12 +63,13 @@ export function CardDetailComments({
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAddComment(); }
             }}
-            placeholder="Add a comment…"
+            disabled={!canComment}
+            placeholder={canComment ? "Add a comment…" : `Your role (${role}) can't comment`}
             rows={1}
-            className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-lg text-sm resize-none outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors"
+            className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-lg text-sm resize-none outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ minHeight: 36 }}
           />
-          {commentInput.trim() && (
+          {canComment && commentInput.trim() && (
             <div className="flex justify-end">
               <button
                 onClick={handleAddComment}

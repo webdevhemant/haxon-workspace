@@ -22,6 +22,7 @@ export function CardDetailSidebar({
   onAddLabel,
   onRemoveLabel,
   onToggleFollower,
+  canEdit,
 }: {
   card: Card;
   colId: string;
@@ -35,6 +36,7 @@ export function CardDetailSidebar({
   onAddLabel: (label: string) => void;
   onRemoveLabel: (label: string) => void;
   onToggleFollower: (userId: string) => void;
+  canEdit: boolean;
 }) {
   const [labelInput, setLabelInput] = useState("");
   const [addingLabel, setAddingLabel] = useState(false);
@@ -63,14 +65,15 @@ export function CardDetailSidebar({
         <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Status</span>
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
+            <DropdownMenu.Trigger asChild disabled={!canEdit}>
               <button
-                className="flex items-center gap-1.5 text-xs font-semibold px-2 py-1 rounded-md hover:opacity-80 transition-colors"
+                disabled={!canEdit}
+                className="flex items-center gap-1.5 text-xs font-semibold px-2 py-1 rounded-md hover:opacity-80 transition-colors disabled:cursor-not-allowed"
                 style={{ background: (currentCol?.color ?? "#9CA3AF") + "18", color: currentCol?.color ?? "#9CA3AF" }}
               >
                 <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: currentCol?.color ?? "#9CA3AF" }} />
                 {currentCol?.name ?? "—"}
-                <ChevronDown className="w-2.5 h-2.5 ml-0.5" />
+                {canEdit && <ChevronDown className="w-2.5 h-2.5 ml-0.5" />}
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -98,11 +101,11 @@ export function CardDetailSidebar({
         <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Priority</span>
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+            <DropdownMenu.Trigger asChild disabled={!canEdit}>
+              <button disabled={!canEdit} className="flex items-center gap-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors disabled:cursor-not-allowed">
                 <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: priorityConfig.color }} />
                 {priorityConfig.label}
-                <ChevronDown className="w-2.5 h-2.5 text-gray-400" />
+                {canEdit && <ChevronDown className="w-2.5 h-2.5 text-gray-400" />}
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -133,8 +136,8 @@ export function CardDetailSidebar({
         <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Assignee</span>
           <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors min-w-0">
+            <DropdownMenu.Trigger asChild disabled={!canEdit}>
+              <button disabled={!canEdit} className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors min-w-0 disabled:cursor-not-allowed">
                 {card.assigneeId ? (
                   <>
                     <UserAvatar user={USERS.find((u) => u.id === card.assigneeId)} size={18} />
@@ -143,7 +146,7 @@ export function CardDetailSidebar({
                 ) : (
                   <span className="text-gray-400">Unassigned</span>
                 )}
-                <ChevronDown className="w-2.5 h-2.5 text-gray-400 flex-shrink-0" />
+                {canEdit && <ChevronDown className="w-2.5 h-2.5 text-gray-400 flex-shrink-0" />}
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
@@ -177,20 +180,28 @@ export function CardDetailSidebar({
 
         <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Start date</span>
-          <DatePicker
-            value={card.startDate}
-            onChange={onUpdateStartDate}
-            placeholder="Not set"
-          />
+          {canEdit ? (
+            <DatePicker
+              value={card.startDate}
+              onChange={onUpdateStartDate}
+              placeholder="Not set"
+            />
+          ) : (
+            <span className="text-xs text-gray-500 dark:text-gray-400">{card.startDate ?? "—"}</span>
+          )}
         </div>
 
         <div className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
           <span className="text-xs font-medium text-gray-400 w-20 flex-shrink-0">Due date</span>
-          <DatePicker
-            value={card.dueDate !== "—" ? card.dueDate : undefined}
-            onChange={onUpdateDueDate}
-            placeholder="Not set"
-          />
+          {canEdit ? (
+            <DatePicker
+              value={card.dueDate !== "—" ? card.dueDate : undefined}
+              onChange={onUpdateDueDate}
+              placeholder="Not set"
+            />
+          ) : (
+            <span className="text-xs text-gray-500 dark:text-gray-400">{card.dueDate}</span>
+          )}
         </div>
 
         <div className="flex items-start gap-3 py-2 border-b border-gray-100 dark:border-gray-800">
@@ -202,12 +213,14 @@ export function CardDetailSidebar({
                 className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 text-[10px] font-medium rounded-md"
               >
                 {label}
-                <button onClick={() => onRemoveLabel(label)} className="hover:text-red-500 transition-colors ml-0.5">
-                  <X className="w-2.5 h-2.5" />
-                </button>
+                {canEdit && (
+                  <button onClick={() => onRemoveLabel(label)} className="hover:text-red-500 transition-colors ml-0.5">
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                )}
               </span>
             ))}
-            {addingLabel ? (
+            {canEdit && addingLabel && (
               <input
                 ref={labelInputRef}
                 value={labelInput}
@@ -220,13 +233,17 @@ export function CardDetailSidebar({
                 placeholder="Label…"
                 className="text-[10px] px-1.5 py-0.5 border border-orange-400 rounded-md outline-none w-16 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300"
               />
-            ) : (
+            )}
+            {canEdit && !addingLabel && (
               <button
                 onClick={() => setAddingLabel(true)}
                 className="flex items-center justify-center w-5 h-5 rounded-md border border-dashed border-gray-300 dark:border-gray-600 text-gray-400 hover:text-gray-600 hover:border-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500 transition-colors"
               >
                 <Plus className="w-2.5 h-2.5" />
               </button>
+            )}
+            {!canEdit && labels.length === 0 && (
+              <span className="text-xs text-gray-400">No labels</span>
             )}
           </div>
         </div>

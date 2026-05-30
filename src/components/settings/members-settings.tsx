@@ -9,6 +9,7 @@ import { useAppStore } from "@/store/app-store";
 import { asRole, capabilityCount, ROLE_COLOR, ROLE_DESCRIPTIONS, ROLES, type WorkspaceRole } from "@/lib/rbac";
 import { useCan, useCurrentRole } from "@/lib/use-can";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { ChangeRoleSubMenu } from "./members/change-role-submenu";
 
 interface PendingInvite {
   email: string;
@@ -45,6 +46,25 @@ export default function MembersSettings() {
   const [emails, setEmails] = useState("");
   const [role, setRole] = useState<WorkspaceRole>("Member");
   const [invites, setInvites] = useState<PendingInvite[]>(SEED_INVITES);
+  const [pendingRoleChanges, setPendingRoleChanges] = useState<Record<string, WorkspaceRole>>({});
+
+  const handleRoleChange = (memberId: string, currentRole: WorkspaceRole, nextRole: WorkspaceRole, memberName: string) => {
+    if (!canChangeRole) {
+      toast.error(`Your role (${currentRole}) can't change roles`);
+      return;
+    }
+    if (nextRole === currentRole) {
+      setPendingRoleChanges((prev) => {
+        const next = { ...prev };
+        delete next[memberId];
+        return next;
+      });
+      toast(`${memberName} stays ${currentRole}`);
+      return;
+    }
+    setPendingRoleChanges((prev) => ({ ...prev, [memberId]: nextRole }));
+    toast.success(`${memberName} will be ${nextRole}`);
+  };
 
   const sendInvites = () => {
     if (!canInvite) {
@@ -169,7 +189,11 @@ export default function MembersSettings() {
 
       <SettingSection title={`${members.length} active members`} desc="Manage roles and access for everyone in your workspace.">
         <div className="-mx-4">
-          {members.map((m, i) => (
+          {members.map((m, i) => {
+            const memberRole = asRole(m.role);
+            const pendingRole = pendingRoleChanges[m.id];
+            const displayedRole = pendingRole ?? memberRole;
+            return (
             <div key={m.id} className={`flex items-center gap-4 px-4 py-3 ${i > 0 ? "border-t border-gray-100 dark:border-gray-800" : ""}`}>
               <UserAvatar user={m} size={36} />
               <div className="flex-1 min-w-0">
@@ -181,7 +205,14 @@ export default function MembersSettings() {
                 </div>
                 <div className="text-xs text-gray-400">{m.email}</div>
               </div>
-              <RoleChip role={asRole(m.role)} />
+              <div className="flex items-center gap-1.5">
+                <RoleChip role={displayedRole} />
+                {pendingRole && (
+                  <span className="text-[9.5px] font-semibold uppercase tracking-wider text-orange-500">
+                    Pending
+                  </span>
+                )}
+              </div>
               {m.id !== "u1" && (
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger asChild>
@@ -195,17 +226,12 @@ export default function MembersSettings() {
                       sideOffset={4}
                       align="end"
                     >
-                      <DropdownMenu.Item
+                      <ChangeRoleSubMenu
+                        currentRole={memberRole}
+                        pendingRole={pendingRole}
                         disabled={!canChangeRole}
-                        onSelect={() =>
-                          canChangeRole
-                            ? toast.info("Change role flow coming soon")
-                            : toast.error(`Your role (${currentRole}) can't change roles`)
-                        }
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
-                      >
-                        Change role
-                      </DropdownMenu.Item>
+                        onPick={(next) => handleRoleChange(m.id, memberRole, next, m.name)}
+                      />
                       <DropdownMenu.Item
                         disabled={!canInvite}
                         onSelect={() =>
@@ -234,7 +260,8 @@ export default function MembersSettings() {
                 </DropdownMenu.Root>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </SettingSection>
 

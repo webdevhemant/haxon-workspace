@@ -9,11 +9,13 @@ export function CardDetailSubtasks({
   onToggle,
   onDelete,
   onAdd,
+  canEdit,
 }: {
   subtasks: CardSubtask[];
   onToggle: (subtaskId: string) => void;
   onDelete: (subtaskId: string) => void;
   onAdd: (title: string) => void;
+  canEdit: boolean;
 }) {
   const [subtaskInput, setSubtaskInput] = useState("");
   const doneCount = subtasks.filter((s) => s.done).length;
@@ -52,7 +54,11 @@ export function CardDetailSubtasks({
             key={st.id}
             className="group flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
           >
-            <button onClick={() => onToggle(st.id)} className="flex-shrink-0 transition-colors">
+            <button
+              onClick={() => canEdit && onToggle(st.id)}
+              disabled={!canEdit}
+              className="flex-shrink-0 transition-colors disabled:cursor-not-allowed"
+            >
               {st.done
                 ? <CheckSquare className="w-4 h-4 text-orange-500" />
                 : <Square className="w-4 h-4 text-gray-300 dark:text-gray-600 hover:text-gray-400" />
@@ -61,32 +67,36 @@ export function CardDetailSubtasks({
             <span className={cn("flex-1 text-sm", st.done && "line-through text-gray-400 dark:text-gray-600")}>
               {st.title}
             </span>
-            <button
-              onClick={() => onDelete(st.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-400 dark:text-gray-600 dark:hover:text-red-500"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+            {canEdit && (
+              <button
+                onClick={() => onDelete(st.id)}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-300 hover:text-red-400 dark:text-gray-600 dark:hover:text-red-500"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-2 mt-1">
-        <input
-          value={subtaskInput}
-          onChange={(e) => setSubtaskInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") handleAddSubtask(); }}
-          placeholder="Add a subtask…"
-          className="flex-1 text-sm px-3 py-1.5 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-lg outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors"
-        />
-        <button
-          onClick={handleAddSubtask}
-          disabled={!subtaskInput.trim()}
-          className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors"
-        >
-          Add
-        </button>
-      </div>
+      {canEdit && (
+        <div className="flex items-center gap-2 mt-1">
+          <input
+            value={subtaskInput}
+            onChange={(e) => setSubtaskInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") handleAddSubtask(); }}
+            placeholder="Add a subtask…"
+            className="flex-1 text-sm px-3 py-1.5 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-lg outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors"
+          />
+          <button
+            onClick={handleAddSubtask}
+            disabled={!subtaskInput.trim()}
+            className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors"
+          >
+            Add
+          </button>
+        </div>
+      )}
     </div>
   );
 }

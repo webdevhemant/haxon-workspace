@@ -1,20 +1,23 @@
 "use client";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Hash, Pin, Bell, BellOff, Phone, Video, Users, Search, MoreHorizontal } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
-import type { ChatChannel } from "@/types";
+import type { ChatChannel, ChatMessage } from "@/types";
 import { PresenceDot } from "@/components/ui/presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import { CURRENT_USER_ID } from "./constants";
+import { ChannelSearchPopover } from "./channel/channel-search-popover";
+import { ChannelSettingsDialog } from "./channel/channel-settings-dialog";
 
 interface Props {
   channel: ChatChannel;
+  messages?: ChatMessage[];
   onToggleInfo: () => void;
   infoOpen: boolean;
-  onSearch: () => void;
   onPinned: () => void;
   onStartCall: () => void;
   onStartHuddle: () => void;
@@ -22,12 +25,16 @@ interface Props {
   onPinChannel: () => void;
   onMarkRead: () => void;
   onLeave: () => void;
+  onUpdateChannel?: (patch: Partial<ChatChannel>) => void;
+  onJumpToMessage?: (id: string) => void;
 }
 
 export function ChatHeader({
-  channel, onToggleInfo, infoOpen, onSearch, onPinned,
-  onStartCall, onStartHuddle, onMute, onPinChannel, onMarkRead, onLeave,
+  channel, messages = [], onToggleInfo, infoOpen, onPinned,
+  onStartCall, onStartHuddle, onMute, onPinChannel, onMarkRead, onLeave, onUpdateChannel, onJumpToMessage,
 }: Props) {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const isDM = channel.kind === "dm";
   const otherId = channel.memberIds.find((id) => id !== CURRENT_USER_ID);
   const other = otherId ? USERS.find((u) => u.id === otherId) : undefined;
@@ -79,9 +86,17 @@ export function ChatHeader({
         <HeaderBtn title="Start huddle" onClick={onStartHuddle}>
           <Video className="w-3.5 h-3.5" />
         </HeaderBtn>
-        <HeaderBtn title="Search in channel" onClick={onSearch}>
-          <Search className="w-3.5 h-3.5" />
-        </HeaderBtn>
+        <ChannelSearchPopover
+          open={searchOpen}
+          onOpenChange={setSearchOpen}
+          channelName={channel.name}
+          messages={messages}
+          trigger={
+            <HeaderBtn title="Search in channel" onClick={() => setSearchOpen(true)}>
+              <Search className="w-3.5 h-3.5" />
+            </HeaderBtn>
+          }
+        />
         <HeaderBtn title="Pinned messages" onClick={onPinned}>
           <Pin className="w-3.5 h-3.5" />
         </HeaderBtn>
@@ -103,8 +118,15 @@ export function ChatHeader({
           onPinChannel={onPinChannel}
           onMarkRead={onMarkRead}
           onLeave={onLeave}
+          onOpenSettings={() => setSettingsOpen(true)}
         />
       </div>
+      <ChannelSettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        channel={channel}
+        onSave={(patch) => onUpdateChannel?.(patch)}
+      />
     </div>
   );
 }
@@ -129,12 +151,13 @@ function HeaderBtn({
 }
 
 function ChannelMoreMenu({
-  channel, onPinChannel, onMarkRead, onLeave,
+  channel, onPinChannel, onMarkRead, onLeave, onOpenSettings,
 }: {
   channel: ChatChannel;
   onPinChannel: () => void;
   onMarkRead: () => void;
   onLeave: () => void;
+  onOpenSettings: () => void;
 }) {
   const copyLink = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -165,7 +188,7 @@ function ChannelMoreMenu({
             onSelect={() => { onPinChannel(); toast(`${channel.name} ${channel.isPinned ? "unpinned" : "pinned"}`); }}
           />
           <Item label="Mark all as read" onSelect={() => { onMarkRead(); toast.success("Marked as read"); }} />
-          <Item label="Channel settings" onSelect={() => toast.info("Settings coming soon")} />
+          <Item label="Channel settings" onSelect={onOpenSettings} />
           <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
           <Item
             label={channel.kind === "channel" ? "Leave channel" : "Close conversation"}

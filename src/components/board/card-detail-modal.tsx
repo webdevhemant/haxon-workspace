@@ -1,6 +1,7 @@
 "use client";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useAppStore } from "@/store/app-store";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import type { Card } from "@/types";
 import { CardDetailHeader } from "./card-detail/header";
 import { CardDetailTitleAndDescription } from "./card-detail/description";
@@ -17,6 +18,9 @@ export function CardDetailModal({
     addComment, toggleFollower,
     boards,
   } = useAppStore();
+  const role = useCurrentRole();
+  const canEdit = useCan("board.edit");
+  const canComment = useCan("comment.add");
 
   const board = boards.find((b) => b.id === boardId);
   const currentCol = board?.columns.find((c) => c.id === colId);
@@ -43,6 +47,7 @@ export function CardDetailModal({
                 initialDescription={card.description ?? ""}
                 onCommitTitle={(v) => updateCard(boardId, colId, card.id, { title: v })}
                 onCommitDescription={(v) => updateCard(boardId, colId, card.id, { description: v })}
+                canEdit={canEdit}
               />
 
               <CardDetailSubtasks
@@ -50,11 +55,14 @@ export function CardDetailModal({
                 onToggle={(stId) => toggleSubtask(boardId, colId, card.id, stId)}
                 onDelete={(stId) => deleteSubtask(boardId, colId, card.id, stId)}
                 onAdd={(title) => addSubtask(boardId, colId, card.id, title)}
+                canEdit={canEdit}
               />
 
               <CardDetailComments
                 comments={comments}
                 onAdd={(text) => addComment(boardId, colId, card.id, text)}
+                canComment={canComment}
+                role={role}
               />
             </div>
 
@@ -71,6 +79,7 @@ export function CardDetailModal({
               onAddLabel={(label) => updateCard(boardId, colId, card.id, { labels: [...labels, label] })}
               onRemoveLabel={(label) => updateCard(boardId, colId, card.id, { labels: labels.filter((l) => l !== label) })}
               onToggleFollower={(userId) => toggleFollower(boardId, colId, card.id, userId)}
+              canEdit={canEdit}
             />
           </div>
         </Dialog.Content>

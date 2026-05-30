@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
-import { Search, Plus, ChevronDown } from "lucide-react";
+import { Search, Plus, ChevronDown, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
 import { ChatSidebarItem } from "./chat-sidebar-item";
@@ -13,10 +13,12 @@ interface Props {
   activeId: string | null;
   onSelect: (id: string) => void;
   onStartDmWith: (userId: string) => void;
+  tab: ChatSidebarTab;
+  onTabChange: (tab: ChatSidebarTab) => void;
+  savedCount?: number;
 }
 
-export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith }: Props) {
-  const [tab, setTab] = useState<ChatSidebarTab>("all");
+export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, onTabChange, savedCount = 0 }: Props) {
   const [query, setQuery] = useState("");
   const [openSection, setOpenSection] = useState<Record<string, boolean>>({
     channels: true,
@@ -74,19 +76,25 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith }: Pro
         </div>
 
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-wrap">
           {SIDEBAR_TABS.map((t) => (
             <button
               key={t.key}
-              onClick={() => setTab(t.key)}
+              onClick={() => onTabChange(t.key)}
               className={cn(
-                "px-2.5 py-1 rounded-full text-[11px] font-medium transition-all",
+                "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all",
                 tab === t.key
                   ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm border border-gray-200 dark:border-gray-700"
                   : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200",
               )}
             >
+              {t.key === "saved" && <Bookmark className="w-2.5 h-2.5" />}
               {t.label}
+              {t.key === "saved" && savedCount > 0 && (
+                <span className="text-[9.5px] tabular-nums text-orange-600 dark:text-orange-400 font-semibold">
+                  {savedCount}
+                </span>
+              )}
             </button>
           ))}
         </div>

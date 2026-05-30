@@ -1,18 +1,23 @@
 "use client";
 import { toast } from "sonner";
-import { Reply, Pin, MoreHorizontal, Copy, BookmarkPlus, Trash2 } from "lucide-react";
+import { Reply, Pin, MoreHorizontal, Copy, BookmarkPlus, BookmarkCheck, Trash2 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAppStore } from "@/store/app-store";
 import { QUICK_EMOJI } from "./constants";
 
 interface Props {
+  messageId: string;
   onReact: (emoji: string) => void;
   onOpenThread: () => void;
   onPin?: () => void;
   onCopy?: () => void;
 }
 
-export function ChatMessageToolbar({ onReact, onOpenThread, onPin, onCopy }: Props) {
+export function ChatMessageToolbar({ messageId, onReact, onOpenThread, onPin, onCopy }: Props) {
+  const saved = useAppStore((s) => s.savedMessageIds.includes(messageId));
+  const toggleSaved = useAppStore((s) => s.toggleSavedMessage);
+
   return (
     <div className="absolute right-4 -top-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
       <div className="flex items-center gap-0.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm p-0.5">
@@ -33,7 +38,19 @@ export function ChatMessageToolbar({ onReact, onOpenThread, onPin, onCopy }: Pro
         <ToolbarBtn title="Pin" onClick={() => { onPin?.(); toast.success("Pinned"); }}>
           <Pin className="w-3.5 h-3.5" />
         </ToolbarBtn>
-        <MessageMoreMenu onCopy={onCopy} />
+        <ToolbarBtn
+          title={saved ? "Unsave" : "Save for later"}
+          onClick={() => {
+            toggleSaved(messageId);
+            toast.success(saved ? "Removed from saved" : "Saved for later");
+          }}
+        >
+          {saved
+            ? <BookmarkCheck className="w-3.5 h-3.5 text-orange-500" />
+            : <BookmarkPlus className="w-3.5 h-3.5" />
+          }
+        </ToolbarBtn>
+        <MessageMoreMenu messageId={messageId} saved={saved} onCopy={onCopy} onToggleSaved={() => toggleSaved(messageId)} />
       </div>
     </div>
   );
@@ -53,7 +70,9 @@ function ToolbarBtn({
   );
 }
 
-function MessageMoreMenu({ onCopy }: { onCopy?: () => void }) {
+function MessageMoreMenu({
+  saved, onCopy, onToggleSaved,
+}: { messageId: string; saved: boolean; onCopy?: () => void; onToggleSaved: () => void }) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -76,9 +95,15 @@ function MessageMoreMenu({ onCopy }: { onCopy?: () => void }) {
             onSelect={() => { onCopy?.(); toast.success("Copied"); }}
           />
           <MenuItem
-            label="Save for later"
-            icon={<BookmarkPlus className="w-3.5 h-3.5" />}
-            onSelect={() => toast.success("Saved")}
+            label={saved ? "Remove from saved" : "Save for later"}
+            icon={saved
+              ? <BookmarkCheck className="w-3.5 h-3.5 text-orange-500" />
+              : <BookmarkPlus className="w-3.5 h-3.5" />
+            }
+            onSelect={() => {
+              onToggleSaved();
+              toast.success(saved ? "Removed from saved" : "Saved");
+            }}
           />
           <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
           <MenuItem

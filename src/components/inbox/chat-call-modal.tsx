@@ -10,6 +10,8 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS, CURRENT_USER } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
 import type { ChatChannel } from "@/types";
+import { ScreenShareStage } from "./call/screen-share-stage";
+import { CallChatPanel } from "./call/call-chat-panel";
 
 export type CallMode = "audio" | "huddle";
 
@@ -26,6 +28,8 @@ export function ChatCallModal({ channel, mode, onClose }: Props) {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(mode === "huddle");
   const [elapsed, setElapsed] = useState(0);
+  const [sharing, setSharing] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -99,8 +103,10 @@ export function ChatCallModal({ channel, mode, onClose }: Props) {
         >
           <CallHeader channel={channel} mode={mode} status={status} time={time} />
 
-          <div className="flex-1 overflow-hidden bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
-            {mode === "huddle" ? (
+          <div className="relative flex-1 overflow-hidden bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
+            {sharing ? (
+              <ScreenShareStage onStop={() => { setSharing(false); toast("Screen sharing stopped"); }} />
+            ) : mode === "huddle" ? (
               <HuddleStage
                 status={status}
                 camOn={camOn}
@@ -110,14 +116,24 @@ export function ChatCallModal({ channel, mode, onClose }: Props) {
             ) : (
               <CallStage otherMembers={otherMembers} status={status} />
             )}
+            {chatOpen && (
+              <CallChatPanel
+                channelName={channel.kind === "dm" ? channel.name : `#${channel.name}`}
+                onClose={() => setChatOpen(false)}
+              />
+            )}
           </div>
 
           <CallControls
             mode={mode}
             micOn={micOn}
             camOn={camOn}
+            sharing={sharing}
+            chatOpen={chatOpen}
             setMicOn={setMicOn}
             setCamOn={setCamOn}
+            setSharing={setSharing}
+            setChatOpen={setChatOpen}
             onEnd={handleEnd}
           />
         </Dialog.Content>
@@ -229,13 +245,17 @@ function CallStage({
 }
 
 function CallControls({
-  mode, micOn, camOn, setMicOn, setCamOn, onEnd,
+  mode, micOn, camOn, sharing, chatOpen, setMicOn, setCamOn, setSharing, setChatOpen, onEnd,
 }: {
   mode: CallMode;
   micOn: boolean;
   camOn: boolean;
+  sharing: boolean;
+  chatOpen: boolean;
   setMicOn: (v: boolean) => void;
   setCamOn: (v: boolean) => void;
+  setSharing: (v: boolean) => void;
+  setChatOpen: (v: boolean) => void;
   onEnd: () => void;
 }) {
   return (
@@ -256,10 +276,21 @@ function CallControls({
           {camOn ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
         </ControlBtn>
       )}
-      <ControlBtn title="Share screen" onClick={() => toast.info("Screen share coming soon")}>
+      <ControlBtn
+        title={sharing ? "Stop sharing" : "Share screen"}
+        onClick={() => {
+          setSharing(!sharing);
+          toast(sharing ? "Screen sharing stopped" : "Sharing your screen");
+        }}
+        on={sharing}
+      >
         <MonitorUp className="w-4 h-4" />
       </ControlBtn>
-      <ControlBtn title="Chat" onClick={() => toast.info("Chat panel coming soon")}>
+      <ControlBtn
+        title={chatOpen ? "Hide chat" : "Show chat"}
+        onClick={() => setChatOpen(!chatOpen)}
+        on={chatOpen}
+      >
         <MessageSquare className="w-4 h-4" />
       </ControlBtn>
       <ControlBtn title="Invite" onClick={() => toast.info("Invite link copied")}>
@@ -280,8 +311,8 @@ function CallControls({
 }
 
 function ControlBtn({
-  children, title, onClick, active,
-}: { children: React.ReactNode; title: string; onClick: () => void; active?: boolean }) {
+  children, title, onClick, active, on,
+}: { children: React.ReactNode; title: string; onClick: () => void; active?: boolean; on?: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -290,7 +321,9 @@ function ControlBtn({
         "w-10 h-10 rounded-full flex items-center justify-center transition-colors",
         active
           ? "bg-rose-500/20 text-rose-300 hover:bg-rose-500/30"
-          : "bg-white/10 text-white hover:bg-white/15",
+          : on
+            ? "bg-emerald-500/25 text-emerald-200 hover:bg-emerald-500/35"
+            : "bg-white/10 text-white hover:bg-white/15",
       )}
     >
       {children}

@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { Check, CreditCard, Download, Sparkles } from "lucide-react";
 import { SettingsLayout, SettingSection } from "./settings-layout";
 import { cn } from "@/lib/utils";
+import { ManagePlanDialog } from "./billing/manage-plan-dialog";
+import { UpdateCardDialog } from "./billing/update-card-dialog";
 
 const INVOICES = [
   { date: "Aug 1, 2026", amount: "$144.00", invoice: "INV-2026-0008", status: "Paid" },
@@ -43,6 +45,8 @@ const USAGE = [
 
 export default function BillingSettings() {
   const [promo, setPromo] = useState("");
+  const [planOpen, setPlanOpen] = useState(false);
+  const [cardOpen, setCardOpen] = useState(false);
 
   return (
     <SettingsLayout title="Billing">
@@ -57,7 +61,7 @@ export default function BillingSettings() {
             <div className="text-xs text-gray-400 mt-1">Next invoice on Sep 1, 2026 — $144.00</div>
           </div>
           <button
-            onClick={() => toast.info("Plan management coming soon")}
+            onClick={() => setPlanOpen(true)}
             className="px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Manage plan
@@ -88,7 +92,7 @@ export default function BillingSettings() {
             <div className="text-xs text-gray-400">Expires 09/2028 · billing@haxon.app</div>
           </div>
           <button
-            onClick={() => toast.info("Update card flow coming soon")}
+            onClick={() => setCardOpen(true)}
             className="px-3 py-1.5 text-xs font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             Update
@@ -128,7 +132,7 @@ export default function BillingSettings() {
                 ))}
               </ul>
               <button
-                onClick={() => toast.info(p.current ? "Already on this plan" : `Switching to ${p.name}…`)}
+                onClick={() => (p.current ? toast.info("Already on this plan") : setPlanOpen(true))}
                 disabled={p.current}
                 className={cn(
                   "w-full text-xs font-semibold py-1.5 rounded-lg transition-colors",
@@ -193,6 +197,9 @@ export default function BillingSettings() {
           ))}
         </div>
       </SettingSection>
+
+      <ManagePlanDialog open={planOpen} onOpenChange={setPlanOpen} />
+      <UpdateCardDialog open={cardOpen} onOpenChange={setCardOpen} />
     </SettingsLayout>
   );
 }
