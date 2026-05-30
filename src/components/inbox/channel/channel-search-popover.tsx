@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import * as Popover from "@radix-ui/react-popover";
 import { Search, X } from "lucide-react";
 import { USERS } from "@/data/dummy-users";
 import { UserAvatar } from "@/components/ui/user-avatar";
@@ -35,6 +34,7 @@ function highlight(text: string, query: string) {
 export function ChannelSearchPopover({ open, onOpenChange, trigger, channelName, messages }: Props) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -42,6 +42,24 @@ export function ChannelSearchPopover({ open, onOpenChange, trigger, channelName,
       setTimeout(() => inputRef.current?.focus(), 0);
     }
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        onOpenChange(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onOpenChange(false);
+    };
+    setTimeout(() => document.addEventListener("mousedown", onClick), 0);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open, onOpenChange]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -52,13 +70,12 @@ export function ChannelSearchPopover({ open, onOpenChange, trigger, channelName,
   }, [messages, query]);
 
   return (
-    <Popover.Root open={open} onOpenChange={onOpenChange}>
-      <Popover.Trigger asChild>{trigger}</Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          align="end"
-          sideOffset={6}
-          className="w-[360px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden"
+    <div className="relative inline-flex">
+      {trigger}
+      {open && (
+        <div
+          ref={popoverRef}
+          className="absolute right-0 top-full mt-2 w-[360px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden"
         >
           <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <Search className="w-3.5 h-3.5 text-gray-400" />
@@ -123,8 +140,8 @@ export function ChannelSearchPopover({ open, onOpenChange, trigger, channelName,
               </>
             )}
           </div>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
+        </div>
+      )}
+    </div>
   );
 }

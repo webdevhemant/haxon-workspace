@@ -2,6 +2,8 @@
 
 A modern, AI-native team workspace — docs, boards, calendar, chat, goals, automations, integrations, files, and an AI assistant unified in one blazing-fast product. Built with Next.js 16, TailwindCSS v4, and Zustand.
 
+**Live:** [haxonworkspace.vercel.app](https://haxonworkspace.vercel.app)
+
 ## Stack
 
 | Layer | Choice |
@@ -19,8 +21,6 @@ A modern, AI-native team workspace — docs, boards, calendar, chat, goals, auto
 ## Getting Started
 
 ```bash
-# Requires Node 20+
-nvm use 20
 pnpm install
 pnpm dev
 ```
@@ -127,6 +127,5 @@ Editable state persists to localStorage via Zustand `persist`:
 
 ## Development Notes
 
-- Node 14 (macOS system default) is too old for this project. Use `nvm use 20`.
 - All data is in-memory dummy data — no backend or database.
 - The app auto-authenticates as `maya@haxon.app` in the product shell.

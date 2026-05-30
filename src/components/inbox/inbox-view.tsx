@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import { ChatSidebar } from "./chat-sidebar";
 import { ChatHeader } from "./chat-header";
 import { ChatThread } from "./chat-thread";
@@ -15,13 +16,10 @@ import { ChatSavedList } from "./chat-saved-list";
 import { ChatScheduledStrip } from "./chat-scheduled-strip";
 import { useChat } from "./use-chat";
 import type { ChatSidebarTab } from "./constants";
-import { useCan, useCurrentRole } from "@/lib/use-can";
 
 export default function InboxView() {
   const { workspaces, activeWorkspaceId, savedMessageIds, scheduleMessage } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
-  const canMessage = useCan("channel.message");
-  const role = useCurrentRole();
 
   const {
     channels,
@@ -43,6 +41,8 @@ export default function InboxView() {
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [callMode, setCallMode] = useState<CallMode | null>(null);
+  const canMessage = useCan("channel.message");
+  const role = useCurrentRole();
   const [tab, setTab] = useState<ChatSidebarTab>("all");
 
   const activeChannel = channels.find((c) => c.id === activeChannelId) ?? null;
@@ -146,11 +146,13 @@ export default function InboxView() {
         )}
       </div>
 
-      <ChatCallModal
-        channel={activeChannel}
-        mode={callMode}
-        onClose={() => setCallMode(null)}
-      />
+      {callMode && activeChannel && (
+        <ChatCallModal
+          channel={activeChannel}
+          mode={callMode}
+          onClose={() => setCallMode(null)}
+        />
+      )}
     </div>
   );
 }

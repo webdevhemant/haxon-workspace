@@ -128,5 +128,65 @@ export const BOARDS: Board[] = [
       },
     ],
   },
-  { id: "b2", workspaceId: "w1", name: "Marketing", emoji: "📣", columns: [] },
+  {
+    id: "b2",
+    workspaceId: "w1",
+    name: "Marketing",
+    emoji: "📣",
+    columns: [
+      {
+        id: "mb1", name: "Backlog", color: "#78716C",
+        cards: [
+          { id: "mk1", title: "Refresh enterprise landing", priority: "High", assigneeId: "u5", dueDate: "Aug 12", tags: ["brand"] },
+          { id: "mk2", title: "Customer story — Atlas Robotics", priority: "Medium", assigneeId: "u1", dueDate: "Aug 22", tags: ["story"] },
+        ],
+      },
+      {
+        id: "mb2", name: "In Progress", color: "#F97316",
+        cards: [
+          { id: "mk3", title: "Q3 launch blog post", priority: "High", assigneeId: "u1", dueDate: "Aug 5", tags: ["launch"] },
+        ],
+      },
+      {
+        id: "mb3", name: "Done", color: "#10B981",
+        cards: [
+          { id: "mk4", title: "Brand voice doc v3", priority: "Medium", assigneeId: "u5", dueDate: "Jul 30", tags: ["brand"] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "b3",
+    workspaceId: "w1",
+    name: "Engineering",
+    emoji: "⚙️",
+    columns: [
+      {
+        id: "eb1", name: "Triage", color: "#78716C",
+        cards: [
+          { id: "ek1", title: "Reconnect bug fix follow-up", priority: "High", assigneeId: "u6", dueDate: "Aug 4", tags: ["bug"] },
+          { id: "ek2", title: "Reduce dashboard fetch fan-out", priority: "Medium", assigneeId: "u4", dueDate: "Aug 20", tags: ["perf"] },
+        ],
+      },
+      {
+        id: "eb2", name: "In Progress", color: "#F97316",
+        cards: [
+          { id: "ek3", title: "Sync Engine v2 — vector clocks", priority: "High", assigneeId: "u3", dueDate: "Aug 15", tags: ["sync"] },
+          { id: "ek4", title: "Streaming improvements — SSE refactor", priority: "High", assigneeId: "u1", dueDate: "Aug 1", tags: ["ai"] },
+        ],
+      },
+      {
+        id: "eb3", name: "In Review", color: "#8B5CF6",
+        cards: [
+          { id: "ek5", title: "Editor block primitives", priority: "Medium", assigneeId: "u6", dueDate: "Jul 31", tags: ["editor"] },
+        ],
+      },
+      {
+        id: "eb4", name: "Done", color: "#10B981",
+        cards: [
+          { id: "ek6", title: "Reconnect bug — initial fix", priority: "High", assigneeId: "u6", dueDate: "Jul 28", tags: ["bug"] },
+        ],
+      },
+    ],
+  },
 ];

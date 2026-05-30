@@ -101,6 +101,12 @@ export function ChatCallModal({ channel, mode, onClose }: Props) {
           className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-950 text-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
           style={{ width: "min(720px, 96vw)", height: "min(560px, 90vh)" }}
         >
+          <Dialog.Title className="sr-only">
+            {mode === "huddle" ? "Huddle" : "Voice call"} with {channel.name}
+          </Dialog.Title>
+          <Dialog.Description className="sr-only">
+            Active {mode === "huddle" ? "video huddle" : "voice call"} window with microphone, camera, and screen-share controls.
+          </Dialog.Description>
           <CallHeader channel={channel} mode={mode} status={status} time={time} />
 
           <div className="relative flex-1 overflow-hidden bg-gradient-to-br from-gray-900 to-gray-950 flex items-center justify-center p-4">
@@ -188,16 +194,19 @@ function HuddleStage({
   return (
     <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-2">
       <div className="relative rounded-xl overflow-hidden bg-gray-800 col-span-2 row-span-1 sm:col-span-1 sm:row-span-2">
-        {camOn ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-white/60">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          className={cn(
+            "w-full h-full object-cover bg-gray-900",
+            !camOn && "opacity-0",
+          )}
+          style={{ transform: "scaleX(-1)" }}
+        />
+        {!camOn && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/60 bg-gray-800">
             <VideoOff className="w-6 h-6" />
             <span className="text-[11px]">Camera off</span>
           </div>
