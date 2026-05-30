@@ -3,11 +3,10 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
   Home, Inbox, Calendar, Users, ChevronRight, ChevronDown, ChevronLeft,
-  Search, Plus, Sun, Moon, Settings, LogOut, MoreHorizontal,
+  Search, Plus, Settings, LogOut, MoreHorizontal,
   ChevronUp, FileText, Kanban, Zap, Plug, Target, FolderOpen,
 } from "lucide-react";
 import { HaxonLogo } from "@/components/ui/haxon-logo";
@@ -157,7 +156,6 @@ function SectionHeader({
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { resolvedTheme, setTheme } = useTheme();
   const {
     workspaces, activeWorkspaceId, docs, boards, favorites,
     expandedFolders, user, sidebarCollapsed,
@@ -418,12 +416,6 @@ export function Sidebar() {
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
 
-            <TooltipWrap label={resolvedTheme === "light" ? "Dark mode" : "Light mode"}>
-              <button onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-200/60 dark:hover:bg-gray-700/60 text-gray-500 flex-shrink-0 transition-colors">
-                {resolvedTheme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-              </button>
-            </TooltipWrap>
           </div>
         </div>
       </div>

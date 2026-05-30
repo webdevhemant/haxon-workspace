@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { toast } from "sonner";
-import { Sun, Moon, Monitor, Check, X, Plus } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import { SettingsLayout, SettingSection } from "./settings-layout";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { useAppStore } from "@/store/app-store";
@@ -16,7 +15,6 @@ type SecurityFlow = "password" | "twofa" | "sessions" | null;
 export default function ProfileSettings() {
   const { user, profiles, updateProfile, addProfileSkill, removeProfileSkill, addProfileLink, removeProfileLink } = useAppStore();
   const myProfile = profiles.find((p) => p.userId === CURRENT_USER.id);
-  const { resolvedTheme, setTheme } = useTheme();
 
   const [name, setName] = useState(user.name);
   const [title, setTitle] = useState(myProfile?.title ?? "");
@@ -174,35 +172,6 @@ export default function ProfileSettings() {
           >
             <Plus className="w-3 h-3" /> Add
           </button>
-        </div>
-      </SettingSection>
-
-      <SettingSection title="Appearance" desc="Customize how Haxon looks for you.">
-        <div className="text-sm font-medium mb-3">Theme</div>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { key: "light", label: "Light", icon: Sun, preview: ["#FFFFFF", "#F5F5F4", "#0C0A09"] },
-            { key: "dark", label: "Dark", icon: Moon, preview: ["#0A0A0A", "#1C1C1C", "#FAFAF9"] },
-            { key: "system", label: "System", icon: Monitor, preview: ["#FFFFFF", "#1C1C1C", "#F97316"] },
-          ].map((t) => {
-            const active = resolvedTheme === t.key || (t.key === "system" && !["light", "dark"].includes(resolvedTheme ?? ""));
-            return (
-              <button
-                key={t.key}
-                onClick={() => setTheme(t.key)}
-                className={`p-3 rounded-xl text-left border-2 transition-all ${active ? "border-orange-500" : "border-gray-100 dark:border-gray-800"}`}
-              >
-                <div className="flex h-14 rounded-lg overflow-hidden mb-2.5 border border-gray-100 dark:border-gray-700">
-                  {t.preview.map((c, i) => <div key={i} className="flex-1" style={{ background: c }} />)}
-                </div>
-                <div className="flex items-center gap-2">
-                  <t.icon className="w-3.5 h-3.5" />
-                  <span className="text-sm font-medium">{t.label}</span>
-                  {active && <Check className="w-3.5 h-3.5 text-orange-500 ml-auto" />}
-                </div>
-              </button>
-            );
-          })}
         </div>
       </SettingSection>
 

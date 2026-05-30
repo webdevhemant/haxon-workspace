@@ -9,7 +9,7 @@ import { Footer } from "./footer";
 
 export default function LandingPage() {
   return (
-    <div className="dark bg-gray-950 text-white min-h-screen">
+    <div className="bg-gray-950 text-white min-h-screen">
       <LandingNav />
       <Hero />
       <Features />

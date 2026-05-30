@@ -11,11 +11,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className="bg-gray-950 text-gray-100">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          forcedTheme="dark"
+          enableSystem={false}
+        >
           {children}
-          <Toaster richColors position="bottom-right" />
+          <Toaster richColors theme="dark" position="bottom-right" />
         </ThemeProvider>
       </body>
     </html>
