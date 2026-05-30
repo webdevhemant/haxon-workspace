@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import { X, Clock } from "lucide-react";
 import { useAppStore } from "@/store/app-store";
 
@@ -7,8 +8,12 @@ interface Props {
 }
 
 export function ChatScheduledStrip({ channelId }: Props) {
-  const scheduled = useAppStore((s) => s.scheduledMessages.filter((m) => m.channelId === channelId));
+  const all = useAppStore((s) => s.scheduledMessages);
   const cancel = useAppStore((s) => s.cancelScheduledMessage);
+  const scheduled = useMemo(
+    () => all.filter((m) => m.channelId === channelId),
+    [all, channelId],
+  );
 
   if (scheduled.length === 0) return null;
 
