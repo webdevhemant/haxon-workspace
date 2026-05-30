@@ -12,6 +12,7 @@ import { PresenceDot } from "@/components/ui/presence-dot";
 import { USERS, CURRENT_USER } from "@/data/dummy-users";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import { useAppStore } from "@/store/app-store";
+import { useCan } from "@/lib/use-can";
 
 interface Props {
   userId: string;
@@ -25,6 +26,7 @@ export default function TeamMemberDetail({ userId }: Props) {
   const workspaces = useAppStore((s) => s.workspaces);
   const activeWorkspaceId = useAppStore((s) => s.activeWorkspaceId);
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canMessage = useCan("team.message");
 
   if (!user) {
     return (
@@ -65,14 +67,14 @@ export default function TeamMemberDetail({ userId }: Props) {
             >
               <Pencil className="w-3 h-3" /> Edit profile
             </Link>
-          ) : (
+          ) : canMessage ? (
             <button
               onClick={() => toast.info(`Opening DM with ${user.name.split(" ")[0]}…`)}
               className="flex items-center gap-1.5 h-7 px-2.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold transition-colors"
             >
               <MessageSquare className="w-3 h-3" /> Message
             </button>
-          )
+          ) : null
         }
       />
 

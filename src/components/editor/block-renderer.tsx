@@ -2,20 +2,21 @@
 import { Sparkles, RefreshCw, Check } from "lucide-react";
 import type { DocBlock } from "@/types";
 
-export function BlockRenderer({ block, onChange }: { block: DocBlock; onChange: (b: DocBlock) => void }) {
-  if (block.type === "h1") return <h1 contentEditable suppressContentEditableWarning className="text-4xl font-bold tracking-tight mt-6 mb-3 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h1>;
-  if (block.type === "h2") return <h2 contentEditable suppressContentEditableWarning className="text-2xl font-semibold tracking-tight mt-5 mb-2 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h2>;
-  if (block.type === "h3") return <h3 contentEditable suppressContentEditableWarning className="text-xl font-semibold mt-4 mb-1 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h3>;
-  if (block.type === "p") return <p contentEditable suppressContentEditableWarning className="text-gray-600 dark:text-gray-400 leading-relaxed mb-2 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</p>;
+export function BlockRenderer({ block, onChange, readOnly = false }: { block: DocBlock; onChange: (b: DocBlock) => void; readOnly?: boolean }) {
+  const editable = !readOnly;
+  if (block.type === "h1") return <h1 contentEditable={editable} suppressContentEditableWarning className="text-4xl font-bold tracking-tight mt-6 mb-3 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h1>;
+  if (block.type === "h2") return <h2 contentEditable={editable} suppressContentEditableWarning className="text-2xl font-semibold tracking-tight mt-5 mb-2 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h2>;
+  if (block.type === "h3") return <h3 contentEditable={editable} suppressContentEditableWarning className="text-xl font-semibold mt-4 mb-1 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</h3>;
+  if (block.type === "p") return <p contentEditable={editable} suppressContentEditableWarning className="text-gray-600 dark:text-gray-400 leading-relaxed mb-2 outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</p>;
   if (block.type === "list") return (
     <ul className="list-disc pl-6 my-2 space-y-1 text-gray-600 dark:text-gray-400 leading-relaxed">
-      {block.items?.map((item, i) => <li key={i} contentEditable suppressContentEditableWarning className="outline-none">{item}</li>)}
+      {block.items?.map((item, i) => <li key={i} contentEditable={editable} suppressContentEditableWarning className="outline-none">{item}</li>)}
     </ul>
   );
   if (block.type === "callout") return (
     <div className="flex gap-3 items-start bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 my-3">
       <span className="text-xl flex-shrink-0">💡</span>
-      <div contentEditable suppressContentEditableWarning className="flex-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</div>
+      <div contentEditable={editable} suppressContentEditableWarning className="flex-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</div>
     </div>
   );
   if (block.type === "ai") return (

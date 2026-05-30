@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { Search, Plus, ChevronDown, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCan } from "@/lib/use-can";
 import type { ChatChannel } from "@/types";
 import { ChatSidebarItem } from "./chat-sidebar-item";
 import { ChatNewConversation } from "./chat-new-conversation";
@@ -19,6 +20,8 @@ interface Props {
 }
 
 export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, onTabChange, savedCount = 0 }: Props) {
+  const canCreateChannel = useCan("channel.create");
+  const canMessage = useCan("team.message");
   const [query, setQuery] = useState("");
   const [openSection, setOpenSection] = useState<Record<string, boolean>>({
     channels: true,
@@ -107,7 +110,7 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, 
           count={channelGroup.length}
           open={openSection.channels}
           onToggle={() => setOpenSection((s) => ({ ...s, channels: !s.channels }))}
-          onAdd={() => toast.info("New shortly")}
+          onAdd={canCreateChannel ? () => toast.info("New shortly") : undefined}
         >
           {channelGroup.map((c) => (
             <ChatSidebarItem
@@ -124,7 +127,7 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, 
           count={dmGroup.length}
           open={openSection.dms}
           onToggle={() => setOpenSection((s) => ({ ...s, dms: !s.dms }))}
-          onAdd={() => toast.info("New shortly")}
+          onAdd={canMessage ? () => toast.info("New shortly") : undefined}
         >
           {dmGroup.map((c) => (
             <ChatSidebarItem
@@ -153,7 +156,7 @@ function SidebarSection({
   count: number;
   open: boolean;
   onToggle: () => void;
-  onAdd: () => void;
+  onAdd?: () => void;
   children: React.ReactNode;
 }) {
   return (
@@ -167,13 +170,15 @@ function SidebarSection({
           <span className="truncate">{title}</span>
           <span className="text-gray-300 dark:text-gray-600 font-normal normal-case tracking-normal tabular-nums">{count}</span>
         </button>
-        <button
-          onClick={onAdd}
-          className="w-4 h-4 flex items-center justify-center rounded text-gray-400 opacity-0 group-hover/h:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
-          title={`Add ${title.toLowerCase()}`}
-        >
-          <Plus className="w-3 h-3" />
-        </button>
+        {onAdd && (
+          <button
+            onClick={onAdd}
+            className="w-4 h-4 flex items-center justify-center rounded text-gray-400 opacity-0 group-hover/h:opacity-100 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+            title={`Add ${title.toLowerCase()}`}
+          >
+            <Plus className="w-3 h-3" />
+          </button>
+        )}
       </div>
       {open && <div className="space-y-0.5">{children}</div>}
     </div>

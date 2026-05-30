@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { UserHoverCard } from "@/components/ui/user-hover-card";
 import { USERS } from "@/data/dummy-users";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import type { CalendarEvent, CalendarEventAttendee } from "@/types";
 import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL } from "./event-style";
 
@@ -36,6 +37,9 @@ function durationLabel(event: CalendarEvent): string {
 }
 
 export function EventDetailModal({ event, open, onClose }: Props) {
+  const role = useCurrentRole();
+  const canRsvp = useCan("calendar.event.rsvp");
+  const canEdit = useCan("calendar.event.edit");
   const [myRsvp, setMyRsvp] = useState<RSVP>("yes");
   if (!event) return null;
 
@@ -196,15 +200,19 @@ export function EventDetailModal({ event, open, onClose }: Props) {
           </div>
 
           <div className="border-t border-gray-100 dark:border-gray-800 px-5 py-3 flex items-center gap-2 bg-gray-50 dark:bg-gray-900/40">
-            <span className="text-[11px] text-gray-500 mr-auto">Your response</span>
+            <span className="text-[11px] text-gray-500 mr-auto">
+              {canRsvp ? "Your response" : `Your role (${role}) can't RSVP`}
+            </span>
             <div className="flex items-center gap-0.5 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-0.5">
               {RSVP_OPTIONS.map((o) => (
                 <button
                   key={o.key}
                   onClick={() => setMyRsvp(o.key)}
+                  disabled={!canRsvp}
+                  title={canRsvp ? o.label : `Your role (${role}) can't RSVP`}
                   className={cn(
-                    "px-2.5 py-1 rounded-md text-[11.5px] font-semibold transition-colors",
-                    myRsvp === o.key
+                    "px-2.5 py-1 rounded-md text-[11.5px] font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed",
+                    myRsvp === o.key && canRsvp
                       ? "bg-orange-500 text-white"
                       : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200",
                   )}
@@ -214,7 +222,11 @@ export function EventDetailModal({ event, open, onClose }: Props) {
                 </button>
               ))}
             </div>
-            <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11.5px] font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-900">
+            <button
+              disabled={!canEdit}
+              title={canEdit ? "Open chat" : `Your role (${role}) can't edit events`}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11.5px] font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
               <MessageSquare className="w-3 h-3" /> Chat
             </button>
             {owner && <UserAvatar user={owner} size={22} />}

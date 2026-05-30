@@ -5,6 +5,7 @@ import { Calendar, ChevronDown, ChevronRight } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { PriorityBadge } from "@/components/ui/priority-badge";
 import { USERS } from "@/data/dummy-users";
+import { useCan } from "@/lib/use-can";
 import type { Board, Card } from "@/types";
 import { PRIORITY_CONFIG, PRIORITY_OPTIONS } from "../constants";
 import { CardDetailModal } from "../card-detail-modal";
@@ -14,6 +15,7 @@ type ListFlatCard = Card & { colId: string; colName: string; colColor: string };
 export function BoardListView({ board }: { board: Board }) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openCard, setOpenCard] = useState<{ card: Card; colId: string } | null>(null);
+  const canEdit = useCan("board.edit");
 
   const toggleGroup = (key: string) => setCollapsed((c) => ({ ...c, [key]: !c[key] }));
 
@@ -62,7 +64,7 @@ export function BoardListView({ board }: { board: Board }) {
                             onClick={() => setOpenCard({ card, colId: card.colId })}
                             className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-800/30 cursor-pointer border-b border-gray-50 dark:border-gray-800 last:border-0 transition-colors"
                           >
-                            <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600 flex-shrink-0" onClick={(e) => e.stopPropagation()} />
+                            <input type="checkbox" disabled={!canEdit} className="rounded border-gray-300 dark:border-gray-600 flex-shrink-0 disabled:cursor-not-allowed disabled:opacity-50" onClick={(e) => e.stopPropagation()} />
                             <span className="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{card.title}</span>
                             <span
                               className="text-[10px] font-medium px-1.5 py-0.5 rounded-md hidden sm:inline-block flex-shrink-0"

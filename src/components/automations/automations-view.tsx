@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Plus, Zap, Sparkles } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
+import { useCan } from "@/lib/use-can";
 import { AUTOMATIONS, type Automation } from "@/data/dummy-automations";
 import { AutomationRow } from "./automation-row";
 import { AutomationTemplates } from "./automation-templates";
@@ -14,6 +15,7 @@ type Tab = (typeof TABS)[number];
 export default function AutomationsView() {
   const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canCreate = useCan("automation.create");
   const [automations, setAutomations] = useState<Automation[]>(AUTOMATIONS);
   const [tab, setTab] = useState<Tab>("All");
   const [search, setSearch] = useState("");
@@ -49,12 +51,14 @@ export default function AutomationsView() {
       <Topbar
         left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Automations" }]} />}
         right={
-          <button
-            onClick={() => toast.info("New automation editor opening…")}
-            className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-          >
-            <Plus className="w-3 h-3" /> New automation
-          </button>
+          canCreate ? (
+            <button
+              onClick={() => toast.info("New automation editor opening…")}
+              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus className="w-3 h-3" /> New automation
+            </button>
+          ) : null
         }
       />
 

@@ -42,6 +42,7 @@ export default function MembersSettings() {
   const canInvite = useCan("members.invite");
   const canChangeRole = useCan("members.roleChange");
   const canRemove = useCan("members.remove");
+  const canAudit = useCan("audit.view");
   const currentRole = useCurrentRole();
   const [emails, setEmails] = useState("");
   const [role, setRole] = useState<WorkspaceRole>("Member");
@@ -94,39 +95,35 @@ export default function MembersSettings() {
 
   return (
     <SettingsLayout title="Members">
-      <SettingSection
-        title="Invite teammates"
-        desc={canInvite
-          ? "Comma- or newline-separated emails. Pick the default role for this batch."
-          : `Your role (${currentRole}) can't invite — ask an Admin or Owner.`}
-      >
-        <div className="flex flex-col gap-2 mb-2">
-          <textarea
-            value={emails}
-            onChange={(e) => setEmails(e.target.value)}
-            disabled={!canInvite}
-            placeholder={canInvite
-              ? "colleague@company.com, kavya@company.com\nlogan@partners.io"
-              : "Locked by role"}
-            rows={3}
-            className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-colors resize-y min-h-[68px] disabled:bg-gray-50 dark:disabled:bg-gray-900/40 disabled:text-gray-400 disabled:cursor-not-allowed"
-          />
-          <div className="flex items-center gap-2">
-            <RoleDropdown value={role} onChange={setRole} disabled={!canInvite} />
-            <span className="text-[11px] text-gray-400 mr-auto">
-              {capabilityCount(role)} capabilities · <Link href="/settings/roles" className="text-orange-500 hover:underline">see matrix</Link>
-            </span>
-            <button
-              onClick={sendInvites}
-              disabled={!canInvite}
-              title={canInvite ? "Send invites" : `Your role (${currentRole}) can't invite members`}
-              className="px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition-colors"
-            >
-              Send invites
-            </button>
+      {canInvite && (
+        <SettingSection
+          title="Invite teammates"
+          desc="Comma- or newline-separated emails. Pick the default role for this batch."
+        >
+          <div className="flex flex-col gap-2 mb-2">
+            <textarea
+              value={emails}
+              onChange={(e) => setEmails(e.target.value)}
+              placeholder="colleague@company.com, kavya@company.com\nlogan@partners.io"
+              rows={3}
+              className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-colors resize-y min-h-[68px]"
+            />
+            <div className="flex items-center gap-2">
+              <RoleDropdown value={role} onChange={setRole} />
+              <span className="text-[11px] text-gray-400 mr-auto">
+                {capabilityCount(role)} capabilities · <Link href="/settings/roles" className="text-orange-500 hover:underline">see matrix</Link>
+              </span>
+              <button
+                onClick={sendInvites}
+                title="Send invites"
+                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-lg transition-colors"
+              >
+                Send invites
+              </button>
+            </div>
           </div>
-        </div>
-      </SettingSection>
+        </SettingSection>
+      )}
 
       <SettingSection title="Roles at a glance" desc="What each role can do in this workspace.">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -232,29 +229,25 @@ export default function MembersSettings() {
                         disabled={!canChangeRole}
                         onPick={(next) => handleRoleChange(m.id, memberRole, next, m.name)}
                       />
-                      <DropdownMenu.Item
-                        disabled={!canInvite}
-                        onSelect={() =>
-                          canInvite
-                            ? toast.success(`Resent invite to ${m.email}`)
-                            : toast.error(`Your role (${currentRole}) can't send invites`)
-                        }
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
-                      >
-                        Resend invite link
-                      </DropdownMenu.Item>
-                      <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
-                      <DropdownMenu.Item
-                        disabled={!canRemove}
-                        onSelect={() =>
-                          canRemove
-                            ? openModal({ type: "delete", kind: "member", name: m.name })
-                            : toast.error(`Your role (${currentRole}) can't remove members`)
-                        }
-                        className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-red-500 hover:bg-red-50 dark:hover:bg-red-950 data-[disabled]:opacity-40 data-[disabled]:cursor-not-allowed"
-                      >
-                        Remove from workspace
-                      </DropdownMenu.Item>
+                      {canInvite && (
+                        <DropdownMenu.Item
+                          onSelect={() => toast.success(`Resent invite to ${m.email}`)}
+                          className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        >
+                          Resend invite link
+                        </DropdownMenu.Item>
+                      )}
+                      {canRemove && (
+                        <>
+                          <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
+                          <DropdownMenu.Item
+                            onSelect={() => openModal({ type: "delete", kind: "member", name: m.name })}
+                            className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                          >
+                            Remove from workspace
+                          </DropdownMenu.Item>
+                        </>
+                      )}
                     </DropdownMenu.Content>
                   </DropdownMenu.Portal>
                 </DropdownMenu.Root>
@@ -265,27 +258,29 @@ export default function MembersSettings() {
         </div>
       </SettingSection>
 
-      <SettingSection title="Recent activity" desc="Membership and role changes from the last few days.">
-        <div className="space-y-2.5">
-          {AUDIT_LOG.map((e, i) => (
-            <div key={i} className="flex items-start gap-2.5 text-[12.5px]">
-              <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <div className="text-gray-700 dark:text-gray-300">
-                  <span className="font-semibold text-gray-900 dark:text-white">{e.actor}</span>{" "}
-                  {e.verb}{" "}
-                  <span className="font-medium text-gray-900 dark:text-white">{e.target}</span>
+      {canAudit && (
+        <SettingSection title="Recent activity" desc="Membership and role changes from the last few days.">
+          <div className="space-y-2.5">
+            {AUDIT_LOG.map((e, i) => (
+              <div key={i} className="flex items-start gap-2.5 text-[12.5px]">
+                <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-gray-700 dark:text-gray-300">
+                    <span className="font-semibold text-gray-900 dark:text-white">{e.actor}</span>{" "}
+                    {e.verb}{" "}
+                    <span className="font-medium text-gray-900 dark:text-white">{e.target}</span>
+                  </div>
+                  <div className="text-[10.5px] text-gray-400">{e.at}</div>
                 </div>
-                <div className="text-[10.5px] text-gray-400">{e.at}</div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 text-[11px] text-gray-400 flex items-center gap-1.5">
-          <ShieldCheck className="w-3 h-3 text-emerald-500" />
-          Audit log preserved for 90 days on Pro · 7 years on Enterprise
-        </div>
-      </SettingSection>
+            ))}
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 text-[11px] text-gray-400 flex items-center gap-1.5">
+            <ShieldCheck className="w-3 h-3 text-emerald-500" />
+            Audit log preserved for 90 days on Pro · 7 years on Enterprise
+          </div>
+        </SettingSection>
+      )}
     </SettingsLayout>
   );
 }

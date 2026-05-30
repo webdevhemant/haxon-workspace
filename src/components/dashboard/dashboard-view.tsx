@@ -5,6 +5,7 @@ import { ArrowRight, Filter, Check } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Topbar, Breadcrumb, IconBtn } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
+import { useCurrentRole } from "@/lib/use-can";
 import { DashboardHeader } from "./dashboard-header";
 import { AiBriefing } from "./ai-briefing";
 import { MyTasks, type MyTask } from "./my-tasks";
@@ -13,8 +14,6 @@ import { RecentDocs } from "./recent-docs";
 import { StatsSection } from "./stats-section";
 import { BoardHealth, type BoardHealthItem } from "./board-health";
 import { ActivityPanel } from "./activity-panel";
-import { FocusTimer } from "./focus-timer";
-import { Goals } from "./goals";
 
 type DashboardFilter = "all" | "mine" | "recent";
 
@@ -27,6 +26,8 @@ const DASHBOARD_FILTERS: { key: DashboardFilter; label: string; desc: string }[]
 export default function DashboardView() {
   const { boards, docs, activity, user, activeWorkspaceId, workspaces } = useAppStore();
   const [filter, setFilter] = useState<DashboardFilter>("all");
+  const role = useCurrentRole();
+  const isGuest = role === "Guest";
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const recent = docs.filter((d) => d.workspaceId === activeWorkspaceId).slice(0, 6);
 
@@ -124,13 +125,17 @@ export default function DashboardView() {
           <DashboardHeader userName={user.name} />
           <AiBriefing />
           <MyTasks tasks={myTasks} workspaceId={activeWorkspaceId} />
-          <QuickActions workspaceId={activeWorkspaceId} />
-          <RecentDocs docs={recent} />
-          <StatsSection />
-          <BoardHealth items={boardHealth} workspaceId={activeWorkspaceId} />
+          {!isGuest && (
+            <>
+              <QuickActions workspaceId={activeWorkspaceId} />
+              <RecentDocs docs={recent} />
+              <StatsSection />
+              <BoardHealth items={boardHealth} workspaceId={activeWorkspaceId} />
+            </>
+          )}
         </div>
 
-        <ActivityPanel activity={activity} />
+        {!isGuest && <ActivityPanel activity={activity} />}
       </div>
     </div>
   );

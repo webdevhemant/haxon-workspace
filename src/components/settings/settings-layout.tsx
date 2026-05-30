@@ -1,25 +1,36 @@
 "use client";
 import { useRouter, usePathname } from "next/navigation";
-import { User, Users, CreditCard } from "lucide-react";
+import { User, Users, CreditCard, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
+import { useCan } from "@/lib/use-can";
 
 const NAV = [
-  { key: "/settings", label: "Profile", icon: User },
-  { key: "/settings/members", label: "Members", icon: Users },
-  { key: "/settings/billing", label: "Billing", icon: CreditCard },
+  { key: "/settings", label: "Profile", icon: User, cap: null },
+  { key: "/settings/members", label: "Members", icon: Users, cap: "settings.members.view" as const },
+  { key: "/settings/billing", label: "Billing", icon: CreditCard, cap: "settings.billing.view" as const },
+  { key: "/settings/roles", label: "Roles", icon: ShieldCheck, cap: "settings.roles.view" as const },
 ];
 
 export function SettingsLayout({ title, children }: { title: string; children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const canMembers = useCan("settings.members.view");
+  const canBilling = useCan("settings.billing.view");
+  const canRoles = useCan("settings.roles.view");
+  const visibleNav = NAV.filter((item) => {
+    if (item.cap === "settings.members.view") return canMembers;
+    if (item.cap === "settings.billing.view") return canBilling;
+    if (item.cap === "settings.roles.view") return canRoles;
+    return true;
+  });
   return (
     <div className="flex flex-col h-full min-h-0">
       <Topbar left={<Breadcrumb items={[{ label: "Settings" }, { label: title }]} />} />
       <div className="flex flex-1 min-h-0 overflow-hidden">
         <div className="w-52 flex-shrink-0 border-r border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50 p-3">
           <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 px-2">Settings</div>
-          {NAV.map((item) => (
+          {visibleNav.map((item) => (
             <button key={item.key} onClick={() => router.push(item.key)}
               className={cn("flex items-center gap-2 w-full px-2.5 py-2 rounded-lg text-sm mb-0.5 transition-colors text-left cursor-pointer",
                 pathname === item.key

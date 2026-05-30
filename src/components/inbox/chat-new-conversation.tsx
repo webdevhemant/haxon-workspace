@@ -5,6 +5,7 @@ import { Edit3, Search } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS, CURRENT_USER } from "@/data/dummy-users";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
+import { useCan } from "@/lib/use-can";
 
 interface Props {
   existingDmUserIds: string[];
@@ -12,8 +13,11 @@ interface Props {
 }
 
 export function ChatNewConversation({ existingDmUserIds, onStart }: Props) {
+  const canMessage = useCan("team.message");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+
+  if (!canMessage) return null;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

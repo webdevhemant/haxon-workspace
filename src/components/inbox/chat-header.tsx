@@ -6,6 +6,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
+import { useCan } from "@/lib/use-can";
 import type { ChatChannel, ChatMessage } from "@/types";
 import { PresenceDot } from "@/components/ui/presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
@@ -33,6 +34,7 @@ export function ChatHeader({
   channel, messages = [], onToggleInfo, infoOpen, onPinned,
   onStartCall, onStartHuddle, onMute, onPinChannel, onMarkRead, onLeave, onUpdateChannel, onJumpToMessage,
 }: Props) {
+  const canManageChannel = useCan("channel.archive");
   const [searchOpen, setSearchOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const isDM = channel.kind === "dm";
@@ -119,6 +121,7 @@ export function ChatHeader({
           onMarkRead={onMarkRead}
           onLeave={onLeave}
           onOpenSettings={() => setSettingsOpen(true)}
+          canManageChannel={canManageChannel}
         />
       </div>
       <ChannelSettingsDialog
@@ -151,13 +154,14 @@ function HeaderBtn({
 }
 
 function ChannelMoreMenu({
-  channel, onPinChannel, onMarkRead, onLeave, onOpenSettings,
+  channel, onPinChannel, onMarkRead, onLeave, onOpenSettings, canManageChannel,
 }: {
   channel: ChatChannel;
   onPinChannel: () => void;
   onMarkRead: () => void;
   onLeave: () => void;
   onOpenSettings: () => void;
+  canManageChannel: boolean;
 }) {
   const copyLink = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
@@ -188,7 +192,7 @@ function ChannelMoreMenu({
             onSelect={() => { onPinChannel(); toast(`${channel.name} ${channel.isPinned ? "unpinned" : "pinned"}`); }}
           />
           <Item label="Mark all as read" onSelect={() => { onMarkRead(); toast.success("Marked as read"); }} />
-          <Item label="Channel settings" onSelect={onOpenSettings} />
+          {canManageChannel && <Item label="Channel settings" onSelect={onOpenSettings} />}
           <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
           <Item
             label={channel.kind === "channel" ? "Leave channel" : "Close conversation"}

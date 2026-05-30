@@ -98,7 +98,7 @@ export default function BoardView({ params }: { params: Promise<{ workspaceId: s
           />
         )}
         {activeView === "list" && <BoardListView board={filteredBoard} />}
-        {activeView === "grid" && <BoardGridView board={filteredBoard} />}
+        {activeView === "grid" && <BoardGridView board={filteredBoard} canEdit={canEditBoard} />}
         {activeView === "table" && <BoardTableView board={filteredBoard} />}
         {activeView === "workload" && <BoardWorkloadView board={filteredBoard} />}
       </div>

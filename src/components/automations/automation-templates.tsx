@@ -1,12 +1,15 @@
 "use client";
 import { ArrowRight } from "lucide-react";
 import { AUTOMATION_TEMPLATES } from "@/data/dummy-automations";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 
 interface Props {
   onUse: (templateId: string) => void;
 }
 
 export function AutomationTemplates({ onUse }: Props) {
+  const role = useCurrentRole();
+  const canCreate = useCan("automation.create");
   return (
     <div>
       <h2 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2.5">
@@ -17,7 +20,9 @@ export function AutomationTemplates({ onUse }: Props) {
           <button
             key={t.id}
             onClick={() => onUse(t.id)}
-            className="text-left rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-orange-200 dark:hover:border-orange-800/60 hover:bg-orange-50/40 dark:hover:bg-orange-950/10 transition-colors cursor-pointer group"
+            disabled={!canCreate}
+            title={canCreate ? "Use template" : `Your role (${role}) can't create automations`}
+            className="text-left rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-orange-200 dark:hover:border-orange-800/60 hover:bg-orange-50/40 dark:hover:bg-orange-950/10 transition-colors cursor-pointer group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-800 disabled:hover:bg-white dark:disabled:hover:bg-gray-900"
           >
             <div className="flex items-start gap-2 mb-2">
               <span className="text-base leading-none">{t.emoji}</span>

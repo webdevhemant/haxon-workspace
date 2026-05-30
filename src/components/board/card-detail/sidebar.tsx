@@ -256,11 +256,13 @@ export function CardDetailSidebar({
               return (
                 <button
                   key={u.id}
-                  onClick={() => onToggleFollower(u.id)}
+                  onClick={() => canEdit && onToggleFollower(u.id)}
+                  disabled={!canEdit}
                   title={`${u.name}${isFollowing ? " (watching)" : ""}`}
                   style={{ width: 24, height: 24 }}
                   className={cn(
-                    "inline-flex items-center justify-center rounded-full transition-all duration-150 cursor-pointer flex-shrink-0",
+                    "inline-flex items-center justify-center rounded-full transition-all duration-150 flex-shrink-0",
+                    canEdit ? "cursor-pointer" : "cursor-not-allowed",
                     isFollowing
                       ? "ring-2 ring-orange-500 ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-950"
                       : "opacity-40 hover:opacity-100",

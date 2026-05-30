@@ -4,6 +4,7 @@ import { Calendar } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { PriorityBadge } from "@/components/ui/priority-badge";
 import { USERS } from "@/data/dummy-users";
+import { useCan } from "@/lib/use-can";
 import type { Board } from "@/types";
 import { CardDetailModal } from "../card-detail-modal";
 import { flattenBoard, type FlatCard } from "../shared";
@@ -17,6 +18,7 @@ export function BoardTableView({ board }: { board: Board }) {
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [openCard, setOpenCard] = useState<FlatCard | null>(null);
   const rows = flattenBoard(board);
+  const canEdit = useCan("board.edit");
 
   const sorted = [...rows].sort((a, b) => {
     if (!sortCol) return 0;
@@ -63,13 +65,13 @@ export function BoardTableView({ board }: { board: Board }) {
                 onClick={() => setOpenCard(row)}
               >
                 <td className="px-4 py-2 w-8">
-                  <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" onClick={(e) => e.stopPropagation()} />
+                  <input type="checkbox" disabled={!canEdit} className="rounded border-gray-300 dark:border-gray-600 disabled:cursor-not-allowed disabled:opacity-50" onClick={(e) => e.stopPropagation()} />
                 </td>
                 <td className="px-3 py-2 font-medium max-w-[240px] sticky left-0 z-10 bg-white dark:bg-gray-900">
                   <span className="truncate block">{row.title}</span>
                 </td>
                 <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                  <StatusCell card={row} board={board} />
+                  <StatusCell card={row} board={board} canEdit={canEdit} />
                 </td>
                 <td className="px-3 py-2">
                   {assignee ? (

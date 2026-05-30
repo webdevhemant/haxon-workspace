@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
-import { Search, Upload, Star, Download, MoreHorizontal, LayoutGrid, List } from "lucide-react";
+import { Search, Upload, Star, Download, MoreHorizontal, LayoutGrid, List, Trash2 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
@@ -9,6 +9,7 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { FILES, FILE_KIND_LABEL, type FileAsset, type FileKind } from "@/data/dummy-files";
 import { cn } from "@/lib/utils";
+import { useCan } from "@/lib/use-can";
 import { FileThumb } from "./file-thumb";
 
 type View = "grid" | "list";
@@ -16,6 +17,9 @@ type View = "grid" | "list";
 export default function FilesView() {
   const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canUpload = useCan("files.upload");
+  const canStar = useCan("files.star");
+  const canDelete = useCan("files.delete");
   const [files, setFiles] = useState<FileAsset[]>(FILES);
   const [view, setView] = useState<View>("grid");
   const [search, setSearch] = useState("");
@@ -49,12 +53,14 @@ export default function FilesView() {
       <Topbar
         left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Files" }]} />}
         right={
-          <button
-            onClick={() => toast.info("Choose a file to upload…")}
-            className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-          >
-            <Upload className="w-3 h-3" /> Upload
-          </button>
+          canUpload ? (
+            <button
+              onClick={() => toast.info("Choose a file to upload…")}
+              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            >
+              <Upload className="w-3 h-3" /> Upload
+            </button>
+          ) : null
         }
       />
 
@@ -109,13 +115,13 @@ export default function FilesView() {
           ) : view === "grid" ? (
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {filtered.map((f) => (
-                <FileCard key={f.id} file={f} onStar={() => toggleStar(f.id)} />
+                <FileCard key={f.id} file={f} onStar={() => toggleStar(f.id)} canStar={canStar} />
               ))}
             </div>
           ) : (
             <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
               {filtered.map((f, i) => (
-                <FileRow key={f.id} file={f} onStar={() => toggleStar(f.id)} first={i === 0} />
+                <FileRow key={f.id} file={f} onStar={() => toggleStar(f.id)} first={i === 0} canStar={canStar} canDelete={canDelete} />
               ))}
             </div>
           )}
@@ -125,19 +131,21 @@ export default function FilesView() {
   );
 }
 
-function FileCard({ file, onStar }: { file: FileAsset; onStar: () => void }) {
+function FileCard({ file, onStar, canStar }: { file: FileAsset; onStar: () => void; canStar: boolean }) {
   const owner = USERS.find((u) => u.id === file.uploadedById);
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-gray-300 dark:hover:border-gray-700 transition-all cursor-pointer group">
       <div className="flex items-start justify-between mb-2.5">
         <FileThumb kind={file.kind} color={file.thumbColor} size={40} />
-        <button
-          onClick={(e) => { e.stopPropagation(); onStar(); }}
-          className="w-6 h-6 flex items-center justify-center rounded text-gray-300 hover:text-amber-500 transition-colors"
-          title={file.starred ? "Unstar" : "Star"}
-        >
-          <Star className={cn("w-3.5 h-3.5", file.starred && "text-amber-500 fill-amber-500")} />
-        </button>
+        {canStar && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onStar(); }}
+            className="w-6 h-6 flex items-center justify-center rounded text-gray-300 hover:text-amber-500 transition-colors"
+            title={file.starred ? "Unstar" : "Star"}
+          >
+            <Star className={cn("w-3.5 h-3.5", file.starred && "text-amber-500 fill-amber-500")} />
+          </button>
+        )}
       </div>
       <div className="text-[12.5px] font-semibold text-gray-900 dark:text-white truncate mb-0.5" title={file.name}>
         {file.name}
@@ -151,7 +159,7 @@ function FileCard({ file, onStar }: { file: FileAsset; onStar: () => void }) {
   );
 }
 
-function FileRow({ file, onStar, first }: { file: FileAsset; onStar: () => void; first: boolean }) {
+function FileRow({ file, onStar, first, canStar, canDelete }: { file: FileAsset; onStar: () => void; first: boolean; canStar: boolean; canDelete: boolean }) {
   const owner = USERS.find((u) => u.id === file.uploadedById);
   return (
     <div className={cn(
@@ -171,12 +179,14 @@ function FileRow({ file, onStar, first }: { file: FileAsset; onStar: () => void;
         ))}
       </div>
       {owner && <UserAvatar user={owner} size={22} />}
-      <button
-        onClick={(e) => { e.stopPropagation(); onStar(); }}
-        className="w-7 h-7 flex items-center justify-center rounded text-gray-300 hover:text-amber-500 transition-colors"
-      >
-        <Star className={cn("w-3.5 h-3.5", file.starred && "text-amber-500 fill-amber-500")} />
-      </button>
+      {canStar && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onStar(); }}
+          className="w-7 h-7 flex items-center justify-center rounded text-gray-300 hover:text-amber-500 transition-colors"
+        >
+          <Star className={cn("w-3.5 h-3.5", file.starred && "text-amber-500 fill-amber-500")} />
+        </button>
+      )}
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button className="w-7 h-7 flex items-center justify-center rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onClick={(e) => e.stopPropagation()}>
@@ -194,6 +204,14 @@ function FileRow({ file, onStar, first }: { file: FileAsset; onStar: () => void;
             }} className="px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
               Copy link
             </DropdownMenu.Item>
+            {canDelete && (
+              <>
+                <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-700" />
+                <DropdownMenu.Item onSelect={() => toast.success(`${file.name} deleted`)} className="flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer outline-none text-red-500 hover:bg-red-50 dark:hover:bg-red-950">
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </DropdownMenu.Item>
+              </>
+            )}
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>

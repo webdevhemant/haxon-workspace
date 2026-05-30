@@ -6,6 +6,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import type { Automation } from "@/data/dummy-automations";
 
 interface Props {
@@ -15,6 +16,10 @@ interface Props {
 }
 
 export function AutomationRow({ automation, onToggle, onRemove }: Props) {
+  const role = useCurrentRole();
+  const canToggle = useCan("automation.toggle");
+  const canEdit = useCan("automation.edit");
+  const canDelete = useCan("automation.delete");
   const [expanded, setExpanded] = useState(false);
   const owner = USERS.find((u) => u.id === automation.ownerId);
 
@@ -23,9 +28,10 @@ export function AutomationRow({ automation, onToggle, onRemove }: Props) {
       <div className="flex items-center gap-3 p-3.5">
         <button
           onClick={onToggle}
-          title={automation.enabled ? "Pause" : "Resume"}
+          disabled={!canToggle}
+          title={canToggle ? (automation.enabled ? "Pause" : "Resume") : `Your role (${role}) can't toggle automations`}
           className={cn(
-            "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer",
+            "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
             automation.enabled
               ? "bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-300 hover:bg-orange-200/70 dark:hover:bg-orange-950/60"
               : "bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700",
@@ -79,9 +85,15 @@ export function AutomationRow({ automation, onToggle, onRemove }: Props) {
               className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-44 z-50"
             >
               <Item label="Run now" icon={<Play className="w-3.5 h-3.5" />} onSelect={() => toast.success(`Ran "${automation.name}"`)} />
-              <Item label="Edit" icon={<Pencil className="w-3.5 h-3.5" />} onSelect={() => toast.info("Inline editor below")} />
-              <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
-              <Item label="Delete" icon={<Trash2 className="w-3.5 h-3.5" />} onSelect={onRemove} danger />
+              {canEdit && (
+                <Item label="Edit" icon={<Pencil className="w-3.5 h-3.5" />} onSelect={() => toast.info("Inline editor below")} />
+              )}
+              {canDelete && (
+                <>
+                  <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
+                  <Item label="Delete" icon={<Trash2 className="w-3.5 h-3.5" />} onSelect={onRemove} danger />
+                </>
+              )}
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { Paperclip, AtSign, Smile, Send, Hash, Lock } from "lucide-react";
+import { useCan } from "@/lib/use-can";
 import { ComposerIcon } from "./composer-icon";
 import { ChatEmojiPopover } from "./chat-emoji-popover";
 import { ChatAttachPopover } from "./chat-attach-popover";
@@ -24,6 +25,7 @@ interface MentionState {
 }
 
 export function ChatComposer({ placeholder, onSend, onSchedule, autoFocus, small, canMessage = true, role }: Props) {
+  const canUseAi = useCan("ai.use");
   if (!canMessage) {
     return (
       <div className={small ? "px-3 pb-3" : "px-4 pb-4"}>
@@ -205,7 +207,7 @@ export function ChatComposer({ placeholder, onSend, onSchedule, autoFocus, small
           )}
 
           {attachOpen && !mention && (
-            <ChatAttachPopover onPick={insertAtCursor} onClose={closeAll} />
+            <ChatAttachPopover onPick={insertAtCursor} onClose={closeAll} canUseAi={canUseAi} />
           )}
 
           <div className="flex-1" />

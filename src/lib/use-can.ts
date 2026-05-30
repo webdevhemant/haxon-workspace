@@ -19,5 +19,8 @@ export function useCapDenialReason(capability: Capability): string | null {
 }
 
 function humanize(cap: Capability): string {
-  return cap.replace(/\./g, " ").replace(/([A-Z])/g, " $1").toLowerCase();
+  return cap
+    .replace(/\./g, " ")
+    .replace(/([A-Z])/g, " $1")
+    .toLowerCase();
 }

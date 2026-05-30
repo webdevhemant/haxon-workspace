@@ -5,6 +5,7 @@ import { parseISO } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { Topbar, Breadcrumb, IconBtn } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
+import { useCan } from "@/lib/use-can";
 import { EVENTS } from "@/data/dummy-events";
 import type { CalendarEvent } from "@/types";
 import { EVENT_TYPE_COLOR, EVENT_TYPE_LABEL } from "./event-style";
@@ -23,6 +24,7 @@ export default function CalendarView() {
   const [upcomingOpen, setUpcomingOpen] = useState(true);
   const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canCreateEvent = useCan("calendar.event.create");
 
   const upcoming = useMemo(() => {
     return [...EVENTS]
@@ -47,9 +49,11 @@ export default function CalendarView() {
       <Topbar
         left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Calendar" }]} />}
         right={
-          <button className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors">
-            <Plus className="w-3 h-3" /> Event
-          </button>
+          canCreateEvent ? (
+            <button className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors">
+              <Plus className="w-3 h-3" /> Event
+            </button>
+          ) : null
         }
       />
 

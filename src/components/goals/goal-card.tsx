@@ -1,17 +1,22 @@
 "use client";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Trash2 } from "lucide-react";
 import { UserAvatar, AvatarGroup } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import { STATUS_COLOR, STATUS_LABEL, type Goal } from "@/data/dummy-goals";
 
 interface Props {
   goal: Goal;
   expanded: boolean;
   onToggle: () => void;
+  canDelete?: boolean;
+  onDelete?: () => void;
 }
 
-export function GoalCard({ goal, expanded, onToggle }: Props) {
+export function GoalCard({ goal, expanded, onToggle, canDelete = false, onDelete }: Props) {
+  const role = useCurrentRole();
+  const canEdit = useCan("goals.edit");
   const owner = USERS.find((u) => u.id === goal.ownerId);
   const contributors = goal.contributorIds.map((id) => USERS.find((u) => u.id === id)).filter((u): u is NonNullable<typeof u> => Boolean(u));
   const overall = goal.keyResults.reduce((sum, kr) => sum + kr.progress, 0) / Math.max(goal.keyResults.length, 1);
@@ -61,6 +66,27 @@ export function GoalCard({ goal, expanded, onToggle }: Props) {
 
         <ChevronRight className={cn("w-4 h-4 text-gray-300 dark:text-gray-600 transition-transform flex-shrink-0", expanded && "rotate-90")} />
       </button>
+      {(canDelete || canEdit) && (
+        <div className="flex items-center gap-1 px-2 pb-2 -mt-2">
+          {canDelete && onDelete && (
+            <button
+              onClick={onDelete}
+              title={`Delete goal`}
+              className="ml-auto inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+            >
+              <Trash2 className="w-3 h-3" /> Delete
+            </button>
+          )}
+          {!canEdit && (
+            <span
+              className="ml-auto text-[10px] text-gray-400 italic"
+              title={`Your role (${role}) can't edit goals`}
+            >
+              View only
+            </span>
+          )}
+        </div>
+      )}
 
       {expanded && (
         <div className="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-900/40">

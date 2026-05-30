@@ -4,6 +4,7 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { PresenceDot } from "@/components/ui/presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import type { TeamMemberProfile, User } from "@/types";
+import { useCan } from "@/lib/use-can";
 
 interface Props {
   user: User;
@@ -20,6 +21,7 @@ const ROLE_COLOR: Record<string, string> = {
 
 export function TeamMemberRow({ user, profile, onOpen, onMessage }: Props) {
   const presence = presenceFor(user.id);
+  const canMessage = useCan("team.message");
   return (
     <div
       onClick={onOpen}
@@ -53,13 +55,15 @@ export function TeamMemberRow({ user, profile, onOpen, onMessage }: Props) {
         >
           {user.role}
         </span>
-        <button
-          onClick={(e) => { e.stopPropagation(); onMessage(); }}
-          className="w-7 h-7 flex items-center justify-center rounded-md text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity"
-          title="Message"
-        >
-          <MessageSquare className="w-3.5 h-3.5" />
-        </button>
+        {canMessage && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onMessage(); }}
+            className="w-7 h-7 flex items-center justify-center rounded-md text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity"
+            title="Message"
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+          </button>
+        )}
         <button
           onClick={(e) => e.stopPropagation()}
           className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 opacity-0 group-hover:opacity-100 transition-opacity"

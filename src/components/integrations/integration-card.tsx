@@ -2,6 +2,7 @@
 import { toast } from "sonner";
 import { Check, Settings, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCan, useCurrentRole } from "@/lib/use-can";
 import type { Integration } from "@/data/dummy-integrations";
 
 interface Props {
@@ -11,6 +12,15 @@ interface Props {
 }
 
 export function IntegrationCard({ integration, onToggle, onConfigure }: Props) {
+  const role = useCurrentRole();
+  const canConnect = useCan("integration.connect");
+  const canDisconnect = useCan("integration.disconnect");
+  const canConfigure = useCan("integration.configure");
+  const toggleCan = integration.connected ? canDisconnect : canConnect;
+  const toggleReason = integration.connected
+    ? `Your role (${role}) can't disconnect integrations`
+    : `Your role (${role}) can't connect integrations`;
+  const configureReason = `Your role (${role}) can't configure integrations`;
   return (
     <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all overflow-hidden flex flex-col">
       <div className="p-4 flex flex-col flex-1">
@@ -59,8 +69,10 @@ export function IntegrationCard({ integration, onToggle, onConfigure }: Props) {
         <div className="flex items-center gap-2 mt-auto">
           <button
             onClick={onToggle}
+            disabled={!toggleCan}
+            title={toggleCan ? (integration.connected ? "Disconnect" : "Connect") : toggleReason}
             className={cn(
-              "flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-semibold transition-colors cursor-pointer",
+              "flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed",
               integration.connected
                 ? "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                 : "bg-orange-500 hover:bg-orange-600 text-white",
@@ -77,8 +89,9 @@ export function IntegrationCard({ integration, onToggle, onConfigure }: Props) {
           {integration.connected && (
             <button
               onClick={onConfigure}
-              title="Configure"
-              className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+              disabled={!canConfigure}
+              title={canConfigure ? "Configure" : configureReason}
+              className="h-8 w-8 inline-flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Settings className="w-3.5 h-3.5" />
             </button>

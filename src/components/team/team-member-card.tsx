@@ -5,6 +5,7 @@ import { PresenceDot } from "@/components/ui/presence-dot";
 import { presenceFor, PRESENCE_LABEL } from "@/data/dummy-presence";
 import type { TeamMemberProfile, User } from "@/types";
 import { cn } from "@/lib/utils";
+import { useCan } from "@/lib/use-can";
 
 interface Props {
   user: User;
@@ -21,6 +22,7 @@ const ROLE_COLOR: Record<string, string> = {
 
 export function TeamMemberCard({ user, profile, onOpen, onMessage }: Props) {
   const presence = presenceFor(user.id);
+  const canMessage = useCan("team.message");
 
   return (
     <button
@@ -102,16 +104,21 @@ export function TeamMemberCard({ user, profile, onOpen, onMessage }: Props) {
         </div>
 
         <div className="mt-3 flex items-center gap-2">
-          <span
-            onClick={(e) => { e.stopPropagation(); onMessage(); }}
-            className={cn(
-              "flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium transition-colors",
-              "border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
-            )}
-          >
-            <MessageSquare className="w-3.5 h-3.5" /> Message
-          </span>
-          <span className="h-8 px-3 inline-flex items-center justify-center rounded-lg text-[12px] font-semibold bg-orange-500 group-hover:bg-orange-600 text-white transition-colors">
+          {canMessage && (
+            <span
+              onClick={(e) => { e.stopPropagation(); onMessage(); }}
+              className={cn(
+                "flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg text-[12px] font-medium transition-colors",
+                "border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+              )}
+            >
+              <MessageSquare className="w-3.5 h-3.5" /> Message
+            </span>
+          )}
+          <span className={cn(
+            "h-8 px-3 inline-flex items-center justify-center rounded-lg text-[12px] font-semibold bg-orange-500 group-hover:bg-orange-600 text-white transition-colors",
+            !canMessage && "flex-1",
+          )}>
             View profile
           </span>
         </div>

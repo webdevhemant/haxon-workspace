@@ -169,6 +169,13 @@ export function Sidebar() {
   const canCreateBoard = useCan("board.create");
   const canEditBoard = useCan("board.edit");
   const canDeleteBoard = useCan("board.delete");
+  const canViewGoals = useCan("goals.view");
+  const canViewAutomations = useCan("automation.view");
+  const canViewIntegrations = useCan("integration.view");
+  const canViewTeam = useCan("team.view");
+  const canCreateWorkspace = useCan("workspace.create");
+  const canRenameWorkspace = useCan("workspace.rename");
+  const canDeleteWorkspace = useCan("workspace.delete");
 
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const favDocs = favorites.map((id) => docs.find((d) => d.id === id)).filter(Boolean);
@@ -256,14 +263,31 @@ export function Sidebar() {
                 </DropdownMenu.Item>
               ))}
               <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
+              {canRenameWorkspace && (
+                <DropdownMenu.Item onSelect={() => toast.success("Workspace renamed")}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  Rename workspace
+                </DropdownMenu.Item>
+              )}
+              {canDeleteWorkspace && (
+                <DropdownMenu.Item onSelect={() => toast.success("Workspace deleted")}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950">
+                  Delete workspace
+                </DropdownMenu.Item>
+              )}
+              {(canRenameWorkspace || canDeleteWorkspace) && (
+                <DropdownMenu.Separator className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
+              )}
               <DropdownMenu.Item onSelect={() => router.push("/settings/roles")}
                 className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-xs text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
                 See role capabilities →
               </DropdownMenu.Item>
-              <DropdownMenu.Item onSelect={() => openModal({ type: "createWorkspace" })}
-                className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
-                <Plus className="w-3.5 h-3.5" /> Create workspace
-              </DropdownMenu.Item>
+              {canCreateWorkspace && (
+                <DropdownMenu.Item onSelect={() => openModal({ type: "createWorkspace" })}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer outline-none text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <Plus className="w-3.5 h-3.5" /> Create workspace
+                </DropdownMenu.Item>
+              )}
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
@@ -297,15 +321,15 @@ export function Sidebar() {
         <div className="flex-1 overflow-y-auto px-1.5 pb-2 min-h-0">
           <div className="mb-1">
             {[
-              { icon: <Home className="w-3.5 h-3.5" />, label: "Dashboard", href: "/dashboard" },
-              { icon: <Inbox className="w-3.5 h-3.5" />, label: "Inbox", badge: "3", href: "/inbox" },
-              { icon: <Calendar className="w-3.5 h-3.5" />, label: "Calendar", href: "/calendar" },
-              { icon: <Target className="w-3.5 h-3.5" />, label: "Goals", href: "/goals" },
-              { icon: <Zap className="w-3.5 h-3.5" />, label: "Automations", href: "/automations" },
-              { icon: <Plug className="w-3.5 h-3.5" />, label: "Integrations", href: "/integrations" },
-              { icon: <FolderOpen className="w-3.5 h-3.5" />, label: "Files", href: "/files" },
-              { icon: <Users className="w-3.5 h-3.5" />, label: "Team", href: "/team" },
-            ].map((item) => (
+              { icon: <Home className="w-3.5 h-3.5" />, label: "Dashboard", href: "/dashboard", show: true },
+              { icon: <Inbox className="w-3.5 h-3.5" />, label: "Inbox", badge: "3", href: "/inbox", show: true },
+              { icon: <Calendar className="w-3.5 h-3.5" />, label: "Calendar", href: "/calendar", show: true },
+              { icon: <Target className="w-3.5 h-3.5" />, label: "Goals", href: "/goals", show: canViewGoals },
+              { icon: <Zap className="w-3.5 h-3.5" />, label: "Automations", href: "/automations", show: canViewAutomations },
+              { icon: <Plug className="w-3.5 h-3.5" />, label: "Integrations", href: "/integrations", show: canViewIntegrations },
+              { icon: <FolderOpen className="w-3.5 h-3.5" />, label: "Files", href: "/files", show: true },
+              { icon: <Users className="w-3.5 h-3.5" />, label: "Team", href: "/team", show: canViewTeam },
+            ].filter((item) => item.show).map((item) => (
               <SItem key={item.label} icon={item.icon} label={item.label} badge={item.badge}
                 active={pathname === item.href}
                 onClick={() => router.push(item.href)} />

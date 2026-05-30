@@ -153,22 +153,37 @@ export const DOCS: Doc[] = [
     type: "doc",
     content: [
       { type: "h1", text: "Q3 Pricing Matrix" },
-      { type: "callout", text: "Owned by Diego. Working draft — final lands before the Atlas call on Friday." },
+      {
+        type: "callout",
+        text: "Owned by Diego. Working draft — final lands before the Atlas call on Friday.",
+      },
       { type: "h2", text: "Per tier" },
-      { type: "p", text: "Free is unchanged. Pro picks up the AI features that used to live behind the enterprise wall. Enterprise becomes the 'permissions + audit' tier rather than the AI-features tier." },
-      { type: "list", items: [
-        "Free — 3 members, basic AI (50/mo), 7-day history.",
-        "Pro — $12/seat, unlimited members, unlimited AI, 30-day history.",
-        "Self-serve Team — $8/seat capped at 10 seats. NEW row Priya flagged.",
-        "Enterprise — custom, SCIM, audit log, dedicated CSM, 99.99% SLA.",
-      ]},
+      {
+        type: "p",
+        text: "Free is unchanged. Pro picks up the AI features that used to live behind the enterprise wall. Enterprise becomes the 'permissions + audit' tier rather than the AI-features tier.",
+      },
+      {
+        type: "list",
+        items: [
+          "Free — 3 members, basic AI (50/mo), 7-day history.",
+          "Pro — $12/seat, unlimited members, unlimited AI, 30-day history.",
+          "Self-serve Team — $8/seat capped at 10 seats. NEW row Priya flagged.",
+          "Enterprise — custom, SCIM, audit log, dedicated CSM, 99.99% SLA.",
+        ],
+      },
       { type: "h2", text: "Open questions" },
-      { type: "list", items: [
-        "Should self-serve teams convert automatically at 11 seats?",
-        "Do AI tokens roll over month-to-month or expire?",
-        "How does the new Permissions section in Enterprise compare to Notion's Audit Log SKU?",
-      ]},
-      { type: "ai", text: "AI summary: net-effect is a ~14% revenue uplift if Pro adopts the AI bundle at >55% take-rate. Cannibalization risk on Enterprise is limited because we're moving them up-market, not pricing them out." },
+      {
+        type: "list",
+        items: [
+          "Should self-serve teams convert automatically at 11 seats?",
+          "Do AI tokens roll over month-to-month or expire?",
+          "How does the new Permissions section in Enterprise compare to Notion's Audit Log SKU?",
+        ],
+      },
+      {
+        type: "ai",
+        text: "AI summary: net-effect is a ~14% revenue uplift if Pro adopts the AI bundle at >55% take-rate. Cannibalization risk on Enterprise is limited because we're moving them up-market, not pricing them out.",
+      },
     ],
   },
   {
@@ -185,19 +200,28 @@ export const DOCS: Doc[] = [
       { type: "h1", text: "Engineering RFC — Sync Engine v2" },
       { type: "callout", text: "Reviews open till Thursday. Reply in the doc or in #engineering." },
       { type: "h2", text: "Why" },
-      { type: "p", text: "The current sync engine breaks down past 50 concurrent editors per doc. We need a model that scales linearly and survives partition." },
+      {
+        type: "p",
+        text: "The current sync engine breaks down past 50 concurrent editors per doc. We need a model that scales linearly and survives partition.",
+      },
       { type: "h2", text: "Proposal" },
-      { type: "list", items: [
-        "Vector clocks for conflict resolution, replacing the current last-writer-wins.",
-        "Per-doc client cache backed by IndexedDB to survive reload.",
-        "Reconnect with backoff and a snapshot delta API — target reconnect <2s p99.",
-      ]},
+      {
+        type: "list",
+        items: [
+          "Vector clocks for conflict resolution, replacing the current last-writer-wins.",
+          "Per-doc client cache backed by IndexedDB to survive reload.",
+          "Reconnect with backoff and a snapshot delta API — target reconnect <2s p99.",
+        ],
+      },
       { type: "h2", text: "Open questions" },
-      { type: "list", items: [
-        "Rollback strategy for misbehaving clients — Priya owns.",
-        "Load-testing methodology — needs a baseline first.",
-        "Migration plan for existing workspaces — Jordan to draft.",
-      ]},
+      {
+        type: "list",
+        items: [
+          "Rollback strategy for misbehaving clients — Priya owns.",
+          "Load-testing methodology — needs a baseline first.",
+          "Migration plan for existing workspaces — Jordan to draft.",
+        ],
+      },
     ],
   },
   {
@@ -214,11 +238,14 @@ export const DOCS: Doc[] = [
       { type: "h1", text: "AI assistant — streaming improvements" },
       { type: "p", text: "SSE refactor + partial-response UI. Sprint ends Friday." },
       { type: "h2", text: "Scope" },
-      { type: "list", items: [
-        "Replace the polling buffer with an SSE-backed stream.",
-        "Render partial responses in the editor's AI block without flicker.",
-        "Token-buffer tuning so chunks arrive at a steady rhythm.",
-      ]},
+      {
+        type: "list",
+        items: [
+          "Replace the polling buffer with an SSE-backed stream.",
+          "Render partial responses in the editor's AI block without flicker.",
+          "Token-buffer tuning so chunks arrive at a steady rhythm.",
+        ],
+      },
       { type: "h2", text: "Demo plan" },
       { type: "p", text: "Loom in #product Wednesday afternoon. All-hands demo Thursday." },
     ],
@@ -237,7 +264,10 @@ export const DOCS: Doc[] = [
       { type: "h1", text: "Empty-state illustrations" },
       { type: "p", text: "Six frames for the doc editor, inbox, calendar, and team pages." },
       { type: "h2", text: "Direction" },
-      { type: "p", text: "On-brand without being twee. Frame 4 is the leader — floating constellations, warm orange ambient." },
+      {
+        type: "p",
+        text: "On-brand without being twee. Frame 4 is the leader — floating constellations, warm orange ambient.",
+      },
     ],
   },
 ];

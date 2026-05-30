@@ -3,6 +3,7 @@ import { use, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "@/store/app-store";
 import { USERS } from "@/data/dummy-users";
+import { useCan } from "@/lib/use-can";
 import type { DocBlock } from "@/types";
 import { BLOCK_TEMPLATES } from "./constants";
 import { DocEditorTopbar } from "./doc-editor-topbar";
@@ -15,6 +16,9 @@ import { AISidebar } from "./ai-sidebar";
 export default function DocEditorView({ params }: { params: Promise<{ workspaceId: string; docId: string }> }) {
   const { workspaceId, docId } = use(params);
   const { docs, favorites, aiPanelOpen, workspaces, toggleFavorite, toggleAiPanel, openModal } = useAppStore();
+  const canEditDoc = useCan("doc.edit");
+  const canComment = useCan("comment.add");
+  const canUseAi = useCan("ai.use");
   const doc = docs.find((d) => d.id === docId) ?? docs[0];
   const ws = workspaces.find((w) => w.id === (doc?.workspaceId ?? workspaceId));
   const [blocks, setBlocks] = useState<DocBlock[]>(doc?.content ?? [{ type: "h1", text: doc?.title ?? "Untitled" }, { type: "p", text: "Start writing, or press / for commands…" }]);
@@ -27,6 +31,7 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
   }, [doc?.id]);
 
   useEffect(() => {
+    if (!canEditDoc) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "/" && !slashOpen && document.activeElement?.tagName !== "INPUT") {
         const sel = window.getSelection();
@@ -39,7 +44,7 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [slashOpen]);
+  }, [slashOpen, canEditDoc]);
 
   const insertBlock = (kind: string) => {
     const newBlock: DocBlock = BLOCK_TEMPLATES[kind] ?? { type: "p", text: "" };
@@ -57,12 +62,15 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
         doc={doc}
         workspace={ws}
         isFav={isFav}
-        aiPanelOpen={aiPanelOpen}
+        aiPanelOpen={aiPanelOpen && canUseAi}
         commentsPanelOpen={commentsPanelOpen}
         onToggleFavorite={() => toggleFavorite(doc.id)}
         onToggleAi={toggleAiPanel}
         onToggleComments={() => setCommentsPanelOpen((v) => !v)}
         openModal={openModal}
+        canEdit={canEditDoc}
+        canComment={canComment}
+        canUseAi={canUseAi}
       />
 
       <div className="flex-1 flex min-h-0 overflow-hidden">
@@ -81,23 +89,25 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
 
             <div className="space-y-0.5">
               {blocks.map((block, i) => (
-                <BlockRenderer key={i} block={block} onChange={(nb) => setBlocks((arr) => arr.map((x, j) => j === i ? nb : x))} />
+                <BlockRenderer key={i} block={block} onChange={(nb) => setBlocks((arr) => arr.map((x, j) => j === i ? nb : x))} readOnly={!canEditDoc} />
               ))}
             </div>
 
-            <div className="mt-8 text-sm text-gray-300 dark:text-gray-600 italic">Press / for commands…</div>
+            {canEditDoc && (
+              <div className="mt-8 text-sm text-gray-300 dark:text-gray-600 italic">Press / for commands…</div>
+            )}
           </div>
         </div>
 
         <AnimatePresence>
-          {commentsPanelOpen && (
+          {commentsPanelOpen && canComment && (
             <motion.div key="comments" initial={{ width: 0, opacity: 0 }} animate={{ width: 320, opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden flex-shrink-0">
               <CommentsSidebar onClose={() => setCommentsPanelOpen(false)} />
             </motion.div>
           )}
         </AnimatePresence>
         <AnimatePresence>
-          {aiPanelOpen && (
+          {aiPanelOpen && canUseAi && (
             <motion.div key="ai" initial={{ width: 0, opacity: 0 }} animate={{ width: 360, opacity: 1 }} exit={{ width: 0, opacity: 0 }} transition={{ duration: 0.2 }}>
               <AISidebar onClose={toggleAiPanel} />
             </motion.div>
@@ -105,9 +115,9 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
         </AnimatePresence>
       </div>
 
-      <FloatingToolbar />
+      {canEditDoc && <FloatingToolbar />}
       <AnimatePresence>
-        {slashOpen && <SlashMenu onPick={insertBlock} onClose={() => setSlashOpen(false)} />}
+        {slashOpen && canEditDoc && <SlashMenu onPick={insertBlock} onClose={() => setSlashOpen(false)} />}
       </AnimatePresence>
     </div>
   );

@@ -5,17 +5,20 @@ import { Upload, FileText, Kanban, LinkIcon, Sparkles } from "lucide-react";
 interface Props {
   onPick: (token: string) => void;
   onClose: () => void;
+  canUseAi?: boolean;
 }
 
-const OPTIONS = [
+const BASE_OPTIONS = [
   { key: "upload", label: "Upload file", desc: "Image, PDF, CSV — up to 50 MB", icon: <Upload className="w-3.5 h-3.5" /> },
   { key: "doc", label: "Embed a doc", desc: "Pick a Haxon doc to attach", icon: <FileText className="w-3.5 h-3.5" /> },
   { key: "board", label: "Embed a board", desc: "Drop in a Kanban board reference", icon: <Kanban className="w-3.5 h-3.5" /> },
   { key: "link", label: "Add link", desc: "Paste a URL to render as a card", icon: <LinkIcon className="w-3.5 h-3.5" /> },
-  { key: "ai", label: "Compose with AI", desc: "Draft a reply with Haxon AI", icon: <Sparkles className="w-3.5 h-3.5" /> },
 ];
 
-export function ChatAttachPopover({ onPick, onClose }: Props) {
+const AI_OPTION = { key: "ai", label: "Compose with AI", desc: "Draft a reply with Haxon AI", icon: <Sparkles className="w-3.5 h-3.5" /> };
+
+export function ChatAttachPopover({ onPick, onClose, canUseAi = true }: Props) {
+  const OPTIONS = canUseAi ? [...BASE_OPTIONS, AI_OPTION] : BASE_OPTIONS;
   const handle = (key: string) => {
     if (key === "link") {
       onPick("https://");

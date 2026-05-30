@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Plus, Target } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { useAppStore } from "@/store/app-store";
+import { useCan } from "@/lib/use-can";
 import { GOALS, STATUS_COLOR, STATUS_LABEL, type GoalStatus } from "@/data/dummy-goals";
 import { GoalCard } from "./goal-card";
 
@@ -20,6 +21,8 @@ const FILTERS: { key: StatusFilter; label: string }[] = [
 export default function GoalsView() {
   const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
+  const canCreateGoal = useCan("goals.create");
+  const canDeleteGoal = useCan("goals.delete");
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set(["g1"]));
 
@@ -53,12 +56,14 @@ export default function GoalsView() {
       <Topbar
         left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Goals" }]} />}
         right={
-          <button
-            onClick={() => toast.info("New goal editor opening…")}
-            className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-          >
-            <Plus className="w-3 h-3" /> New goal
-          </button>
+          canCreateGoal ? (
+            <button
+              onClick={() => toast.info("New goal editor opening…")}
+              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            >
+              <Plus className="w-3 h-3" /> New goal
+            </button>
+          ) : null
         }
       />
 
@@ -118,6 +123,8 @@ export default function GoalsView() {
                 goal={g}
                 expanded={expanded.has(g.id)}
                 onToggle={() => toggle(g.id)}
+                canDelete={canDeleteGoal}
+                onDelete={canDeleteGoal ? () => toast.success(`Deleted ${g.title}`) : undefined}
               />
             ))
           )}

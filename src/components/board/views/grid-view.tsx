@@ -12,9 +12,19 @@ import type { Board } from "@/types";
 import { flattenBoard, type FlatCard } from "../shared";
 import { CardDetailModal } from "../card-detail-modal";
 
-export function StatusCell({ card, board }: { card: FlatCard; board: Board }) {
+export function StatusCell({ card, board, canEdit = true }: { card: FlatCard; board: Board; canEdit?: boolean }) {
   const { moveCardByStatus } = useAppStore();
   const color = card.colColor;
+  if (!canEdit) {
+    return (
+      <span
+        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium"
+        style={{ background: color + "20", color }}
+      >
+        {card.colName}
+      </span>
+    );
+  }
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -39,9 +49,16 @@ export function StatusCell({ card, board }: { card: FlatCard; board: Board }) {
   );
 }
 
-export function EditableCell({ value, onSave, className }: { value: string; onSave: (v: string) => void; className?: string }) {
+export function EditableCell({ value, onSave, className, canEdit = true }: { value: string; onSave: (v: string) => void; className?: string; canEdit?: boolean }) {
   const [editing, setEditing] = useState(false);
   const [val, setVal] = useState(value);
+  if (!canEdit) {
+    return (
+      <div className={cn("px-1 py-0.5 text-sm truncate", className)}>
+        {value || <span className="text-gray-300 dark:text-gray-600">—</span>}
+      </div>
+    );
+  }
   if (editing) {
     return (
       <input autoFocus value={val} onChange={(e) => setVal(e.target.value)}
@@ -57,7 +74,7 @@ export function EditableCell({ value, onSave, className }: { value: string; onSa
   );
 }
 
-export function BoardGridView({ board }: { board: Board }) {
+export function BoardGridView({ board, canEdit = true }: { board: Board; canEdit?: boolean }) {
   const { updateCard, addCard } = useAppStore();
   const [openCard, setOpenCard] = useState<FlatCard | null>(null);
   const rows = flattenBoard(board);
@@ -85,12 +102,12 @@ export function BoardGridView({ board }: { board: Board }) {
                 className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-gray-900/50 group cursor-pointer"
                 onClick={() => setOpenCard(row)}
               >
-                <td className="px-4 py-2 w-8 text-center"><input type="checkbox" className="rounded border-gray-300 dark:border-gray-600" onClick={(e) => e.stopPropagation()} /></td>
+                <td className="px-4 py-2 w-8 text-center"><input type="checkbox" disabled={!canEdit} className="rounded border-gray-300 dark:border-gray-600 disabled:cursor-not-allowed disabled:opacity-50" onClick={(e) => e.stopPropagation()} /></td>
                 <td className="px-3 py-2 min-w-[220px] sticky left-0 z-10 bg-white dark:bg-gray-900" onClick={(e) => e.stopPropagation()}>
-                  <EditableCell value={row.title} onSave={(v) => updateCard(board.id, row.colId, row.id, { title: v })} className="font-medium" />
+                  <EditableCell value={row.title} onSave={(v) => updateCard(board.id, row.colId, row.id, { title: v })} className="font-medium" canEdit={canEdit} />
                 </td>
                 <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                  <StatusCell card={row} board={board} />
+                  <StatusCell card={row} board={board} canEdit={canEdit} />
                 </td>
                 <td className="px-3 py-2">
                   {assignee ? (
@@ -102,7 +119,7 @@ export function BoardGridView({ board }: { board: Board }) {
                 </td>
                 <td className="px-3 py-2"><PriorityBadge priority={row.priority} /></td>
                 <td className="px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                  <EditableCell value={row.dueDate} onSave={(v) => updateCard(board.id, row.colId, row.id, { dueDate: v })} className="text-gray-500 dark:text-gray-400 text-xs" />
+                  <EditableCell value={row.dueDate} onSave={(v) => updateCard(board.id, row.colId, row.id, { dueDate: v })} className="text-gray-500 dark:text-gray-400 text-xs" canEdit={canEdit} />
                 </td>
                 <td className="px-3 py-2">
                   <div className="flex flex-wrap gap-1">
@@ -116,12 +133,14 @@ export function BoardGridView({ board }: { board: Board }) {
           })}
         </tbody>
       </table>
-      <div className="px-5 py-3">
-        <button onClick={() => addCard(board.id, board.columns[0]?.id ?? "", "New item")}
-          className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors">
-          <Plus className="w-3.5 h-3.5" /> Add new row
-        </button>
-      </div>
+      {canEdit && (
+        <div className="px-5 py-3">
+          <button onClick={() => addCard(board.id, board.columns[0]?.id ?? "", "New item")}
+            className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 px-3 py-2 rounded-lg transition-colors">
+            <Plus className="w-3.5 h-3.5" /> Add new row
+          </button>
+        </div>
+      )}
       {openCard && (
         <CardDetailModal card={openCard} colId={openCard.colId} boardId={board.id} open onClose={() => setOpenCard(null)} />
       )}

@@ -4,10 +4,12 @@ import { motion } from "framer-motion";
 import { FileText, Kanban, Grid3X3, Users } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useAppStore } from "@/store/app-store";
+import { useCan } from "@/lib/use-can";
 
 export function QuickActions({ workspaceId }: { workspaceId: string }) {
   const router = useRouter();
   const openModal = useAppStore((s) => s.openModal);
+  const canInvite = useCan("members.invite");
 
   const actions = [
     {
@@ -31,17 +33,21 @@ export function QuickActions({ workspaceId }: { workspaceId: string }) {
       color: "#10B981",
       onClick: () => router.push(`/workspace/${workspaceId}/grid/sprint`),
     },
-    {
-      icon: <Users className="w-4 h-4" />,
-      label: "Invite Member",
-      desc: "Add to workspace",
-      color: "#8B5CF6",
-      onClick: () => openModal({ type: "invite" }),
-    },
+    ...(canInvite
+      ? [
+          {
+            icon: <Users className="w-4 h-4" />,
+            label: "Invite Member",
+            desc: "Add to workspace",
+            color: "#8B5CF6",
+            onClick: () => openModal({ type: "invite" }),
+          },
+        ]
+      : []),
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-2.5 mb-5">
+    <div className={`grid gap-2.5 mb-5 ${actions.length === 4 ? "grid-cols-4" : "grid-cols-3"}`}>
       {actions.map((q) => (
         <Tooltip.Provider key={q.label} delayDuration={300}>
           <Tooltip.Root>
