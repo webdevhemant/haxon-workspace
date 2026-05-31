@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Plus, Zap, Sparkles } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
+import { StatCard } from "@/components/ui/stat-card";
 import { useAppStore } from "@/store/app-store";
 import { useCan } from "@/lib/use-can";
 import { AUTOMATIONS, type Automation } from "@/data/dummy-automations";
@@ -76,10 +77,10 @@ export default function AutomationsView() {
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <Stat label="Total" value={automations.length} />
-            <Stat label="Active" value={activeCount} accent />
-            <Stat label="Runs this week" value={runsThisWeek} />
-            <Stat label="Saved" value="~6h" />
+            <StatCard label="Total" value={automations.length} />
+            <StatCard label="Active" value={activeCount} accent />
+            <StatCard label="Runs this week" value={runsThisWeek} />
+            <StatCard label="Saved" value="~6h" />
           </div>
         </header>
 
@@ -136,15 +137,3 @@ export default function AutomationsView() {
   );
 }
 
-function Stat({
-  label, value, accent,
-}: { label: string; value: string | number; accent?: boolean }) {
-  return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2">
-      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{label}</div>
-      <div className={`text-lg font-bold tabular-nums ${accent ? "text-orange-500" : "text-gray-900 dark:text-white"}`}>
-        {value}
-      </div>
-    </div>
-  );
-}

@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { Plus, Target } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
+import { StatCard } from "@/components/ui/stat-card";
 import { useAppStore } from "@/store/app-store";
 import { useCan } from "@/lib/use-can";
 import { GOALS, STATUS_COLOR, STATUS_LABEL, type GoalStatus } from "@/data/dummy-goals";
@@ -82,13 +83,14 @@ export default function GoalsView() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-            <Stat label="Overall" value={`${Math.round(overall)}%`} color="#F97316" />
+            <StatCard label="Overall" value={`${Math.round(overall)}%`} dotColor="#F97316" valueColor="#F97316" />
             {(["on-track", "at-risk", "off-track", "complete"] as GoalStatus[]).map((s) => (
-              <Stat
+              <StatCard
                 key={s}
                 label={STATUS_LABEL[s]}
                 value={counts[s]}
-                color={STATUS_COLOR[s]}
+                dotColor={STATUS_COLOR[s]}
+                valueColor={STATUS_COLOR[s]}
               />
             ))}
           </div>
@@ -134,16 +136,3 @@ export default function GoalsView() {
   );
 }
 
-function Stat({
-  label, value, color,
-}: { label: string; value: string | number; color: string }) {
-  return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2">
-      <div className="flex items-center gap-1.5">
-        <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: color }} />
-        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">{label}</span>
-      </div>
-      <div className="mt-1 text-lg font-bold tabular-nums" style={{ color }}>{value}</div>
-    </div>
-  );
-}
