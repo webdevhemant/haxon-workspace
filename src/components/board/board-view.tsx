@@ -123,19 +123,19 @@ function BoardHeader({
     <div className="px-4 py-2 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
       <span className="text-3xl">{board.emoji}</span>
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
+        <h1 className="text-[15px] font-semibold">{board.name}</h1>
         <div className="text-xs text-gray-400">{totalCards} cards · {board.columns.length} columns</div>
       </div>
       {readOnly && (
         <span
           title={`Your role (${role}) is read-only on boards`}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-500"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-gray-100 dark:bg-gray-800 text-gray-500"
         >
           <Lock className="w-3 h-3" /> Read-only
         </span>
       )}
       <div className="flex-1" />
-      <div className="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
+      <div className="flex items-center gap-0.5 bg-gray-100 dark:bg-gray-800 rounded p-0.5">
         {VIEWS.map((v) => (
           <button
             key={v.key}

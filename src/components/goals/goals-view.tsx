@@ -66,22 +66,20 @@ export default function GoalsView() {
       <div className="flex-1 overflow-y-auto">
         <header className="px-6 pt-6 pb-5 border-b border-gray-100 dark:border-gray-800">
           <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">Goals & OKRs</h1>
-          <div className="flex items-center gap-8 flex-wrap">
-            <StatCard label="Overall progress" value={`${Math.round(overall)}%`} dotColor="#F97316" valueColor="#F97316" />
+          <dl className="flex items-center gap-8 flex-wrap">
+            <StatCard label="Overall progress" value={`${Math.round(overall)}%`} valueColor="#F97316" />
             <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />
             {(["on-track", "at-risk", "off-track", "complete"] as GoalStatus[]).map((s, i) => (
-              <>
+              <div key={s} className="flex items-center gap-8">
                 <StatCard
-                  key={s}
                   label={STATUS_LABEL[s]}
                   value={counts[s]}
-                  dotColor={STATUS_COLOR[s]}
                   valueColor={STATUS_COLOR[s]}
                 />
-                {i < 3 && <div key={`sep-${s}`} className="w-px h-8 bg-gray-200 dark:bg-gray-800" />}
-              </>
+                {i < 3 && <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />}
+              </div>
             ))}
-          </div>
+          </dl>
         </header>
 
         <div className="px-6 border-b border-gray-100 dark:border-gray-800 flex items-center">

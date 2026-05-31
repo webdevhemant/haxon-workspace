@@ -26,7 +26,7 @@ export function CardDetailHeader({
       <span className="text-[11px] text-gray-400 font-mono">{cardId}</span>
       <button
         onClick={onClose}
-        className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+        className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
       >
         <X className="w-4 h-4" />
       </button>

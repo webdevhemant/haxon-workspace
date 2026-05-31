@@ -28,7 +28,7 @@ function Stat({
       <div className="flex items-center gap-1.5 text-[10.5px] font-semibold text-gray-400 uppercase tracking-widest">
         {icon} {label}
       </div>
-      <div className={`mt-1 text-xl font-bold tabular-nums ${accent ? "text-orange-500" : "text-gray-900 dark:text-white"}`}>
+      <div className={`mt-1 text-[20px] font-semibold tabular-nums leading-none ${accent ? "text-orange-500" : "text-gray-900 dark:text-white"}`}>
         {value}
       </div>
     </div>

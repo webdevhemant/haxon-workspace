@@ -28,9 +28,9 @@ function KanbanCard({ card, colId, boardId, index, colColor, canMove }: { card: 
             {...(canMove ? provided.dragHandleProps : {})}
             onClick={() => setOpen(true)}
             className={cn(
-              "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-pointer select-none",
+              "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md p-3 cursor-pointer select-none",
               "hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-150",
-              snapshot.isDragging && "shadow-xl rotate-1 scale-105 opacity-90",
+              snapshot.isDragging && "shadow-lg opacity-95",
             )}
           >
             <div className="font-medium text-sm leading-snug mb-1">{card.title}</div>
@@ -102,7 +102,7 @@ function KanbanColumn({ col, boardId, dragHandleProps, canEdit, canMove }: { col
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: col.color }} />
           <span className="font-semibold text-sm flex-1">{col.name}</span>
-          <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{col.cards.length}</span>
+          <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded">{col.cards.length}</span>
           {canEdit && (
             <button onClick={() => setAdding(true)} className="w-5 h-5 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-400 transition-colors">
               <Plus className="w-3.5 h-3.5" />
@@ -123,24 +123,22 @@ function KanbanColumn({ col, boardId, dragHandleProps, canEdit, canMove }: { col
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className={cn("flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 min-h-[60px] transition-colors", snapshot.isDraggingOver && "bg-orange-50 dark:bg-orange-950/20")}
+            className={cn("flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 transition-colors", snapshot.isDraggingOver && "bg-orange-50 dark:bg-orange-950/20")}
+            style={{ minHeight: 80 }}
           >
             {col.cards.map((card, i) => <KanbanCard key={card.id} card={card} colId={col.id} boardId={boardId} index={i} colColor={col.color} canMove={canMove} />)}
             {provided.placeholder}
-            <AnimatePresence>
-              {adding && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                  className="bg-white dark:bg-gray-900 border-2 border-orange-400 rounded-lg p-2.5">
-                  <textarea autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } if (e.key === "Escape") setAdding(false); }}
-                    placeholder="Card title…" rows={2} className="w-full text-sm resize-none border-0 outline-none bg-transparent" />
-                  <div className="flex gap-1.5 mt-2">
-                    <button onClick={submit} className="px-2.5 py-1 bg-orange-500 text-white text-xs font-semibold rounded-md hover:bg-orange-600 transition-colors">Add</button>
-                    <button onClick={() => setAdding(false)} className="px-2.5 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">Cancel</button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {adding && (
+              <div className="bg-white dark:bg-gray-900 border-2 border-orange-400 rounded-md p-2.5">
+                <textarea autoFocus value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } if (e.key === "Escape") setAdding(false); }}
+                  placeholder="Card title…" rows={2} className="w-full text-sm resize-none border-0 outline-none bg-transparent" />
+                <div className="flex gap-1.5 mt-2">
+                  <button onClick={submit} className="px-2.5 py-1 bg-orange-500 text-white text-xs font-semibold rounded hover:bg-orange-600 transition-colors">Add</button>
+                  <button onClick={() => setAdding(false)} className="px-2.5 py-1 text-xs text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors">Cancel</button>
+                </div>
+              </div>
+            )}
             {!adding && canEdit && (
               <button onClick={() => setAdding(true)}
                 className="flex items-center gap-1.5 px-2 py-2 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
@@ -176,7 +174,7 @@ export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNe
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                    className={cn("flex-none self-start max-h-full flex flex-col", snapshot.isDragging && "rotate-1 opacity-90 shadow-2xl")}
+                    className={cn("flex-none self-start max-h-full flex flex-col", snapshot.isDragging && "opacity-90 shadow-xl")}
                     style={{ ...provided.draggableProps.style, height: snapshot.isDragging ? undefined : "100%" }}
                   >
                     <KanbanColumn col={col} boardId={board.id} dragHandleProps={provided.dragHandleProps ?? undefined} canEdit={canEdit} canMove={canMove} />

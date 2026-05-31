@@ -40,7 +40,7 @@ export function CardDetailModal({
           <CardDetailHeader currentCol={currentCol} cardId={card.id} onClose={onClose} />
 
           <div className="flex-1 overflow-hidden flex min-h-0">
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
               <CardDetailTitleAndDescription
                 cardId={card.id}
                 initialTitle={card.title}

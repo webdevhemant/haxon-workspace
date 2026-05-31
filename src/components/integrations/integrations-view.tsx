@@ -39,32 +39,24 @@ export default function IntegrationsView() {
       <Topbar left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Integrations" }]} />} />
 
       <div className="flex-1 overflow-y-auto">
-        <header className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-b from-sky-50/30 to-transparent dark:from-sky-950/10">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                Integrations <Plug className="w-5 h-5 text-sky-500" />
-              </h1>
-              <p className="text-[13px] text-gray-500 dark:text-gray-400 mt-1 max-w-prose">
-                Connect Haxon to the tools your team already uses. Bidirectional sync,
-                live embeds, and AI handoffs — no glue code.
-              </p>
-            </div>
-            <div className="hidden sm:block text-right">
-              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Connected</div>
-              <div className="text-2xl font-bold tabular-nums text-sky-500">
-                {connectedCount}<span className="text-gray-300 dark:text-gray-700 text-base font-normal"> / {list.length}</span>
-              </div>
+        <header className="px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white">Integrations</h1>
+            <div className="hidden sm:flex flex-col items-end gap-0.5">
+              <dt className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Connected</dt>
+              <dd className="text-[22px] font-semibold tabular-nums leading-none text-gray-900 dark:text-white">
+                {connectedCount}<span className="text-gray-400 text-[14px] font-normal"> / {list.length}</span>
+              </dd>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 h-9 px-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg max-w-md">
+          <div className="flex items-center gap-1.5 h-8 px-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded max-w-xs">
             <Search className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search integrations…"
-              className="flex-1 outline-none bg-transparent text-[13px] text-gray-700 dark:text-gray-300 placeholder-gray-400"
+              className="flex-1 outline-none bg-transparent text-[12.5px] text-gray-700 dark:text-gray-300 placeholder-gray-400"
             />
           </div>
         </header>
@@ -99,7 +91,7 @@ export default function IntegrationsView() {
                   key={i.id}
                   integration={i}
                   onToggle={() => toggle(i.id)}
-                  onConfigure={() => toast.info(`${i.name} configuration opening…`)}
+                  onConfigure={() => {/* settings redirect handled by IntegrationCard */}}
                 />
               ))}
             </div>
@@ -126,7 +118,7 @@ export default function IntegrationsView() {
                   key={i.id}
                   integration={i}
                   onToggle={() => toggle(i.id)}
-                  onConfigure={() => toast.info(`${i.name} configuration opening…`)}
+                  onConfigure={() => {/* settings redirect handled by IntegrationCard */}}
                 />
               ))}
             </div>
@@ -143,7 +135,7 @@ function CategoryChip({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[12px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
         active
           ? "bg-orange-500 text-white"
           : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"

@@ -32,9 +32,9 @@ export function CardDetailSubtasks({
     <div>
       <div className="flex items-center gap-2 mb-2">
         <CheckSquare className="w-3.5 h-3.5 text-gray-400" />
-        <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Subtasks</span>
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Subtasks</span>
         {subtasks.length > 0 && (
-          <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded-full">
+          <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 rounded">
             {doneCount}/{subtasks.length}
           </span>
         )}
@@ -52,7 +52,7 @@ export function CardDetailSubtasks({
         {subtasks.map((st) => (
           <div
             key={st.id}
-            className="group flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+            className="group flex items-center gap-2.5 px-2 py-1.5 rounded hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
           >
             <button
               onClick={() => canEdit && onToggle(st.id)}
@@ -86,12 +86,12 @@ export function CardDetailSubtasks({
             onChange={(e) => setSubtaskInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") handleAddSubtask(); }}
             placeholder="Add a subtask…"
-            className="flex-1 text-sm px-3 py-1.5 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-lg outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors"
+            className="flex-1 text-sm px-3 py-1.5 bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-700 rounded-md outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-500/15 placeholder-gray-400 transition-colors"
           />
           <button
             onClick={handleAddSubtask}
             disabled={!subtaskInput.trim()}
-            className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold rounded-lg transition-colors"
+            className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold rounded transition-colors"
           >
             Add
           </button>

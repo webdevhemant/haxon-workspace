@@ -45,7 +45,7 @@ export function BoardListView({ board }: { board: Board }) {
                 className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
                 <span className="font-semibold text-sm flex-1 text-left" style={{ color: config.color }}>{config.label}</span>
-                <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded-full">{cards.length}</span>
+                <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 px-1.5 py-0.5 rounded">{cards.length}</span>
                 {isOpen
                   ? <ChevronDown className="w-4 h-4 text-gray-400" />
                   : <ChevronRight className="w-4 h-4 text-gray-400" />

@@ -5,7 +5,7 @@ import { StatCard } from "./stat-card";
 export function StatsSection() {
   return (
     <>
-      <div className="font-bold text-base tracking-tight mb-3">This week</div>
+      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-3">This week</div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         <StatCard label="Docs" value="48" delta="+12" icon={<FileText className="w-3.5 h-3.5" />} color="#3B82F6" />
         <StatCard label="Active boards" value="6" delta="+1" icon={<Kanban className="w-3.5 h-3.5" />} color="#F97316" />

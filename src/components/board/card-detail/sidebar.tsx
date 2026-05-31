@@ -77,7 +77,7 @@ export function CardDetailSidebar({
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-44 z-[60]" sideOffset={4}>
+              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl p-1 w-44 z-[60]" sideOffset={4}>
                 {board?.columns.map((col) => (
                   <DropdownMenu.Item
                     key={col.id}
@@ -109,7 +109,7 @@ export function CardDetailSidebar({
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-36 z-[60]" sideOffset={4}>
+              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl p-1 w-36 z-[60]" sideOffset={4}>
                 {PRIORITY_OPTIONS.map((p) => {
                   const cfg = PRIORITY_CONFIG[p];
                   return (
@@ -150,7 +150,7 @@ export function CardDetailSidebar({
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-48 z-[60]" sideOffset={4}>
+              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl p-1 w-48 z-[60]" sideOffset={4}>
                 <DropdownMenu.Item
                   onSelect={() => onUpdateAssignee("")}
                   className="px-2.5 py-1.5 text-sm rounded cursor-pointer outline-none text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -210,7 +210,7 @@ export function CardDetailSidebar({
             {labels.map((label) => (
               <span
                 key={label}
-                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 text-[10px] font-medium rounded-md"
+                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-orange-100 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 text-[10px] font-medium rounded"
               >
                 {label}
                 {canEdit && (
@@ -231,7 +231,7 @@ export function CardDetailSidebar({
                 }}
                 onBlur={() => { if (!labelInput.trim()) setAddingLabel(false); }}
                 placeholder="Label…"
-                className="text-[10px] px-1.5 py-0.5 border border-orange-400 rounded-md outline-none w-16 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300"
+                className="text-[10px] px-1.5 py-0.5 border border-orange-400 rounded outline-none w-16 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300"
               />
             )}
             {canEdit && !addingLabel && (

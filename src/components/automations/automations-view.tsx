@@ -68,7 +68,7 @@ export default function AutomationsView() {
           <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">
             Automations
           </h1>
-          <div className="flex items-center gap-8">
+          <dl className="flex items-center gap-8">
             <StatCard label="Total" value={automations.length} />
             <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />
             <StatCard label="Active" value={activeCount} accent />
@@ -76,7 +76,7 @@ export default function AutomationsView() {
             <StatCard label="Runs this week" value={runsThisWeek} />
             <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />
             <StatCard label="Time saved" value="~6h" />
-          </div>
+          </dl>
         </header>
 
         <div className="px-6 border-b border-gray-100 dark:border-gray-800 flex items-center gap-4">

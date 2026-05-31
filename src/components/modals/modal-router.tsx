@@ -64,11 +64,15 @@ export function ModalRouter() {
   const [docEmoji, setDocEmoji] = useState("📝");
   const [docFolder, setDocFolder] = useState("General");
 
+  // Share token — generated once per modal open to avoid hydration mismatch
+  const [shareToken, setShareToken] = useState("");
+
   useEffect(() => {
     if (modal?.type === "rename") setRenameVal(modal.current);
     if (modal?.type === "createWorkspace") { setWsName(""); setWsEmoji("🌊"); }
     if (modal?.type === "createBoard") { setBoardName(""); setBoardEmoji("🗺️"); }
     if (modal?.type === "createDoc") { setDocName(""); setDocEmoji("📝"); setDocFolder("General"); }
+    if (modal?.type === "share") { setShareToken(Math.random().toString(36).slice(2, 10)); }
   }, [modal]);
 
   if (!modal) return null;
@@ -142,7 +146,7 @@ export function ModalRouter() {
           <div className="mb-4">
             <label className="text-xs font-medium text-gray-500 mb-1.5 block">Share link</label>
             <div className="flex gap-2">
-              <input readOnly value={`https://haxon.app/share/${Math.random().toString(36).slice(2, 10)}`}
+              <input readOnly value={`https://haxon.app/share/${shareToken}`}
                 className="flex-1 px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-500" />
               <button onClick={() => toast.success("Link copied!")} className="px-3 py-2 bg-orange-500 text-white text-sm font-semibold rounded-lg hover:bg-orange-600 transition-colors">Copy</button>
             </div>
