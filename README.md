@@ -14,9 +14,10 @@ A modern, AI-native team workspace — docs, boards, calendar, chat, goals, auto
 | Drag & Drop | @hello-pangea/dnd |
 | Animations | Framer Motion |
 | Forms | React Hook Form + Zod |
-| UI Primitives | Radix UI (Popover, DropdownMenu, Dialog, Tooltip, HoverCard) |
+| UI Primitives | Radix UI (Popover, DropdownMenu, Dialog, Tooltip, HoverCard, Switch) |
 | Dates | date-fns |
 | Theme | next-themes (class-based) |
+| Emoji | emoji-picker-react (SSR-safe dynamic import) |
 
 ## Getting Started
 
@@ -81,20 +82,20 @@ src/
 ## Key Features
 
 ### Communication
-- **Team chat (Inbox)** — channels and DMs, threaded conversations, message bubbles, reactions, presence dots, typing indicators, jump-to-latest, doc/board attachments. Composer supports `@` mentions, `#` channel refs, attach popover, categorized emoji picker, and AI compose.
+- **Team chat (Inbox)** — channels and DMs, threaded conversations, message bubbles, reactions, presence dots, typing indicators, jump-to-latest, doc/board attachments. Composer supports `@` mentions, `#` channel refs, attach popover, full emoji picker (emoji-picker-react with name search), and AI compose. Create new channels inline from the sidebar.
 - **Saved messages** — bookmark any message; the Saved tab shows a cross-channel flat list.
 - **Scheduled messages** — pick "Tomorrow 9am" / "Monday morning" / custom time; a strip above the composer lists pending sends.
 - **Channel search + settings** — search messages within a channel via popover; rename, change topic, and toggle privacy from a dedicated dialog.
 - **Calls & huddles** — phone opens a voice-only call modal; video opens a huddle that requests camera + mic permissions, renders local video, with mute/cam/share controls. Falls back to audio-only on permission denial.
 
 ### Work
-- **Kanban boards** — drag-and-drop cards and columns plus list, grid, table, workload views. Card detail modal has subtasks, comments, followers, priority, labels, dates with a shadcn-style date picker.
+- **Kanban boards** — drag-and-drop cards and columns (including same-column reorder) plus list, grid, table, workload views. Card detail modal has subtasks, comments, followers, priority, labels, dates with a shadcn-style date picker.
 - **Doc editor** — block-based (H1–H3, paragraph, list, callout, AI block, divider), slash-command menu, floating text toolbar, AI sidebar with simulated streaming, threaded comments sidebar.
-- **Calendar** — color-coded event pills, full event detail modal (attendees with RSVP, agenda, location/video link, recurring, linked docs/boards), collapsible Upcoming side rail, month/year quick-jump popover.
+- **Calendar** — color-coded event pills, full event detail modal (attendees with RSVP, agenda, location/video link, recurring, linked docs/boards), collapsible Upcoming side rail, month/year quick-jump popover. Create new events via shadcn DatePicker modal.
 
 ### Direction
-- **Goals & OKRs** — goals with key results, status (on-track / at-risk / off-track / complete), per-status filters, expand to view KR progress.
-- **Automations** — when-this-then-that rules across boards, docs, chat, calendar. Pause/resume, expand to see trigger + actions, delete. Templates gallery to start from.
+- **Goals & OKRs** — goals with key results, status (on-track / at-risk / off-track / complete), per-status filters, expand to view KR progress. Create goals via modal (emoji, period, owner, status).
+- **Automations** — when-this-then-that rules across boards, docs, chat, calendar. Pause/resume (Radix Switch toggle), expand to see trigger + actions, delete. Templates gallery to start from. Create new rules via modal (trigger + action selects, enable toggle).
 - **Integrations** — marketplace for Slack, GitHub, Google Drive, Google Calendar, Linear, Figma, Notion, Zendesk, Datadog, Loom, Stripe, Intercom. Connect/disconnect, filter by category, search.
 
 ### Files
@@ -106,13 +107,14 @@ src/
 - **Settings** — Profile (editable identity, skills, links, security with real change-password / 2FA / sessions dialogs), Members (bulk invite, pending invites, RBAC chips, audit log), Billing (plan comparison, payment method, promo code, invoice list), Roles & permissions (full capability matrix).
 
 ### Governance
-- **RBAC** — four roles (Owner / Admin / Member / Guest) and 21 capabilities across Workspace, People, Docs & boards, Chat, AI. Workspace switcher shows a colored chip per workspace; `/settings/roles` renders the full matrix. `useCan()` hook enforces capabilities — Guest can't invite, can't create docs/boards.
+- **RBAC** — four roles (Owner / Admin / Member / Guest) and 21 capabilities across Workspace, People, Docs & boards, Chat, AI. Workspace switcher shows a colored chip per workspace; `/settings/roles` renders the full matrix. `useCan()` hook and `useRequireCapability()` hook enforce capabilities — Guest can't invite, can't create docs/boards.
 - **4 distinct workspaces** ship in dummy data so each role can be exercised by switching the active workspace.
 
 ### Theming & polish
 - **Dark mode** — class-based via next-themes, configured for TailwindCSS v4 with `@variant dark`.
 - **Landing forced dark** — marketing page is dark regardless of in-app theme.
 - **Command palette** — ⌘K to search docs and boards.
+- **Flat design** — reduced border radius throughout (`--radius: 0.375rem`), no gradient headers, no pill badges. Flat stat rows instead of card containers.
 
 ## Componentization
 
@@ -129,3 +131,4 @@ Editable state persists to localStorage via Zustand `persist`:
 
 - All data is in-memory dummy data — no backend or database.
 - The app auto-authenticates as `maya@haxon.app` in the product shell.
+- Requires **Node.js 18+** (Next.js 16 uses `??=` nullish coalescing assignment). Use `nvm use 20` if on an older version.

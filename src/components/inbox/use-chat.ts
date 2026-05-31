@@ -21,6 +21,7 @@ interface UseChatReturn {
   pinChannel: (channelId: string) => void;
   muteChannel: (channelId: string) => void;
   removeChannel: (channelId: string) => void;
+  addChannel: (name: string, isPrivate: boolean) => void;
 }
 
 export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
@@ -156,6 +157,23 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
     setChannels((prev) => prev.map((c) => (c.id === channelId ? { ...c, isMuted: !c.isMuted } : c)));
   }, []);
 
+  const addChannel = useCallback((name: string, isPrivate: boolean) => {
+    const id = `c-${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+    const newChannel: ChatChannel = {
+      id, kind: "channel",
+      name: name.toLowerCase().replace(/\s+/g, "-"),
+      topic: isPrivate ? "Private channel" : "New channel",
+      isPrivate,
+      memberIds: [CURRENT_USER_ID],
+      unread: 0,
+      isPinned: false,
+      isMuted: false,
+      lastActivityAt: "now",
+    };
+    setChannels((prev) => [...prev, newChannel]);
+    _setActive(id);
+  }, []);
+
   const removeChannel = useCallback((channelId: string) => {
     setChannels((prev) => prev.filter((c) => c.id !== channelId));
     setMessagesByChannel((prev) => {
@@ -183,6 +201,7 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
       pinChannel,
       muteChannel,
       removeChannel,
+      addChannel,
     }),
     [
       channels,
@@ -200,6 +219,7 @@ export function useChat(initialChannelId: string = "c-product"): UseChatReturn {
       pinChannel,
       muteChannel,
       removeChannel,
+      addChannel,
     ],
   );
 }

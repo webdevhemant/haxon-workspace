@@ -1,13 +1,13 @@
 "use client";
 import { useState, useMemo } from "react";
-import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { StatCard } from "@/components/ui/stat-card";
 import { useAppStore } from "@/store/app-store";
 import { useCan } from "@/lib/use-can";
-import { GOALS, STATUS_COLOR, STATUS_LABEL, type GoalStatus } from "@/data/dummy-goals";
+import { GOALS, STATUS_COLOR, STATUS_LABEL, type GoalStatus, type Goal } from "@/data/dummy-goals";
 import { GoalCard } from "./goal-card";
+import { CreateGoalModal } from "./create-goal-modal";
 
 type StatusFilter = "all" | GoalStatus;
 
@@ -24,20 +24,22 @@ export default function GoalsView() {
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const canCreateGoal = useCan("goals.create");
   const canDeleteGoal = useCan("goals.delete");
+  const [goals, setGoals] = useState<Goal[]>(GOALS);
+  const [createOpen, setCreateOpen] = useState(false);
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [expanded, setExpanded] = useState<Set<string>>(new Set(["g1"]));
 
   const filtered = useMemo(
-    () => (filter === "all" ? GOALS : GOALS.filter((g) => g.status === filter)),
-    [filter],
+    () => (filter === "all" ? goals : goals.filter((g) => g.status === filter)),
+    [filter, goals],
   );
 
   const overall =
-    GOALS.flatMap((g) => g.keyResults).reduce((sum, kr) => sum + kr.progress, 0) /
-    Math.max(GOALS.flatMap((g) => g.keyResults).length, 1);
+    goals.flatMap((g) => g.keyResults).reduce((sum, kr) => sum + kr.progress, 0) /
+    Math.max(goals.flatMap((g) => g.keyResults).length, 1);
 
   const counts: Record<GoalStatus, number> = { "on-track": 0, "at-risk": 0, "off-track": 0, complete: 0 };
-  for (const g of GOALS) counts[g.status]++;
+  for (const g of goals) counts[g.status]++;
 
   const toggle = (id: string) =>
     setExpanded((prev) => {
@@ -54,7 +56,7 @@ export default function GoalsView() {
         right={
           canCreateGoal ? (
             <button
-              onClick={() => toast.info("New goal editor opening…")}
+              onClick={() => setCreateOpen(true)}
               className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded transition-colors cursor-pointer"
             >
               <Plus className="w-3 h-3" /> New goal
@@ -110,13 +112,18 @@ export default function GoalsView() {
                   expanded={expanded.has(g.id)}
                   onToggle={() => toggle(g.id)}
                   canDelete={canDeleteGoal}
-                  onDelete={canDeleteGoal ? () => toast.success(`Deleted ${g.title}`) : undefined}
+                  onDelete={canDeleteGoal ? () => setGoals((prev) => prev.filter((x) => x.id !== g.id)) : undefined}
                 />
               ))}
             </div>
           )}
         </section>
       </div>
+      <CreateGoalModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={(g) => { setGoals((prev) => [g, ...prev]); setExpanded((s) => new Set([...s, g.id])); }}
+      />
     </div>
   );
 }

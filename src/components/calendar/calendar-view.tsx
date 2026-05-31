@@ -13,21 +13,24 @@ import { MonthGrid } from "./month-grid";
 import { MonthJumpPopover } from "./month-jump-popover";
 import { UpcomingList } from "./upcoming-list";
 import { EventDetailModal } from "./event-detail-modal";
+import { CreateEventModal } from "./create-event-modal";
 
 const DEFAULT_DATE = new Date(2026, 4, 28);
 
 export default function CalendarView() {
   const today = DEFAULT_DATE;
+  const [events, setEvents] = useState<CalendarEvent[]>(EVENTS);
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
   const [selected, setSelected] = useState<CalendarEvent | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
   const [upcomingOpen, setUpcomingOpen] = useState(true);
   const { workspaces, activeWorkspaceId } = useAppStore();
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const canCreateEvent = useCan("calendar.event.create");
 
   const upcoming = useMemo(() => {
-    return [...EVENTS]
+    return [...events]
       .filter((e) => parseISO(e.startISO).getTime() >= today.getTime())
       .sort((a, b) => parseISO(a.startISO).getTime() - parseISO(b.startISO).getTime())
       .slice(0, 8);
@@ -35,7 +38,7 @@ export default function CalendarView() {
 
   const typeCounts = useMemo(() => {
     const result: Record<string, number> = {};
-    for (const e of EVENTS) {
+    for (const e of events) {
       result[e.type] = (result[e.type] ?? 0) + 1;
     }
     return result;
@@ -50,7 +53,10 @@ export default function CalendarView() {
         left={<Breadcrumb items={[{ label: ws?.name ?? "" }, { label: "Calendar" }]} />}
         right={
           canCreateEvent ? (
-            <button className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors">
+            <button
+              onClick={() => setCreateOpen(true)}
+              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded transition-colors cursor-pointer"
+            >
               <Plus className="w-3 h-3" /> Event
             </button>
           ) : null
@@ -102,7 +108,7 @@ export default function CalendarView() {
             year={year}
             month={month}
             today={today}
-            events={EVENTS}
+            events={events}
             onEventClick={(ev) => setSelected(ev)}
             onDayClick={() => undefined}
           />
@@ -161,6 +167,11 @@ export default function CalendarView() {
         event={selected}
         open={Boolean(selected)}
         onClose={() => setSelected(null)}
+      />
+      <CreateEventModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={(ev) => setEvents((prev) => [...prev, ev])}
       />
     </div>
   );

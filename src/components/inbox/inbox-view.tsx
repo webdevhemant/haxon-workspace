@@ -37,6 +37,7 @@ export default function InboxView() {
     pinChannel,
     muteChannel,
     removeChannel,
+    addChannel,
   } = useChat();
 
   const [infoOpen, setInfoOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function InboxView() {
           activeId={activeChannelId}
           onSelect={(id) => { setTab("all"); setActiveChannelId(id); }}
           onStartDmWith={startDmWith}
+          onAddChannel={addChannel}
           tab={tab}
           onTabChange={setTab}
           savedCount={savedMessageIds.length}

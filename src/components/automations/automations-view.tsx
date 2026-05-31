@@ -9,6 +9,7 @@ import { useCan } from "@/lib/use-can";
 import { AUTOMATIONS, type Automation } from "@/data/dummy-automations";
 import { AutomationRow } from "./automation-row";
 import { AutomationTemplates } from "./automation-templates";
+import { CreateAutomationModal } from "./create-automation-modal";
 
 const TABS = ["All", "Active", "Paused"] as const;
 type Tab = (typeof TABS)[number];
@@ -18,6 +19,7 @@ export default function AutomationsView() {
   const ws = workspaces.find((w) => w.id === activeWorkspaceId);
   const canCreate = useCan("automation.create");
   const [automations, setAutomations] = useState<Automation[]>(AUTOMATIONS);
+  const [createOpen, setCreateOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("All");
   const [search, setSearch] = useState("");
 
@@ -44,7 +46,12 @@ export default function AutomationsView() {
   };
 
   const useTemplate = (templateId: string) => {
-    toast.success(`Created automation from template ${templateId}`);
+    const tpl = AUTOMATIONS.find((a) => a.id === templateId);
+    if (tpl) {
+      const newAuto: Automation = { ...tpl, id: `auto-${Date.now()}`, runsThisWeek: 0, enabled: true };
+      setAutomations((prev) => [newAuto, ...prev]);
+      toast.success(`Created "${newAuto.name}" from template`);
+    }
   };
 
   return (
@@ -54,7 +61,7 @@ export default function AutomationsView() {
         right={
           canCreate ? (
             <button
-              onClick={() => toast.info("New automation editor opening…")}
+              onClick={() => setCreateOpen(true)}
               className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded transition-colors cursor-pointer"
             >
               <Plus className="w-3 h-3" /> New automation
@@ -65,9 +72,7 @@ export default function AutomationsView() {
 
       <div className="flex-1 overflow-y-auto">
         <header className="px-6 pt-6 pb-5 border-b border-gray-100 dark:border-gray-800">
-          <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">
-            Automations
-          </h1>
+          <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">Automations</h1>
           <dl className="flex items-center gap-8">
             <StatCard label="Total" value={automations.length} />
             <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />
@@ -101,9 +106,7 @@ export default function AutomationsView() {
             placeholder="Search automations…"
             className="flex-1 max-w-xs h-7 px-2.5 text-[12.5px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded outline-none focus:border-orange-400 transition-colors"
           />
-          <span className="text-[11px] text-gray-400 ml-auto tabular-nums">
-            {filtered.length} shown
-          </span>
+          <span className="text-[11px] text-gray-400 ml-auto tabular-nums">{filtered.length} shown</span>
         </div>
 
         <section className="px-6 py-4">
@@ -115,12 +118,7 @@ export default function AutomationsView() {
           ) : (
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {filtered.map((a) => (
-                <AutomationRow
-                  key={a.id}
-                  automation={a}
-                  onToggle={() => toggle(a.id)}
-                  onRemove={() => remove(a.id)}
-                />
+                <AutomationRow key={a.id} automation={a} onToggle={() => toggle(a.id)} onRemove={() => remove(a.id)} />
               ))}
             </div>
           )}
@@ -130,6 +128,12 @@ export default function AutomationsView() {
           <AutomationTemplates onUse={useTemplate} />
         </section>
       </div>
+
+      <CreateAutomationModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={(a) => setAutomations((prev) => [a, ...prev])}
+      />
     </div>
   );
 }

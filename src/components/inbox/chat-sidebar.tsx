@@ -14,15 +14,18 @@ interface Props {
   activeId: string | null;
   onSelect: (id: string) => void;
   onStartDmWith: (userId: string) => void;
+  onAddChannel?: (name: string, isPrivate: boolean) => void;
   tab: ChatSidebarTab;
   onTabChange: (tab: ChatSidebarTab) => void;
   savedCount?: number;
 }
 
-export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, onTabChange, savedCount = 0 }: Props) {
+export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, onAddChannel, tab, onTabChange, savedCount = 0 }: Props) {
   const canCreateChannel = useCan("channel.create");
   const canMessage = useCan("team.message");
   const [query, setQuery] = useState("");
+  const [newChannelName, setNewChannelName] = useState("");
+  const [addingChannel, setAddingChannel] = useState(false);
   const [openSection, setOpenSection] = useState<Record<string, boolean>>({
     channels: true,
     dms: true,
@@ -110,7 +113,7 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, 
           count={channelGroup.length}
           open={openSection.channels}
           onToggle={() => setOpenSection((s) => ({ ...s, channels: !s.channels }))}
-          onAdd={canCreateChannel ? () => toast.info("New shortly") : undefined}
+          onAdd={canCreateChannel && onAddChannel ? () => setAddingChannel(true) : undefined}
         >
           {channelGroup.map((c) => (
             <ChatSidebarItem
@@ -120,6 +123,27 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, 
               onSelect={() => onSelect(c.id)}
             />
           ))}
+          {addingChannel && (
+            <div className="px-2 py-1">
+              <input
+                autoFocus
+                value={newChannelName}
+                onChange={(e) => setNewChannelName(e.target.value.replace(/\s+/g, "-").toLowerCase())}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newChannelName.trim()) {
+                    onAddChannel!(newChannelName.trim(), false);
+                    setNewChannelName("");
+                    setAddingChannel(false);
+                  }
+                  if (e.key === "Escape") { setNewChannelName(""); setAddingChannel(false); }
+                }}
+                onBlur={() => { if (!newChannelName.trim()) setAddingChannel(false); }}
+                placeholder="channel-name"
+                className="w-full text-[12px] px-2 py-1 rounded border border-orange-400 bg-white dark:bg-gray-800 outline-none text-gray-900 dark:text-white placeholder-gray-400"
+              />
+              <p className="text-[10px] text-gray-400 mt-0.5">Enter to create · Esc to cancel</p>
+            </div>
+          )}
         </SidebarSection>
 
         <SidebarSection
@@ -127,7 +151,7 @@ export function ChatSidebar({ channels, activeId, onSelect, onStartDmWith, tab, 
           count={dmGroup.length}
           open={openSection.dms}
           onToggle={() => setOpenSection((s) => ({ ...s, dms: !s.dms }))}
-          onAdd={canMessage ? () => toast.info("New shortly") : undefined}
+          onAdd={undefined}
         >
           {dmGroup.map((c) => (
             <ChatSidebarItem
