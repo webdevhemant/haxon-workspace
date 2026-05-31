@@ -40,7 +40,7 @@ export function ChatNewConversation({ existingDmUserIds, onStart }: Props) {
         <Popover.Content
           align="end"
           sideOffset={6}
-          className="z-[60] w-[300px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden outline-none"
+          className="z-[60] w-[300px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl overflow-hidden outline-none"
         >
           <div className="p-2 border-b border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-1.5 h-8 px-2.5 bg-gray-50 dark:bg-gray-800 rounded-md">

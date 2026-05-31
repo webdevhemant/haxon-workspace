@@ -6,7 +6,7 @@ export function TeamOpenRoles() {
   if (OPEN_ROLES.length === 0) return null;
   return (
     <div className="px-6 pt-1 pb-6">
-      <div className="rounded-2xl border border-orange-200/70 dark:border-orange-900/40 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20 p-4">
+      <div className="rounded-md border border-orange-200/70 dark:border-orange-900/40 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20 p-4">
         <div className="flex items-start justify-between mb-3">
           <div>
             <h3 className="text-[13px] font-semibold text-gray-900 dark:text-white tracking-tight">
@@ -24,7 +24,7 @@ export function TeamOpenRoles() {
           {OPEN_ROLES.map((r) => (
             <div
               key={r.title}
-              className="bg-white dark:bg-gray-900 rounded-xl border border-orange-100 dark:border-orange-900/30 px-3 py-2.5 hover:border-orange-300 dark:hover:border-orange-700 transition-colors cursor-pointer"
+              className="bg-white dark:bg-gray-900 rounded-md border border-orange-100 dark:border-orange-900/30 px-3 py-2.5 hover:border-orange-300 dark:hover:border-orange-700 transition-colors cursor-pointer"
             >
               <div className="text-[12.5px] font-semibold text-gray-900 dark:text-white truncate">
                 {r.title}

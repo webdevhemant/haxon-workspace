@@ -98,7 +98,7 @@ export function ChatCallModal({ channel, mode, onClose }: Props) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40" />
         <Dialog.Content
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-950 text-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-950 text-white rounded-md shadow-2xl z-50 flex flex-col overflow-hidden"
           style={{ width: "min(720px, 96vw)", height: "min(560px, 90vh)" }}
         >
           <Dialog.Title className="sr-only">
@@ -193,7 +193,7 @@ function HuddleStage({
   }
   return (
     <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-2">
-      <div className="relative rounded-xl overflow-hidden bg-gray-800 col-span-2 row-span-1 sm:col-span-1 sm:row-span-2">
+      <div className="relative rounded-md overflow-hidden bg-gray-800 col-span-2 row-span-1 sm:col-span-1 sm:row-span-2">
         <video
           ref={videoRef}
           autoPlay
@@ -218,7 +218,7 @@ function HuddleStage({
       {otherMembers.slice(0, 4).map((u) => (
         <div
           key={u.id}
-          className="relative rounded-xl bg-gray-800 flex items-center justify-center"
+          className="relative rounded-md bg-gray-800 flex items-center justify-center"
         >
           <UserAvatar user={u} size={48} hoverCard={false} />
           <span className="absolute bottom-2 left-2 text-[10.5px] font-semibold bg-black/50 px-1.5 py-0.5 rounded">

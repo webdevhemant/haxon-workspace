@@ -38,7 +38,7 @@ export function AppMockup() {
 
   return (
     <div
-      className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/5 shadow-2xl shadow-black/10"
+      className="bg-white dark:bg-gray-900 rounded-md overflow-hidden ring-1 ring-black/5 dark:ring-white/5 shadow-2xl shadow-black/10"
       style={{ maxWidth: "896px", margin: "0 auto" }}
     >
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950">
@@ -190,7 +190,7 @@ function MockupAIPanel({ aiText }: { aiText: string }) {
 
       <div className="flex-1 p-3 space-y-2 overflow-hidden">
         <div className="flex justify-end">
-          <div className="bg-orange-500 text-white text-[10px] rounded-xl rounded-tr-sm px-2.5 py-1.5 max-w-[80%] leading-relaxed">
+          <div className="bg-orange-500 text-white text-[10px] rounded-md rounded-tr-sm px-2.5 py-1.5 max-w-[80%] leading-relaxed">
             Summarize our Q3 strategy and next actions
           </div>
         </div>
@@ -198,7 +198,7 @@ function MockupAIPanel({ aiText }: { aiText: string }) {
           <div className="w-4 h-4 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Sparkles className="w-2.5 h-2.5 text-orange-500" />
           </div>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] text-gray-600 dark:text-gray-400 rounded-xl rounded-tl-sm px-2.5 py-2 leading-relaxed max-w-[88%]">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-[10px] text-gray-600 dark:text-gray-400 rounded-md rounded-tl-sm px-2.5 py-2 leading-relaxed max-w-[88%]">
             {aiText}
             <span className="blink">|</span>
           </div>

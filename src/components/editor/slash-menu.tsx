@@ -22,7 +22,7 @@ export function SlashMenu({ onPick, onClose }: { onPick: (kind: string) => void;
 
   return (
     <motion.div initial={{ opacity: 0, scale: 0.95, y: -8 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-      className="fixed left-1/2 top-52 -translate-x-1/2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl w-80 p-1.5 z-50">
+      className="fixed left-1/2 top-52 -translate-x-1/2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl w-80 p-1.5 z-50">
       <div className="px-2.5 py-2 border-b border-gray-100 dark:border-gray-800 mb-1">
         <input autoFocus value={q} onChange={(e) => { setQ(e.target.value); setIdx(0); }}
           placeholder="Filter commands..." className="w-full text-sm outline-none bg-transparent text-gray-900 dark:text-white" />

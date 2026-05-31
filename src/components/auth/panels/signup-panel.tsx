@@ -39,7 +39,7 @@ export function SignupPanel() {
               <motion.div key={f.title}
                 initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + i * 0.08, duration: 0.4 }}
-                className="rounded-xl border border-white/8 p-3.5 flex items-start gap-3"
+                className="rounded-md border border-white/8 p-3.5 flex items-start gap-3"
                 style={{ background: "rgba(255,255,255,.04)", backdropFilter: "blur(12px)" }}>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ background: "rgba(249,115,22,.18)" }}>
@@ -55,7 +55,7 @@ export function SignupPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.5 }}
-          className="rounded-xl border border-white/10 p-4"
+          className="rounded-md border border-white/10 p-4"
           style={{ background: "rgba(255,255,255,.05)", backdropFilter: "blur(12px)" }}>
           <Quote className="w-4 h-4 text-orange-400/70 mb-2" />
           <div className="text-white/80 text-xs leading-relaxed italic mb-3">

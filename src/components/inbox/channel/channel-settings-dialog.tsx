@@ -37,7 +37,7 @@ export function ChannelSettingsDialog({ open, onOpenChange, channel, onSave }: P
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
         <Dialog.Content
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
+          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-950 rounded-md shadow-2xl z-50 flex flex-col overflow-hidden"
           style={{ width: "min(440px, 96vw)", maxHeight: "90vh" }}
         >
           <div className="px-5 pt-4 pb-3 flex items-start justify-between border-b border-gray-100 dark:border-gray-800">

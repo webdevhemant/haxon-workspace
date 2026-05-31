@@ -27,7 +27,7 @@ export function TeamMemberCard({ user, profile, onOpen, onMessage }: Props) {
   return (
     <button
       onClick={onOpen}
-      className="group text-left rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-orange-200 dark:hover:border-orange-800/60 hover:shadow-md hover:shadow-orange-100/40 dark:hover:shadow-none transition-all overflow-hidden flex flex-col"
+      className="group text-left rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-orange-200 dark:hover:border-orange-800/60 hover:shadow-md hover:shadow-orange-100/40 dark:hover:shadow-none transition-all overflow-hidden flex flex-col"
     >
 
       <div

@@ -23,7 +23,7 @@ export function ChatEmojiPopover({ onPick, onClose }: Props) {
     : EMOJI_PICKER;
 
   return (
-    <div className="absolute bottom-full mb-1 left-2 w-[296px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden">
+    <div className="absolute bottom-full mb-1 left-2 w-[296px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-20 overflow-hidden">
       <div className="p-2 border-b border-gray-100 dark:border-gray-800">
         <input
           autoFocus

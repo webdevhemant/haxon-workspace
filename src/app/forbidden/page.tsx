@@ -30,7 +30,7 @@ export default function ForbiddenPage() {
         You don&apos;t have permission to view this page. Contact your workspace admin to request access.
       </p>
 
-      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 mb-8 max-w-sm w-full">
+      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-4 mb-8 max-w-sm w-full">
         <div className="flex items-start gap-3">
           <ShieldOff className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
           <div className="text-sm text-gray-500 dark:text-gray-400 text-left">
@@ -42,13 +42,13 @@ export default function ForbiddenPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard"
-          className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-xl transition-colors"
+          className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold rounded-md transition-colors"
         >
           Go to dashboard
         </Link>
         <Link
           href="/settings/members"
-          className="px-4 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-xl transition-colors"
+          className="px-4 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-md transition-colors"
         >
           Request access
         </Link>

@@ -51,7 +51,7 @@ export function CommandPalette() {
             className="relative w-full max-w-xl"
           >
             <Command
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl overflow-hidden"
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl overflow-hidden"
               loop
             >
               <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 dark:border-gray-800">

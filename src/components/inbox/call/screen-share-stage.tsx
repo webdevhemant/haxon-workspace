@@ -8,7 +8,7 @@ interface Props {
 export function ScreenShareStage({ onStop }: Props) {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-3">
-      <div className="relative w-full max-w-md aspect-video rounded-xl overflow-hidden border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-black">
+      <div className="relative w-full max-w-md aspect-video rounded-md overflow-hidden border border-white/10 bg-gradient-to-br from-slate-800 via-slate-900 to-black">
         <div className="absolute inset-0 grid grid-cols-12 grid-rows-8 gap-px opacity-30">
           {Array.from({ length: 12 * 8 }).map((_, i) => (
             <div key={i} className="bg-white/[0.02]" />

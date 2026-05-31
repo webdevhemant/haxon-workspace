@@ -4,7 +4,7 @@ import { Inbox, Sparkles } from "lucide-react";
 export function ChatEmptyState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-3 select-none px-6 text-center">
-      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-100 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/20 flex items-center justify-center">
+      <div className="w-14 h-14 rounded-md bg-gradient-to-br from-orange-100 to-amber-50 dark:from-orange-950/40 dark:to-amber-950/20 flex items-center justify-center">
         <Inbox className="w-6 h-6 text-orange-500" />
       </div>
       <div>

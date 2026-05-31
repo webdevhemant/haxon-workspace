@@ -12,36 +12,32 @@ export function AutomationTemplates({ onUse }: Props) {
   const canCreate = useCan("automation.create");
   return (
     <div>
-      <h2 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2.5">
+      <h2 className="text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-3">
         Start from a template
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-800 rounded-md overflow-hidden">
         {AUTOMATION_TEMPLATES.map((t) => (
           <button
             key={t.id}
             onClick={() => onUse(t.id)}
             disabled={!canCreate}
             title={canCreate ? "Use template" : `Your role (${role}) can't create automations`}
-            className="text-left rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-orange-200 dark:hover:border-orange-800/60 hover:bg-orange-50/40 dark:hover:bg-orange-950/10 transition-colors cursor-pointer group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-800 disabled:hover:bg-white dark:disabled:hover:bg-gray-900"
+            className="text-left bg-white dark:bg-gray-950 p-3.5 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white dark:disabled:hover:bg-gray-950"
           >
-            <div className="flex items-start gap-2 mb-2">
-              <span className="text-base leading-none">{t.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <div className="text-[13px] font-semibold text-gray-900 dark:text-white truncate">
-                  {t.name}
-                </div>
-                <div className="text-[10.5px] font-medium uppercase tracking-widest text-gray-400">
-                  {t.category}
-                </div>
-              </div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-sm leading-none">{t.emoji}</span>
+              <span className="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                {t.name}
+              </span>
+              <span className="ml-auto text-[10px] text-gray-400">{t.category}</span>
             </div>
-            <p className="text-[11.5px] text-gray-600 dark:text-gray-400 leading-relaxed mb-3 line-clamp-2">
+            <p className="text-[11.5px] text-gray-500 dark:text-gray-400 leading-relaxed mb-3 line-clamp-2">
               {t.desc}
             </p>
-            <div className="text-[11px] text-gray-500 flex items-center gap-1.5">
-              <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">{t.trigger}</span>
-              <ArrowRight className="w-3 h-3 text-gray-400 group-hover:text-orange-500 transition-colors flex-shrink-0" />
-              <span className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded truncate">{t.action}</span>
+            <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
+              <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300">{t.trigger}</span>
+              <ArrowRight className="w-3 h-3 flex-shrink-0" />
+              <span className="bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300 truncate">{t.action}</span>
             </div>
           </button>
         ))}

@@ -30,7 +30,7 @@ export default function VerifyForm() {
         className="flex flex-col gap-5"
       >
         {/* Success icon */}
-        <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center">
+        <div className="w-14 h-14 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center">
           <CheckCircle2 className="w-7 h-7 text-emerald-500" strokeWidth={1.5} />
         </div>
 
@@ -53,7 +53,7 @@ export default function VerifyForm() {
         </div>
 
         {/* Invite teaser */}
-        <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/8">
+        <div className="flex items-center gap-2.5 p-3.5 rounded-md bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/8">
           <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
             <Users className="w-4 h-4 text-violet-500" />
           </div>
@@ -65,7 +65,7 @@ export default function VerifyForm() {
 
         <button
           onClick={() => router.push("/dashboard")}
-          className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-xl text-sm transition-all shadow-lg shadow-orange-500/25"
+          className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-md text-sm transition-all shadow-lg shadow-orange-500/25"
         >
           Continue to Haxon
           <ArrowRight className="w-4 h-4" />

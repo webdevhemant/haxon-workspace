@@ -90,7 +90,7 @@ export function ChatSchedulePopover({ onPick, disabled }: Props) {
           align="end"
           side="top"
           sideOffset={8}
-          className="z-50 w-[320px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
+          className="z-50 w-[320px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl overflow-hidden"
         >
           <div className="px-3 pt-2.5 pb-1 text-[10.5px] font-semibold uppercase tracking-widest text-gray-400">
             Quick schedule

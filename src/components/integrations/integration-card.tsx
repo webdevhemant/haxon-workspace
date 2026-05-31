@@ -22,11 +22,11 @@ export function IntegrationCard({ integration, onToggle, onConfigure }: Props) {
     : `Your role (${role}) can't connect integrations`;
   const configureReason = `Your role (${role}) can't configure integrations`;
   return (
-    <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all overflow-hidden flex flex-col">
+    <div className="rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-700 transition-all overflow-hidden flex flex-col">
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start gap-3 mb-2.5">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+            className="w-10 h-10 rounded-md flex items-center justify-center text-xl flex-shrink-0"
             style={{ background: integration.color + "22" }}
           >
             {integration.emoji}

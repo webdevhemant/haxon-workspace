@@ -56,7 +56,7 @@ export function ChatAttachPopover({ onPick, onClose, canUseAi = true }: Props) {
   };
 
   return (
-    <div className="absolute bottom-full mb-1 left-2 w-[280px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden p-1">
+    <div className="absolute bottom-full mb-1 left-2 w-[280px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-20 overflow-hidden p-1">
       {OPTIONS.map((o) => (
         <button
           key={o.key}

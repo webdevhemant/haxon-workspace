@@ -62,7 +62,7 @@ export function ChatMentionPopover({ trigger, query, activeIndex, onPick, setAct
   if (items.length === 0) return null;
 
   return (
-    <div className="absolute bottom-full mb-1 left-2 w-[280px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden">
+    <div className="absolute bottom-full mb-1 left-2 w-[280px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl z-20 overflow-hidden">
       <div className="px-2.5 py-1.5 border-b border-gray-100 dark:border-gray-800 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
         {trigger === "@" ? "Mention a person" : "Reference a channel"}
       </div>

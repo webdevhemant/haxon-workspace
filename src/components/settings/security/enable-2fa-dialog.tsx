@@ -85,7 +85,7 @@ export function Enable2faDialog({ open, onOpenChange }: Props) {
     >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] max-w-[96vw] bg-white dark:bg-gray-950 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
+        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] max-w-[96vw] bg-white dark:bg-gray-950 rounded-md shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
           <div className="flex items-start gap-3 px-5 pt-5 pb-3">
             <div className="w-9 h-9 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center flex-shrink-0">
               <ShieldCheck className="w-4 h-4" />
@@ -104,7 +104,7 @@ export function Enable2faDialog({ open, onOpenChange }: Props) {
           </div>
 
           <div className="px-5 pb-4 grid grid-cols-[152px_1fr] gap-4">
-            <div className="rounded-xl border border-gray-200 dark:border-gray-800 p-2 bg-white flex items-center justify-center">
+            <div className="rounded-md border border-gray-200 dark:border-gray-800 p-2 bg-white flex items-center justify-center">
               <div
                 className="grid gap-[1px] w-full"
                 style={{ gridTemplateColumns: "repeat(21, minmax(0, 1fr))" }}

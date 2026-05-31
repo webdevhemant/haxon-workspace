@@ -106,7 +106,7 @@ export default function BillingSettings() {
             <div
               key={p.name}
               className={cn(
-                "rounded-xl p-4 border transition-all",
+                "rounded-md p-4 border transition-all",
                 p.current
                   ? "border-orange-300 dark:border-orange-700 ring-2 ring-orange-500/15 bg-orange-50/40 dark:bg-orange-950/20"
                   : "border-gray-200 dark:border-gray-800",

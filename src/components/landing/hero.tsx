@@ -45,13 +45,13 @@ export function Hero() {
           <div className="flex items-center justify-center gap-3 mb-16 flex-wrap">
             <Link
               href="/signup"
-              className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm shadow-orange-500/20"
+              className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-md text-sm transition-colors shadow-sm shadow-orange-500/20"
             >
               Start for free <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl text-sm hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-md text-sm hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 transition-all"
             >
               <Play className="w-3.5 h-3.5 text-gray-500" /> Live demo
             </Link>

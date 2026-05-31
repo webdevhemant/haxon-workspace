@@ -45,7 +45,7 @@ export default function MaintenancePage() {
         We&apos;ll be back shortly — sit tight.
       </p>
 
-      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 mb-10 w-full max-w-xs">
+      <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-8 mb-10 w-full max-w-xs">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Estimated time remaining</div>
         <Countdown />
       </div>
@@ -56,7 +56,7 @@ export default function MaintenancePage() {
           { label: "Incidents", value: "0 open" },
           { label: "Est. recovery", value: "~45 min" },
         ].map((s) => (
-          <div key={s.label} className="bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-3">
+          <div key={s.label} className="bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-md p-3">
             <div className="font-bold text-lg">{s.value}</div>
             <div className="text-[10px] text-gray-400 mt-0.5">{s.label}</div>
           </div>
@@ -66,7 +66,7 @@ export default function MaintenancePage() {
       <button
         onClick={() => { setChecking(true); setTimeout(() => { window.location.reload(); }, 1500); }}
         disabled={checking}
-        className="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-colors"
+        className="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white text-sm font-semibold rounded-md transition-colors"
       >
         <RefreshCw className={`w-4 h-4 ${checking ? "spin-slow" : ""}`} />
         {checking ? "Checking…" : "Check again"}

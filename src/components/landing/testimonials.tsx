@@ -29,7 +29,7 @@ export function Testimonials() {
         {TESTIMONIALS.map((t, i) => (
           <div
             key={i}
-            className="flex-none w-[320px] md:w-[360px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
+            className="flex-none w-[320px] md:w-[360px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-6 shadow-sm hover:shadow-md transition-shadow duration-200"
             style={{ scrollSnapAlign: "start" }}
           >
             <StarRating />

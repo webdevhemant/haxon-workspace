@@ -23,7 +23,7 @@ export function Goals() {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden">
       <div className="flex items-center justify-between px-3.5 py-2.5 border-b border-gray-50 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <Target className="w-3.5 h-3.5 text-orange-500" />

@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Zap, ArrowRight, MoreHorizontal, Play, Pause, Pencil, Trash2 } from "lucide-react";
+import { Zap, ArrowRight, MoreHorizontal, Play, Pencil, Trash2, ChevronDown } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 import { UserAvatar } from "@/components/ui/user-avatar";
 import { USERS } from "@/data/dummy-users";
 import { cn } from "@/lib/utils";
@@ -24,57 +25,54 @@ export function AutomationRow({ automation, onToggle, onRemove }: Props) {
   const owner = USERS.find((u) => u.id === automation.ownerId);
 
   return (
-    <div className="border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 overflow-hidden">
-      <div className="flex items-center gap-3 p-3.5">
-        <button
-          onClick={onToggle}
+    <div>
+      <div className="flex items-center gap-3 py-2.5 group">
+        <Switch
+          checked={automation.enabled}
+          onCheckedChange={onToggle}
           disabled={!canToggle}
-          title={canToggle ? (automation.enabled ? "Pause" : "Resume") : `Your role (${role}) can't toggle automations`}
-          className={cn(
-            "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
-            automation.enabled
-              ? "bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-300 hover:bg-orange-200/70 dark:hover:bg-orange-950/60"
-              : "bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700",
-          )}
-        >
-          {automation.enabled ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-        </button>
+          title={canToggle ? undefined : `Your role (${role}) can't toggle automations`}
+        />
 
         <button
           onClick={() => setExpanded((v) => !v)}
-          className="flex-1 min-w-0 text-left cursor-pointer"
+          className="flex-1 min-w-0 text-left cursor-pointer flex items-center gap-2.5"
         >
-          <div className="flex items-center gap-2">
-            <span className="text-base leading-none">{automation.emoji}</span>
-            <span className="text-[13.5px] font-semibold text-gray-900 dark:text-white truncate">
-              {automation.name}
-            </span>
-            <span
-              className={cn(
-                "text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full",
-                automation.enabled
-                  ? "bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-500",
-              )}
-            >
-              {automation.enabled ? "On" : "Paused"}
-            </span>
-          </div>
-          <div className="mt-0.5 text-[11.5px] text-gray-500 dark:text-gray-400 line-clamp-1">
-            {automation.description}
+          <span className="text-base leading-none flex-shrink-0">{automation.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[13px] font-medium text-gray-900 dark:text-white truncate">
+                {automation.name}
+              </span>
+              <span className={cn("text-[11px]", automation.enabled ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400")}>
+                {automation.enabled ? "On" : "Paused"}
+              </span>
+            </div>
+            <div className="text-[11.5px] text-gray-400 dark:text-gray-500 truncate mt-0.5">
+              {automation.description}
+            </div>
           </div>
         </button>
 
-        <div className="hidden md:flex flex-col items-end text-[10.5px] text-gray-400 tabular-nums">
+        <div className="hidden md:flex flex-col items-end text-[11px] text-gray-400 tabular-nums flex-shrink-0">
           <span>{automation.runsThisWeek} runs / wk</span>
-          {automation.lastRunAt && <span>last {automation.lastRunAt}</span>}
+          {automation.lastRunAt && (
+            <span className="text-gray-300 dark:text-gray-600">last {automation.lastRunAt}</span>
+          )}
         </div>
 
-        {owner && <UserAvatar user={owner} size={24} />}
+        {owner && <UserAvatar user={owner} size={22} />}
+
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="text-gray-300 dark:text-gray-600 hover:text-gray-500 transition-colors cursor-pointer"
+        >
+          <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", expanded && "rotate-180")} />
+        </button>
 
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button className="w-7 h-7 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+            <button className="w-6 h-6 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors opacity-0 group-hover:opacity-100">
               <MoreHorizontal className="w-3.5 h-3.5" />
             </button>
           </DropdownMenu.Trigger>
@@ -82,7 +80,7 @@ export function AutomationRow({ automation, onToggle, onRemove }: Props) {
             <DropdownMenu.Content
               align="end"
               sideOffset={4}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl p-1 w-44 z-50"
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-1 w-40 z-50"
             >
               <Item label="Run now" icon={<Play className="w-3.5 h-3.5" />} onSelect={() => toast.success(`Ran "${automation.name}"`)} />
               {canEdit && (
@@ -100,32 +98,19 @@ export function AutomationRow({ automation, onToggle, onRemove }: Props) {
       </div>
 
       {expanded && (
-        <div className="px-3.5 pb-3.5 pt-1 border-t border-gray-100 dark:border-gray-800 bg-gray-50/40 dark:bg-gray-900/40">
-          <div className="flex items-center gap-1.5 mt-2 mb-1.5">
-            <Zap className="w-3 h-3 text-orange-500" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-orange-500">
-              Trigger
-            </span>
+        <div className="ml-[52px] pb-3 pt-1 border-t border-gray-50 dark:border-gray-900">
+          <div className="flex items-center gap-1 text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1.5 mt-2">
+            <Zap className="w-3 h-3 text-orange-500" /> Trigger
           </div>
-          <div className="text-[12.5px] text-gray-700 dark:text-gray-300 px-2 py-1.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-md">
-            {automation.trigger.label}
-          </div>
-
-          <div className="flex items-center gap-1.5 mt-3 mb-1.5">
+          <p className="text-[12px] text-gray-600 dark:text-gray-400 mb-3">{automation.trigger.label}</p>
+          <div className="flex items-center gap-1 text-[11px] font-medium text-gray-400 uppercase tracking-wide mb-1.5">
             <ArrowRight className="w-3 h-3 text-orange-500" />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-orange-500">
-              Then {automation.actions.length} action{automation.actions.length === 1 ? "" : "s"}
-            </span>
+            {automation.actions.length} action{automation.actions.length === 1 ? "" : "s"}
           </div>
           <div className="space-y-1">
             {automation.actions.map((a, i) => (
-              <div
-                key={i}
-                className="text-[12.5px] text-gray-700 dark:text-gray-300 px-2 py-1.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-md flex items-center gap-2"
-              >
-                <span className="w-5 h-5 rounded bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-300 inline-flex items-center justify-center text-[10px] font-bold tabular-nums">
-                  {i + 1}
-                </span>
+              <div key={i} className="flex items-center gap-2 text-[12px] text-gray-600 dark:text-gray-400">
+                <span className="text-[10px] font-bold text-gray-300 dark:text-gray-600 w-4 tabular-nums">{i + 1}.</span>
                 {a.label}
               </div>
             ))}
@@ -143,9 +128,9 @@ function Item({
     <DropdownMenu.Item
       onSelect={onSelect}
       className={cn(
-        "flex items-center gap-2 px-2 py-1.5 text-sm rounded cursor-pointer outline-none",
+        "flex items-center gap-2 px-2 py-1.5 text-[12.5px] rounded cursor-pointer outline-none",
         danger
-          ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+          ? "text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40"
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
       )}
     >

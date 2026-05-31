@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
-import { Plus, Target } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Topbar, Breadcrumb } from "@/components/layout/topbar";
 import { StatCard } from "@/components/ui/stat-card";
 import { useAppStore } from "@/store/app-store";
@@ -36,12 +36,7 @@ export default function GoalsView() {
     GOALS.flatMap((g) => g.keyResults).reduce((sum, kr) => sum + kr.progress, 0) /
     Math.max(GOALS.flatMap((g) => g.keyResults).length, 1);
 
-  const counts: Record<GoalStatus, number> = {
-    "on-track": 0,
-    "at-risk": 0,
-    "off-track": 0,
-    complete: 0,
-  };
+  const counts: Record<GoalStatus, number> = { "on-track": 0, "at-risk": 0, "off-track": 0, complete: 0 };
   for (const g of GOALS) counts[g.status]++;
 
   const toggle = (id: string) =>
@@ -60,7 +55,7 @@ export default function GoalsView() {
           canCreateGoal ? (
             <button
               onClick={() => toast.info("New goal editor opening…")}
-              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 h-7 px-2.5 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded transition-colors cursor-pointer"
             >
               <Plus className="w-3 h-3" /> New goal
             </button>
@@ -69,42 +64,35 @@ export default function GoalsView() {
       />
 
       <div className="flex-1 overflow-y-auto">
-        <header className="px-6 pt-6 pb-5 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-b from-emerald-50/30 to-transparent dark:from-emerald-950/10">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                Goals & OKRs <Target className="w-5 h-5 text-emerald-500" />
-              </h1>
-              <p className="text-[13px] text-gray-500 dark:text-gray-400 mt-1 max-w-prose">
-                One source of truth for what the team is trying to ship this quarter.
-                Roll up automatically from cards and docs.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-            <StatCard label="Overall" value={`${Math.round(overall)}%`} dotColor="#F97316" valueColor="#F97316" />
-            {(["on-track", "at-risk", "off-track", "complete"] as GoalStatus[]).map((s) => (
-              <StatCard
-                key={s}
-                label={STATUS_LABEL[s]}
-                value={counts[s]}
-                dotColor={STATUS_COLOR[s]}
-                valueColor={STATUS_COLOR[s]}
-              />
+        <header className="px-6 pt-6 pb-5 border-b border-gray-100 dark:border-gray-800">
+          <h1 className="text-[15px] font-semibold text-gray-900 dark:text-white mb-4">Goals & OKRs</h1>
+          <div className="flex items-center gap-8 flex-wrap">
+            <StatCard label="Overall progress" value={`${Math.round(overall)}%`} dotColor="#F97316" valueColor="#F97316" />
+            <div className="w-px h-8 bg-gray-200 dark:bg-gray-800" />
+            {(["on-track", "at-risk", "off-track", "complete"] as GoalStatus[]).map((s, i) => (
+              <>
+                <StatCard
+                  key={s}
+                  label={STATUS_LABEL[s]}
+                  value={counts[s]}
+                  dotColor={STATUS_COLOR[s]}
+                  valueColor={STATUS_COLOR[s]}
+                />
+                {i < 3 && <div key={`sep-${s}`} className="w-px h-8 bg-gray-200 dark:bg-gray-800" />}
+              </>
             ))}
           </div>
         </header>
 
-        <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-1.5 overflow-x-auto">
+        <div className="px-6 border-b border-gray-100 dark:border-gray-800 flex items-center">
           {FILTERS.map((f) => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-2.5 py-1 rounded-full text-[12px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
+              className={`px-1 py-3 mr-4 text-[13px] font-medium border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
                 filter === f.key
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  ? "border-orange-500 text-gray-900 dark:text-white"
+                  : "border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
               }`}
             >
               {f.label}
@@ -112,27 +100,25 @@ export default function GoalsView() {
           ))}
         </div>
 
-        <section className="px-6 py-5 space-y-3">
+        <section className="px-6 py-4">
           {filtered.length === 0 ? (
-            <div className="text-center py-12 text-sm text-gray-400">
-              <Target className="w-6 h-6 opacity-40 mx-auto mb-2" />
-              No goals match.
-            </div>
+            <div className="text-center py-16 text-sm text-gray-400">No goals match.</div>
           ) : (
-            filtered.map((g) => (
-              <GoalCard
-                key={g.id}
-                goal={g}
-                expanded={expanded.has(g.id)}
-                onToggle={() => toggle(g.id)}
-                canDelete={canDeleteGoal}
-                onDelete={canDeleteGoal ? () => toast.success(`Deleted ${g.title}`) : undefined}
-              />
-            ))
+            <div className="divide-y divide-gray-100 dark:divide-gray-800">
+              {filtered.map((g) => (
+                <GoalCard
+                  key={g.id}
+                  goal={g}
+                  expanded={expanded.has(g.id)}
+                  onToggle={() => toggle(g.id)}
+                  canDelete={canDeleteGoal}
+                  onDelete={canDeleteGoal ? () => toast.success(`Deleted ${g.title}`) : undefined}
+                />
+              ))}
+            </div>
           )}
         </section>
       </div>
     </div>
   );
 }
-

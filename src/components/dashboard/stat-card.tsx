@@ -14,7 +14,7 @@ export function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-3">
       <div className="flex items-center gap-2 mb-3">
         <span
           className="w-8 h-8 rounded-lg flex items-center justify-center"

@@ -53,7 +53,7 @@ export function DocEditorTopbar({ doc, workspace, isFav, aiPanelOpen, commentsPa
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl p-1 w-48 z-50" sideOffset={4}>
+              <DropdownMenu.Content className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-xl p-1 w-48 z-50" sideOffset={4}>
                 {canEdit && (
                   <DropdownMenu.Item onSelect={() => openModal({ type: "rename", id: doc.id, kind: "doc", current: doc.title })}
                     className="px-2.5 py-2 text-sm rounded-lg cursor-pointer outline-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Rename</DropdownMenu.Item>

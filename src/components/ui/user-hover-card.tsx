@@ -58,7 +58,7 @@ export function UserHoverCard({ user, children, side = "bottom", align = "start"
           onMouseLeave={hide}
           className="z-[80] outline-none"
         >
-          <div className="w-[280px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl shadow-xl overflow-hidden">
+          <div className="w-[280px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-md shadow-xl overflow-hidden">
             <div
               className="h-12 relative"
               style={{ background: `linear-gradient(135deg, ${user.color}33, ${user.color}05)` }}

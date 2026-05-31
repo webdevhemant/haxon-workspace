@@ -118,7 +118,7 @@ export default function TeamView() {
 
         {view === "list" && (
           <div className="px-6 py-5">
-            <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-gray-900">
+            <div className="border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden bg-white dark:bg-gray-900">
               <TeamMemberRowHeader />
               {sortedUsers.map((u) => (
                 <TeamMemberRow

@@ -119,7 +119,7 @@ export default function FilesView() {
               ))}
             </div>
           ) : (
-            <div className="rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
               {filtered.map((f, i) => (
                 <FileRow key={f.id} file={f} onStar={() => toggleStar(f.id)} first={i === 0} canStar={canStar} canDelete={canDelete} />
               ))}
@@ -134,7 +134,7 @@ export default function FilesView() {
 function FileCard({ file, onStar, canStar }: { file: FileAsset; onStar: () => void; canStar: boolean }) {
   const owner = USERS.find((u) => u.id === file.uploadedById);
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-gray-300 dark:hover:border-gray-700 transition-all cursor-pointer group">
+    <div className="rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 hover:border-gray-300 dark:hover:border-gray-700 transition-all cursor-pointer group">
       <div className="flex items-start justify-between mb-2.5">
         <FileThumb kind={file.kind} color={file.thumbColor} size={40} />
         {canStar && (

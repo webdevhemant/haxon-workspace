@@ -36,7 +36,7 @@ export function Features() {
                 <motion.div
                   whileHover={{ y: -3 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  className="group bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 rounded-xl p-6 h-full hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md transition-all duration-200"
+                  className="group bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 rounded-md p-6 h-full hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md transition-all duration-200"
                 >
                   <div className="flex items-start gap-4">
                     <div className="border-l-2 border-orange-500 pl-3 flex-shrink-0">

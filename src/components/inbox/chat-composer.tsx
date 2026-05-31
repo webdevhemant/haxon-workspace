@@ -29,7 +29,7 @@ export function ChatComposer({ placeholder, onSend, onSchedule, autoFocus, small
   if (!canMessage) {
     return (
       <div className={small ? "px-3 pb-3" : "px-4 pb-4"}>
-        <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-[12.5px] text-gray-500 dark:text-gray-400">
+        <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-[12.5px] text-gray-500 dark:text-gray-400">
           <Lock className="w-3.5 h-3.5 flex-shrink-0" />
           <span>
             You can't post in this channel — your role{role ? ` (${role})` : ""} is read-only.
@@ -161,7 +161,7 @@ export function ChatComposer({ placeholder, onSend, onSchedule, autoFocus, small
 
   return (
     <div className={small ? "px-3 pb-3" : "px-4 pb-4"}>
-      <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl focus-within:border-orange-400 dark:focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/15 transition-colors shadow-sm">
+      <div className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-md focus-within:border-orange-400 dark:focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/15 transition-colors shadow-sm">
         <textarea
           ref={ref}
           value={value}

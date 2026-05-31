@@ -56,7 +56,7 @@ export function ManagePlanDialog({ open, onOpenChange }: Props) {
     >
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] max-w-[96vw] bg-white dark:bg-gray-950 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
+        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] max-w-[96vw] bg-white dark:bg-gray-950 rounded-md shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
           <div className="flex items-start gap-3 px-5 pt-5 pb-2">
             {step > 1 ? (
               <button
@@ -103,7 +103,7 @@ export function ManagePlanDialog({ open, onOpenChange }: Props) {
                       key={p.id}
                       onClick={() => setPlanId(p.id)}
                       className={cn(
-                        "w-full text-left rounded-xl border p-3 transition-all",
+                        "w-full text-left rounded-md border p-3 transition-all",
                         selected
                           ? "border-orange-400 ring-2 ring-orange-500/15 bg-orange-50/40 dark:bg-orange-950/20"
                           : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700",

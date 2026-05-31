@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { AuthShell } from "./auth-shell";
 
-const inputClass = "w-full px-3.5 py-3 text-sm border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-white/[0.04] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 focus:outline-none focus:border-orange-400 dark:focus:border-orange-500 transition-all";
+const inputClass = "w-full px-3.5 py-3 text-sm border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-white/[0.04] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 focus:outline-none focus:border-orange-400 dark:focus:border-orange-500 transition-all";
 
 export default function ResetForm() {
   const [email, setEmail] = useState("");
@@ -53,7 +53,7 @@ export default function ResetForm() {
             </div>
             <button
               type="submit"
-              className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-xl text-sm transition-all shadow-lg shadow-orange-500/25"
+              className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-md text-sm transition-all shadow-lg shadow-orange-500/25"
             >
               Send reset link
             </button>
@@ -64,11 +64,11 @@ export default function ResetForm() {
             initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
             className="flex flex-col gap-5"
           >
-            <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-md bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 flex items-center justify-center">
               <CheckCircle2 className="w-7 h-7 text-emerald-500" strokeWidth={1.5} />
             </div>
             <div className="flex flex-col gap-3">
-              <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/8 text-sm text-gray-600 dark:text-white/60 leading-relaxed">
+              <div className="p-3.5 rounded-md bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/8 text-sm text-gray-600 dark:text-white/60 leading-relaxed">
                 Didn&apos;t get the email? Check your spam folder, or{" "}
                 <button
                   onClick={() => setSent(false)}

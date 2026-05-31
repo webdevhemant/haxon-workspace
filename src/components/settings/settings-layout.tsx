@@ -58,7 +58,7 @@ export function SettingSection({ title, desc, children }: { title: string; desc?
         <div className="text-sm font-semibold text-gray-900 dark:text-white">{title}</div>
         {desc && <div className="text-xs text-gray-500 truncate">{desc}</div>}
       </div>
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-3.5 shadow-sm">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md p-3.5 shadow-sm">
         {children}
       </div>
     </div>

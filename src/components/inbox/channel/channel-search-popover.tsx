@@ -75,7 +75,7 @@ export function ChannelSearchPopover({ open, onOpenChange, trigger, channelName,
       {open && (
         <div
           ref={popoverRef}
-          className="absolute right-0 top-full mt-2 w-[360px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl z-50 overflow-hidden"
+          className="absolute right-0 top-full mt-2 w-[360px] bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-md shadow-2xl z-50 overflow-hidden"
         >
           <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <Search className="w-3.5 h-3.5 text-gray-400" />

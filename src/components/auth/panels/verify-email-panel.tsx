@@ -29,8 +29,8 @@ export function VerifyEmailPanel() {
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
           className="flex items-center justify-center mb-1">
           <div className="relative">
-            <div className="absolute inset-0 rounded-2xl bg-orange-500/30 blur-2xl" />
-            <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center border border-white/10"
+            <div className="absolute inset-0 rounded-md bg-orange-500/30 blur-2xl" />
+            <div className="relative w-20 h-20 rounded-md flex items-center justify-center border border-white/10"
               style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.22), rgba(249,115,22,0.06))" }}>
               <motion.div animate={{ y: [0, -3, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}>
                 <Mail className="w-9 h-9 text-orange-300" strokeWidth={1.5} />
@@ -49,7 +49,7 @@ export function VerifyEmailPanel() {
           {STEPS.map((s, i) => (
             <motion.div key={s.title}
               initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 + i * 0.08, duration: 0.4 }}
-              className="rounded-xl border border-white/8 p-3 flex items-start gap-3"
+              className="rounded-md border border-white/8 p-3 flex items-start gap-3"
               style={{ background: "rgba(255,255,255,.04)", backdropFilter: "blur(12px)" }}>
               <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-orange-300 border border-orange-400/30"
                 style={{ background: "rgba(249,115,22,.12)" }}>
@@ -67,7 +67,7 @@ export function VerifyEmailPanel() {
         </div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}
-          className="rounded-xl border border-white/8 p-3.5"
+          className="rounded-md border border-white/8 p-3.5"
           style={{ background: "rgba(255,255,255,.04)", backdropFilter: "blur(12px)" }}>
           <div className="text-white/45 text-[10px] uppercase tracking-widest font-semibold mb-2.5">
             Email not arriving?

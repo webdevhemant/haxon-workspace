@@ -21,7 +21,7 @@ export function BoardHealth({
 }) {
   const router = useRouter();
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden mt-5 px-2.5 py-1">
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden mt-5 px-2.5 py-1">
       <div className="flex items-center justify-between px-1 py-2.5 border-b border-gray-50 dark:border-gray-800 mb-0.5">
         <span className="font-semibold text-sm">Board Health</span>
         <button

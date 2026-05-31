@@ -56,7 +56,7 @@ export function QuickActions({ workspaceId }: { workspaceId: string }) {
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={q.onClick}
-                className="flex items-center gap-3 p-3 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-left hover:border-orange-300 dark:hover:border-orange-700 hover:shadow-sm transition-all group"
+                className="flex items-center gap-3 p-3 w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md text-left hover:border-orange-300 dark:hover:border-orange-700 hover:shadow-sm transition-all group"
               >
                 <span
                   className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"

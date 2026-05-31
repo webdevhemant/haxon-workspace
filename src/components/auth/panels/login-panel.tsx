@@ -27,7 +27,7 @@ export function LoginPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
-          className="rounded-xl border border-white/8 p-4"
+          className="rounded-md border border-white/8 p-4"
           style={{ background: "rgba(255,255,255,.05)", backdropFilter: "blur(12px)" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="text-white/80 text-xs font-semibold">Team online now</div>
@@ -53,7 +53,7 @@ export function LoginPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
-          className="rounded-xl border border-white/8 p-3.5"
+          className="rounded-md border border-white/8 p-3.5"
           style={{ background: "rgba(255,255,255,.04)", backdropFilter: "blur(12px)" }}>
           <div className="text-white/50 text-[10px] font-semibold uppercase tracking-widest mb-2.5">Since you were away</div>
           <div className="space-y-2.5">
@@ -76,7 +76,7 @@ export function LoginPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.5 }}
-          className="rounded-xl border border-orange-500/20 p-3.5"
+          className="rounded-md border border-orange-500/20 p-3.5"
           style={{ background: "rgba(249,115,22,.08)", backdropFilter: "blur(12px)" }}>
           <div className="flex items-start gap-2.5">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"

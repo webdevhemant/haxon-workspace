@@ -139,6 +139,11 @@ export const createBoardSlice: StateCreator<AppState, [], [], BoardSlice> = (set
             : {
                 ...b,
                 columns: b.columns.map((c) => {
+                  if (c.id === fromColId && c.id === toColId) {
+                    const cards = [...c.cards.filter((k) => k.id !== cardId)];
+                    cards.splice(toIndex, 0, card);
+                    return { ...c, cards };
+                  }
                   if (c.id === fromColId) return { ...c, cards: c.cards.filter((k) => k.id !== cardId) };
                   if (c.id === toColId) {
                     const cards = [...c.cards.filter((k) => k.id !== cardId)];

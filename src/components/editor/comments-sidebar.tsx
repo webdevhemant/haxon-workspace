@@ -49,7 +49,7 @@ export function CommentsSidebar({ onClose }: { onClose: () => void }) {
           const user = USERS.find((u) => u.id === comment.userId);
           return (
             <motion.div key={comment.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-              className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-3">
+              className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-md p-3">
               <div className="flex items-start gap-2.5">
                 {user && <UserAvatar user={user} size={24} />}
                 <div className="flex-1 min-w-0">

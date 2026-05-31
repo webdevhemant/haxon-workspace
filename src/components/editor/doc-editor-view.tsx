@@ -77,7 +77,7 @@ export default function DocEditorView({ params }: { params: Promise<{ workspaceI
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-[680px] mx-auto px-12 pt-12 pb-6">
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-4xl cursor-pointer select-none">
+              <div className="w-16 h-16 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center text-4xl cursor-pointer select-none">
                 {doc.emoji}
               </div>
               <div>

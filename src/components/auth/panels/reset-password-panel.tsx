@@ -35,7 +35,7 @@ export function ResetPasswordPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}
-          className="rounded-xl border border-white/10 p-4"
+          className="rounded-md border border-white/10 p-4"
           style={{ background: "rgba(255,255,255,.05)", backdropFilter: "blur(12px)" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="text-white/85 text-xs font-semibold">What makes a strong password</div>
@@ -63,7 +63,7 @@ export function ResetPasswordPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.5 }}
-          className="rounded-xl border border-white/8 p-3.5"
+          className="rounded-md border border-white/8 p-3.5"
           style={{ background: "rgba(255,255,255,.04)", backdropFilter: "blur(12px)" }}>
           <div className="text-white/45 text-[10px] uppercase tracking-widest font-semibold mb-2.5">
             Smart habits
@@ -88,7 +88,7 @@ export function ResetPasswordPanel() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}
-          className="rounded-xl border border-orange-500/20 p-3.5 flex items-start gap-2.5"
+          className="rounded-md border border-orange-500/20 p-3.5 flex items-start gap-2.5"
           style={{ background: "rgba(249,115,22,.08)", backdropFilter: "blur(12px)" }}>
           <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
             style={{ background: "rgba(249,115,22,.25)" }}>

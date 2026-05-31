@@ -37,7 +37,7 @@ export function BoardListView({ board }: { board: Board }) {
           return (
             <div
               key={priority}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden"
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden"
               style={{ borderLeft: `3px solid ${config.color}` }}
             >
               <button

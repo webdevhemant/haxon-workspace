@@ -97,7 +97,7 @@ function KanbanColumn({ col, boardId, dragHandleProps, canEdit, canMove }: { col
   const progressPct = total > 0 ? (doneCards / total) * 100 : 0;
 
   return (
-    <div className="flex-none w-[272px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl flex flex-col max-h-full">
+    <div className="flex-none w-[272px] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md flex flex-col max-h-full">
       <div {...(canMove ? dragHandleProps : {})} className={cn("px-3.5 pt-3 pb-2 border-b border-gray-200 dark:border-gray-700 select-none", canMove && "cursor-grab active:cursor-grabbing")}>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: col.color }} />
@@ -189,7 +189,7 @@ export function BoardKanbanView({ board, onDragEnd, addingCol, newColName, setNe
               {addingCol && (
                 <motion.div
                   initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: 272 }} exit={{ opacity: 0, width: 0 }}
-                  className="flex-none bg-gray-50 dark:bg-gray-900 border-2 border-orange-400 rounded-xl p-3 self-start overflow-hidden"
+                  className="flex-none bg-gray-50 dark:bg-gray-900 border-2 border-orange-400 rounded-md p-3 self-start overflow-hidden"
                   style={{ width: 272 }}
                 >
                   <input

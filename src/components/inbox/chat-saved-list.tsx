@@ -31,7 +31,7 @@ export function ChatSavedList({ channels, messagesByChannel, onJumpToChannel }: 
   if (items.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center text-center px-6 bg-white dark:bg-gray-950">
-        <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-950/40 flex items-center justify-center mb-3">
+        <div className="w-12 h-12 rounded-md bg-orange-50 dark:bg-orange-950/40 flex items-center justify-center mb-3">
           <Bookmark className="w-5 h-5 text-orange-500" />
         </div>
         <h2 className="text-base font-semibold text-gray-900 dark:text-white mb-1">No saved messages yet</h2>
@@ -62,7 +62,7 @@ export function ChatSavedList({ channels, messagesByChannel, onJumpToChannel }: 
           return (
             <div
               key={msg.id}
-              className="group flex gap-2.5 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-orange-200 dark:hover:border-orange-800/60 transition-colors cursor-pointer"
+              className="group flex gap-2.5 px-3 py-2.5 rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:border-orange-200 dark:hover:border-orange-800/60 transition-colors cursor-pointer"
               onClick={() => channel && onJumpToChannel(channel.id)}
             >
               {author && <UserAvatar user={author} size={28} />}

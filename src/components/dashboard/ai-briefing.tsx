@@ -3,8 +3,8 @@ import { Sparkles } from "lucide-react";
 
 export function AiBriefing() {
   return (
-    <div className="bg-gradient-to-r from-orange-50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/10 border border-orange-100 dark:border-orange-900/40 rounded-xl p-3 mb-5 flex items-start gap-3">
-      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white flex-shrink-0">
+    <div className="bg-gradient-to-r from-orange-50 to-amber-50/50 dark:from-orange-950/20 dark:to-amber-950/10 border border-orange-100 dark:border-orange-900/40 rounded-md p-3 mb-5 flex items-start gap-3">
+      <div className="w-8 h-8 rounded-md bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white flex-shrink-0">
         <Sparkles className="w-3.5 h-3.5" />
       </div>
       <div className="flex-1">

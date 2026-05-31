@@ -77,7 +77,7 @@ export function Pricing() {
           {TIERS.map((t, i) => (
             <Reveal key={t.name} delay={i * 0.08}>
               <div
-                className={`relative bg-white dark:bg-gray-950 rounded-2xl p-7 h-full flex flex-col transition-all ${
+                className={`relative bg-white dark:bg-gray-950 rounded-md p-7 h-full flex flex-col transition-all ${
                   t.popular
                     ? "ring-2 ring-orange-500 shadow-lg shadow-orange-500/10"
                     : "border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700"
@@ -103,7 +103,7 @@ export function Pricing() {
 
                 <Link
                   href="/signup"
-                  className={`flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-semibold mb-6 transition-colors ${
+                  className={`flex items-center justify-center px-4 py-2.5 rounded-md text-sm font-semibold mb-6 transition-colors ${
                     t.popular
                       ? "bg-orange-500 hover:bg-orange-600 text-white shadow-sm"
                       : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"

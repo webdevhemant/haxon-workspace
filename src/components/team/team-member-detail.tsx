@@ -88,7 +88,7 @@ export default function TeamMemberDetail({ userId }: Props) {
 
         <header className="px-6 pt-3 pb-6">
           <div
-            className="h-24 rounded-2xl relative overflow-hidden"
+            className="h-24 rounded-md relative overflow-hidden"
             style={{ background: `linear-gradient(135deg, ${user.color}33, ${user.color}05)` }}
           />
           <div className="-mt-8 flex items-end gap-4 px-2">

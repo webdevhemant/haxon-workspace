@@ -24,7 +24,7 @@ function Stat({
   icon, label, value, accent,
 }: { icon: React.ReactNode; label: string; value: string | number; accent?: boolean }) {
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3.5 py-3">
+    <div className="rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3.5 py-3">
       <div className="flex items-center gap-1.5 text-[10.5px] font-semibold text-gray-400 uppercase tracking-widest">
         {icon} {label}
       </div>

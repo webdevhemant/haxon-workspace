@@ -23,7 +23,7 @@ export function BoardWorkloadView({ board }: { board: Board }) {
         {Object.entries(byAssignee).map(([userId, cards]) => {
           const user = USERS.find((u) => u.id === userId);
           return (
-            <div key={userId} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden">
+            <div key={userId} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden">
               <div className="flex items-center gap-3 px-5 py-3.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
                 <UserAvatar user={user} size={28} />
                 <span className="font-semibold text-sm">{user?.name ?? "Unassigned"}</span>

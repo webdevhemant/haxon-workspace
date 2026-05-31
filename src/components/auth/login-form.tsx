@@ -16,7 +16,7 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-const inputClass = "w-full px-3.5 py-3 text-sm border border-gray-200 dark:border-white/10 rounded-xl bg-white dark:bg-white/[0.04] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 focus:outline-none focus:border-orange-400 dark:focus:border-orange-500 transition-all";
+const inputClass = "w-full px-3.5 py-3 text-sm border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-white/[0.04] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-white/25 focus:outline-none focus:border-orange-400 dark:focus:border-orange-500 transition-all";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function LoginForm() {
         {/* Google OAuth */}
         <button
           type="button"
-          className="flex items-center justify-center gap-2.5 w-full px-4 py-3 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/[0.07] rounded-xl text-sm font-medium text-gray-700 dark:text-white/80 transition-all shadow-sm"
+          className="flex items-center justify-center gap-2.5 w-full px-4 py-3 border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.04] hover:bg-gray-50 dark:hover:bg-white/[0.07] rounded-md text-sm font-medium text-gray-700 dark:text-white/80 transition-all shadow-sm"
         >
           <svg width="16" height="16" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.6c-.2 1.3-1 2.4-2 3.1v2.6h3.3c1.9-1.8 3.1-4.4 3.1-7.5Z" />
@@ -114,7 +114,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-xl text-sm transition-all shadow-lg shadow-orange-500/25 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+            className="flex items-center justify-center gap-2 w-full py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-semibold rounded-md text-sm transition-all shadow-lg shadow-orange-500/25 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
           >
             {loading ? (
               <>

@@ -93,7 +93,7 @@ export function AISidebar({ onClose }: { onClose: () => void }) {
 
       <div className="p-3 border-t border-gray-200 dark:border-gray-800">
         <form onSubmit={(e) => { e.preventDefault(); send(input); }}
-          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 focus-within:border-orange-400 transition-colors">
+          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 focus-within:border-orange-400 transition-colors">
           <input value={input} onChange={(e) => setInput(e.target.value)}
             placeholder="Ask anything about this workspace..."
             className="w-full text-sm outline-none bg-transparent text-gray-900 dark:text-white placeholder-gray-400 mb-2" />

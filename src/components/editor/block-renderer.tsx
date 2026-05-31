@@ -14,13 +14,13 @@ export function BlockRenderer({ block, onChange, readOnly = false }: { block: Do
     </ul>
   );
   if (block.type === "callout") return (
-    <div className="flex gap-3 items-start bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 my-3">
+    <div className="flex gap-3 items-start bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-4 my-3">
       <span className="text-xl flex-shrink-0">💡</span>
       <div contentEditable={editable} suppressContentEditableWarning className="flex-1 text-sm text-gray-600 dark:text-gray-400 leading-relaxed outline-none" onBlur={(e) => onChange({ ...block, text: e.currentTarget.textContent ?? "" })}>{block.text}</div>
     </div>
   );
   if (block.type === "ai") return (
-    <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-100 dark:border-orange-900 rounded-xl p-4 my-4">
+    <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-100 dark:border-orange-900 rounded-md p-4 my-4">
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-3.5 h-3.5 text-orange-500" />
         <span className="text-[10px] font-bold text-orange-600 uppercase tracking-widest">Haxon AI</span>

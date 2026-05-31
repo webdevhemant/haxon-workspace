@@ -51,7 +51,7 @@ export function Workflow() {
           {STEPS.map((s, i) => (
             <Reveal key={s.title} delay={i * 0.12}>
               <div className="text-center relative z-10">
-                <div className="relative w-20 h-20 rounded-2xl bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 mx-auto mb-5 flex items-center justify-center shadow-sm">
+                <div className="relative w-20 h-20 rounded-md bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 mx-auto mb-5 flex items-center justify-center shadow-sm">
                   <s.icon className="w-8 h-8 text-gray-700 dark:text-gray-300" strokeWidth={1.4} />
                   <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-bold flex items-center justify-center">
                     {s.step}

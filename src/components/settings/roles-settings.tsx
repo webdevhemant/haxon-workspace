@@ -33,7 +33,7 @@ export default function RolesSettings() {
                 key={r}
                 onClick={() => setHighlight(r)}
                 className={cn(
-                  "rounded-xl border p-3 text-left transition-all",
+                  "rounded-md border p-3 text-left transition-all",
                   active
                     ? "border-orange-300 dark:border-orange-700 ring-2 ring-orange-500/15 bg-orange-50/40 dark:bg-orange-950/20"
                     : "border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 bg-white dark:bg-gray-900",

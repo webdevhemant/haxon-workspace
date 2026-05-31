@@ -157,7 +157,7 @@ function ChannelIntro({ channel }: { channel: ChatChannel }) {
   return (
     <div className="px-4 pt-8 pb-4">
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center text-xl flex-shrink-0">
+        <div className="w-12 h-12 rounded-md bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center text-xl flex-shrink-0">
           {channel.emoji ?? "#"}
         </div>
         <div className="min-w-0">

@@ -8,7 +8,7 @@ export function CTA() {
     <section className="py-24 px-6 md:px-8">
       <Reveal>
         <div
-          className="max-w-4xl mx-auto relative overflow-hidden rounded-3xl text-center text-white"
+          className="max-w-4xl mx-auto relative overflow-hidden rounded-md text-center text-white"
           style={{
             background: "linear-gradient(140deg, #080808 0%, #1a1004 100%)",
             padding: "80px 48px",
@@ -54,13 +54,13 @@ export function CTA() {
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <Link
                 href="/signup"
-                className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl text-sm transition-colors shadow-sm"
+                className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-md text-sm transition-colors shadow-sm"
               >
                 Start for free <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/dashboard"
-                className="flex items-center gap-2 px-5 py-2.5 font-semibold rounded-xl text-sm transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 font-semibold rounded-md text-sm transition-colors"
                 style={{
                   background: "rgba(255,255,255,0.07)",
                   border: "1px solid rgba(255,255,255,0.12)",
