@@ -52,6 +52,46 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u2",
     lastEditedAt: "yesterday",
     type: "doc",
+    content: [
+      { type: "h1", text: "Engineering RFC — Sync Engine" },
+      {
+        type: "callout",
+        text: "Status: Under review. Comments open until Friday EOD. Ping Jordan in #engineering with blockers.",
+      },
+      { type: "h2", text: "Problem" },
+      {
+        type: "p",
+        text: "Our current operational-transform sync breaks at roughly 50 concurrent writers per doc. We've seen three partial data-loss incidents in the last two months — all during high-concurrency events like all-hands live docs.",
+      },
+      { type: "h2", text: "Proposed architecture" },
+      {
+        type: "list",
+        items: [
+          "CRDTs (Yjs) for conflict-free merging — replace the OT layer entirely.",
+          "Persistent server-side awareness store so presence survives reconnect.",
+          "Binary protocol (MessagePack) over the existing JSON WebSocket frame — ~60% payload reduction.",
+          "Bounded undo history (500 ops) with a compaction job at idle.",
+        ],
+      },
+      { type: "h2", text: "Migration" },
+      {
+        type: "p",
+        text: "Docs created before the cutover will be frozen snapshots. Users can opt into live migration via a 'Upgrade doc' banner. Estimated: 3-week rollout with feature flag.",
+      },
+      { type: "h2", text: "Open questions" },
+      {
+        type: "list",
+        items: [
+          "Yjs vs Automerge — performance benchmarks needed. Priya volunteered to run them.",
+          "What's the max undo stack size before we start seeing memory pressure on mobile?",
+          "Do we expose CRDT state to the external API? Customers with Zapier automations will be affected.",
+        ],
+      },
+      {
+        type: "ai",
+        text: "Yjs is the safer bet given its larger ecosystem and existing editor bindings (Tiptap, ProseMirror). Automerge 2.0 is faster on benchmarks but the bindings are thinner. Recommend Yjs with a 30-day re-evaluation gate.",
+      },
+    ],
   },
   {
     id: "d3",
@@ -63,6 +103,53 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u3",
     lastEditedAt: "3 days ago",
     type: "wiki",
+    content: [
+      { type: "h1", text: "Onboarding Playbook" },
+      {
+        type: "callout",
+        text: "This is the living source of truth for onboarding. Every CS team member should complete it in week one. Last updated by Priya — flag anything stale.",
+      },
+      { type: "h2", text: "Day 1 — orientation" },
+      {
+        type: "list",
+        items: [
+          "Set up Haxon workspace — create your first board and invite two teammates.",
+          "Read the Q3 Product Strategy doc (linked above).",
+          "Attend the 10 am product walkthrough with Diego.",
+          "Join the #onboarding and #general Slack channels.",
+        ],
+      },
+      { type: "h2", text: "Week 1 — ramp" },
+      {
+        type: "list",
+        items: [
+          "Shadow three customer success calls. Notes go in the Research folder.",
+          "Complete the security & compliance training in the HR portal (link in #onboarding).",
+          "Submit your first pull request or doc edit — anything counts.",
+          "1:1 with your manager Thursday to review goals.",
+        ],
+      },
+      { type: "h2", text: "Week 2–4 — contributing" },
+      {
+        type: "p",
+        text: "By week four you should own at least one milestone on the board, have shipped something small, and have a working understanding of the full product surface. Your manager will review this with you at the 30-day check-in.",
+      },
+      { type: "h2", text: "Key contacts" },
+      {
+        type: "list",
+        items: [
+          "People ops — Jamie Lee (jamie@haxon.io)",
+          "IT setup issues — #it-support",
+          "Payroll & benefits — lattice.io/haxon (ask Jamie for invite)",
+          "Engineering lead — Jordan Kim",
+        ],
+      },
+      { type: "divider" },
+      {
+        type: "p",
+        text: "Questions? Drop them in #onboarding or DM your onboarding buddy. We aim to answer within 4 hours on business days.",
+      },
+    ],
   },
   {
     id: "d4",
@@ -74,6 +161,52 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u5",
     lastEditedAt: "5 hours ago",
     type: "wiki",
+    content: [
+      { type: "h1", text: "Brand voice & tone" },
+      {
+        type: "callout",
+        text: "This wiki is the single reference for how Haxon sounds. Use it before writing any external copy — website, email, social, changelog, or in-app strings.",
+      },
+      { type: "h2", text: "Who we are" },
+      {
+        type: "p",
+        text: "Haxon is the workspace for teams who move fast without losing track. We're precise, direct, and quietly confident — never corporate, never sycophantic. We do not use words like 'leverage', 'synergy', or 'unlock your potential'.",
+      },
+      { type: "h2", text: "Voice pillars" },
+      {
+        type: "list",
+        items: [
+          "Clear over clever — if a simpler word works, use it.",
+          "Direct over hedged — say what we mean. No 'it might be possible to perhaps consider'.",
+          "Human over formal — contractions are fine. First person is fine.",
+          "Confident over apologetic — 'This is in beta' not 'Sorry, this feature isn't ready yet'.",
+        ],
+      },
+      { type: "h2", text: "Tone by context" },
+      {
+        type: "list",
+        items: [
+          "Error messages: factual + fix-oriented. Never blame the user.",
+          "Empty states: brief, action-first. 'Create your first board →' not 'It looks like you haven't created a board yet!'",
+          "Changelog: past tense, feature-forward. Start with what changed, not why.",
+          "Marketing: warmer, but still clear. Avoid hype. Let the product speak.",
+        ],
+      },
+      { type: "h2", text: "Words we avoid" },
+      {
+        type: "list",
+        items: [
+          "Supercharge, revolutionize, game-changer, seamless",
+          "Just (as a minimizer — 'just click here')",
+          "Obviously, simply, easily (implies the user is slow if they struggle)",
+          "AI-powered, next-gen, cutting-edge (without specifics, it's noise)",
+        ],
+      },
+      {
+        type: "ai",
+        text: "Quick test: read your copy aloud. If it sounds like a press release, rewrite it. If it sounds like a human explaining something they find genuinely interesting, ship it.",
+      },
+    ],
   },
   {
     id: "d5",
@@ -85,6 +218,52 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u4",
     lastEditedAt: "Mon",
     type: "doc",
+    content: [
+      { type: "h1", text: "Customer interview — Atlas Robotics" },
+      {
+        type: "callout",
+        text: "Interview conducted by Mia Chen, 45 min via Zoom. Participant: Ravi Sharma, Head of Engineering, Atlas Robotics (Series B, 120 employees). Recording in Drive.",
+      },
+      { type: "h2", text: "Context" },
+      {
+        type: "p",
+        text: "Atlas switched from Notion + Linear to Haxon six weeks ago. They're using boards for sprint planning, docs for RFCs, and the inbox as their primary async comms layer. We wanted to understand what's working and what's blocking adoption.",
+      },
+      { type: "h2", text: "What's working" },
+      {
+        type: "list",
+        items: [
+          "\"The board-to-doc linking is the thing. I can open an RFC from a card without leaving the board.\" — Ravi",
+          "Async inbox is cutting meeting load — team estimates -2 recurring syncs per week.",
+          "Role-based permissions are the right level of granularity for their org.",
+          "Onboarding was fast — full team productive within 3 days.",
+        ],
+      },
+      { type: "h2", text: "Pain points" },
+      {
+        type: "list",
+        items: [
+          "No way to @mention a board card from a doc — has to paste a link manually.",
+          "Calendar view doesn't pull sprint deadlines automatically.",
+          "The AI assistant didn't have context on their private docs in early access.",
+          "Mobile experience for the inbox is 'usable but not great'.",
+        ],
+      },
+      { type: "h2", text: "Verbatim quotes" },
+      {
+        type: "p",
+        text: "\"We were spending 40% of standup time on status updates that Haxon now handles passively. That's the real ROI.\"",
+      },
+      { type: "h2", text: "Follow-ups" },
+      {
+        type: "list",
+        items: [
+          "Cross-reference card → doc mention with roadmap — Diego to check.",
+          "Calendar sprint pull — already in backlog, bumping priority.",
+          "Set up AI context window for private docs — needs permissions model review.",
+        ],
+      },
+    ],
   },
   {
     id: "d6",
@@ -96,6 +275,46 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u1",
     lastEditedAt: "Mon",
     type: "doc",
+    content: [
+      { type: "h1", text: "Pricing experiment notes" },
+      {
+        type: "callout",
+        text: "Working notes from the June pricing sprint. Not final — do not share externally. Owner: Diego. Reviewed by: Priya, Jordan.",
+      },
+      { type: "h2", text: "Experiment A — seat-cap free tier" },
+      {
+        type: "p",
+        text: "We lowered free-tier seat cap from unlimited to 5 for new signups. Conversion to Pro among workspaces that hit the cap was 34% in week one — 2.4× the baseline. Churn in the free cohort was flat.",
+      },
+      { type: "h2", text: "Experiment B — AI token wall" },
+      {
+        type: "p",
+        text: "Free users now see a 'You've used your 50 AI credits this month' gate. 19% of gated users upgraded to Pro same-session. Drop-off at the gate itself was 61% — high but expected.",
+      },
+      { type: "h2", text: "Experiment C — annual discount prompt" },
+      {
+        type: "list",
+        items: [
+          "Showing the annual discount (20% off) at signup increased annual-plan selection from 11% → 28%.",
+          "No measurable impact on trial activation rate.",
+          "LTV projection +18% for the cohort that chose annual.",
+        ],
+      },
+      { type: "h2", text: "Recommended changes for Q3" },
+      {
+        type: "list",
+        items: [
+          "Keep seat-cap free tier — ship to 100% of new signups.",
+          "Increase free AI credits to 75/mo to reduce gate frustration while retaining conversion.",
+          "Make annual the visual default on the pricing page, monthly as 'switch'.",
+          "Add a self-serve Team tier at $8/seat (max 10 seats) to capture the SMB gap between Pro and Enterprise.",
+        ],
+      },
+      {
+        type: "ai",
+        text: "Based on the experiments, the highest-impact next move is the self-serve Team tier. The current pricing has a dead zone between $12/seat Pro and custom Enterprise that's losing mid-market deals.",
+      },
+    ],
   },
   {
     id: "d7",
@@ -107,6 +326,46 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u6",
     lastEditedAt: "Tue",
     type: "wiki",
+    content: [
+      { type: "h1", text: "Lumen — research wiki" },
+      {
+        type: "callout",
+        text: "Lumen is our internal codename for the photonics research initiative. All papers, notes, and vendor evals live here. Access is restricted to the core research team.",
+      },
+      { type: "h2", text: "Project overview" },
+      {
+        type: "p",
+        text: "Lumen investigates silicon-photonic interconnects as a replacement for copper traces in high-density compute clusters. The goal is 10× bandwidth improvement at equivalent power draw by 2026.",
+      },
+      { type: "h2", text: "Key papers" },
+      {
+        type: "list",
+        items: [
+          "Chen et al. (2023) — 'Low-loss Si3N4 waveguides for datacenter interconnects'. Drive: /lumen/papers/chen-2023.pdf",
+          "Soref & Bennett (1987) — foundational electro-optic coefficients. Still referenced.",
+          "Luxtera whitepaper (2022) — 400G silicon-photonic transceiver architecture.",
+          "Internal: Benchmark report comparing Lumentum vs II-VI vs Marvell modules (Q2 2024).",
+        ],
+      },
+      { type: "h2", text: "Vendor evaluations" },
+      {
+        type: "list",
+        items: [
+          "Lumentum — strong on 100G, lead times improving, pricing above budget.",
+          "Marvell (Inphi) — best software integration, 400G modules available Q4.",
+          "Ayar Labs — on-chip photonics is interesting but TRL 4, not production-ready.",
+        ],
+      },
+      { type: "h2", text: "Open research questions" },
+      {
+        type: "list",
+        items: [
+          "Thermal crosstalk at high port density — need lab data from next test run.",
+          "Polarization-maintaining fiber vs standard SMF for the last-mile run.",
+          "Can we source 1310 nm DFB lasers domestically given export controls?",
+        ],
+      },
+    ],
   },
   {
     id: "d8",
@@ -118,6 +377,52 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u2",
     lastEditedAt: "Wed",
     type: "doc",
+    content: [
+      { type: "h1", text: "Photonics — board prep" },
+      {
+        type: "callout",
+        text: "Board meeting: Thursday 14 Nov, 2 pm PT. Deck due to investors by midnight Wednesday. Owner: Jordan. Reviewer: Diego.",
+      },
+      { type: "h2", text: "Agenda" },
+      {
+        type: "list",
+        items: [
+          "Q3 results vs plan — 10 min (Jordan)",
+          "Lumen initiative update — 15 min (Priya)",
+          "Fundraising timeline — 10 min (Diego)",
+          "Key risks & mitigations — 10 min (all)",
+          "Q&A — remaining time",
+        ],
+      },
+      { type: "h2", text: "Headline numbers" },
+      {
+        type: "list",
+        items: [
+          "ARR: $4.2M (+12% QoQ) — ahead of plan by $340K.",
+          "Gross margin: 71% — down 2pp from Q2 due to cloud cost spike in August.",
+          "Headcount: 38 FTE, 4 open roles (2 eng, 1 research, 1 CS).",
+          "Runway: 22 months at current burn.",
+        ],
+      },
+      { type: "h2", text: "Lumen milestone summary" },
+      {
+        type: "p",
+        text: "Lab prototype hit 320 Gbps sustained over 2 m fiber — 18% short of the 400G target but within the error budget for this stage. Next milestone is a rack-scale demo in Q1. Key dependency: Marvell delivery of the 400G PHY modules in December.",
+      },
+      { type: "h2", text: "Talking points — risks" },
+      {
+        type: "list",
+        items: [
+          "Export control on DFB lasers: legal review in progress, low probability of impact.",
+          "Marvell slip: contingency is a 60-day delay to the rack demo, within acceptable range.",
+          "Competitor Intel Photonics announced similar work last week — differentiation is our thermal management IP.",
+        ],
+      },
+      {
+        type: "ai",
+        text: "Suggested framing for the board: lead with the ARR beat, acknowledge the margin dip with a clear fix (reserved capacity purchase in November), then pivot to Lumen as the long-term moat. Investors respond better to 'here's the plan' than 'here's the problem'.",
+      },
+    ],
   },
   {
     id: "d9",
@@ -129,6 +434,46 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u1",
     lastEditedAt: "Sun",
     type: "doc",
+    content: [
+      { type: "h1", text: "Weekly review — w/c 25 Nov" },
+      {
+        type: "callout",
+        text: "Personal weekly review. Not shared with team. Honest reflection, not a status update.",
+      },
+      { type: "h2", text: "What shipped" },
+      {
+        type: "list",
+        items: [
+          "Merged the sync engine RFC after three rounds of review — took longer than expected but the team caught a real flaw in the reconnect logic.",
+          "Closed the Atlas Robotics upsell — they moved to Pro plus a 12-month commit.",
+          "Cleared my review queue — 6 PRs, 4 design mocks, 2 docs.",
+        ],
+      },
+      { type: "h2", text: "What didn't go well" },
+      {
+        type: "list",
+        items: [
+          "Missed the Tuesday all-hands prep — calendar conflict I should have caught Monday.",
+          "The pricing experiment B rollout had a bug in the credit counter that took 6 hours to find.",
+          "Spent too much time in Slack and not enough in deep work. Need to block mornings again.",
+        ],
+      },
+      { type: "h2", text: "Energy & focus check" },
+      {
+        type: "p",
+        text: "7/10 week. The Atlas close was a real high. The credit bug was draining — mostly because it was preventable. Next week I want to protect Tuesday and Thursday mornings for focused work.",
+      },
+      { type: "h2", text: "Next week priorities" },
+      {
+        type: "list",
+        items: [
+          "Kick off the mobile inbox UX audit — 3 sessions booked.",
+          "Finalize the annual pricing default A/B test with growth.",
+          "1:1 with Priya to unblock the CRDT benchmark.",
+          "Actually leave before 7 pm at least twice.",
+        ],
+      },
+    ],
   },
   {
     id: "d10",
@@ -140,6 +485,48 @@ export const DOCS: Doc[] = [
     lastEditedBy: "u1",
     lastEditedAt: "last week",
     type: "doc",
+    content: [
+      { type: "h1", text: "Apartment hunting" },
+      {
+        type: "callout",
+        text: "Target: move by Feb 1. Budget: $3,200/mo max. Must-haves: dedicated desk space, natural light, in-unit laundry, under 30 min to office.",
+      },
+      { type: "h2", text: "Shortlist" },
+      {
+        type: "list",
+        items: [
+          "📍 2BD Hayes Valley — $3,100/mo. Great light, no parking, landlord responsive. Viewing Sat 10am.",
+          "📍 1BD+den Mission — $2,850/mo. Den works as office. Street noise concern. Application submitted.",
+          "📍 2BD Dogpatch — $3,200/mo. Brand new building. Gym included. Tour booked Thu 6pm.",
+          "📍 Studio+ SOMA — $2,600/mo. Too small for WFH but keeping as fallback.",
+        ],
+      },
+      { type: "h2", text: "Criteria scorecard" },
+      {
+        type: "list",
+        items: [
+          "Desk space (10 pts) — Hayes Valley 8, Mission 9, Dogpatch 7",
+          "Natural light (10 pts) — Hayes Valley 9, Mission 6, Dogpatch 8",
+          "Commute (10 pts) — Hayes Valley 9, Mission 8, Dogpatch 6",
+          "Price vs budget (10 pts) — Hayes Valley 7, Mission 10, Dogpatch 7",
+        ],
+      },
+      { type: "h2", text: "Documents to prep" },
+      {
+        type: "list",
+        items: [
+          "Last 3 months pay stubs — exported from Lattice ✓",
+          "Bank statements (2 months) — pending",
+          "Reference letter from current landlord — asked, waiting",
+          "ID + proof of employment letter — Diego to sign",
+        ],
+      },
+      { type: "h2", text: "Notes" },
+      {
+        type: "p",
+        text: "Hayes Valley is the front-runner. The landlord replied within an hour, the light in the photos is genuinely good, and the location cuts my commute in half. Going to offer first-month deposit upfront to stand out.",
+      },
+    ],
   },
   {
     id: "d11",
